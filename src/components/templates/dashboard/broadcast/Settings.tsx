@@ -1,30 +1,21 @@
-"use client";
+'use client';
 
-import { SettingsIcon } from "@livepeer/react/assets";
-import * as Broadcast from "@livepeer/react/broadcast";
-import * as Popover from "@radix-ui/react-popover";
+import { SettingsIcon } from '@livepeer/react/assets';
+import * as Broadcast from '@livepeer/react/broadcast';
+import * as Popover from '@radix-ui/react-popover';
 
-import {
-  CheckIcon,
-  ChevronDownIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
-import React from "react";
-import clsx from "clsx";
+import { CheckIcon, ChevronDownIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import React from 'react';
+import clsx from 'clsx';
 
 export const Settings = React.forwardRef(function Settings(
   { className }: { className?: string },
-  ref: React.Ref<HTMLButtonElement> | undefined
+  ref: React.Ref<HTMLButtonElement> | undefined,
 ) {
   return (
     <Popover.Root>
       <Popover.Trigger ref={ref} asChild>
-        <button
-          type="button"
-          className={className}
-          aria-label="Stream settings"
-          onClick={(e) => e.stopPropagation()}
-        >
+        <button type="button" className={className} aria-label="Stream settings" onClick={(e) => e.stopPropagation()}>
           <SettingsIcon />
         </button>
       </Popover.Trigger>
@@ -37,31 +28,20 @@ export const Settings = React.forwardRef(function Settings(
           onClick={(e) => e.stopPropagation()}
         >
           <div className="flex flex-col gap-2">
-            <p className="text-black-primary-text font-medium text-sm mb-1">
-              Stream settings
-            </p>
+            <p className="text-black-primary-text font-medium text-sm mb-1">Stream settings</p>
 
             <div className="gap-2 flex-col flex">
-              <label
-                className="text-xs text-black-primary-text font-medium"
-                htmlFor="cameraSource"
-              >
+              <label className="text-xs text-black-primary-text font-medium" htmlFor="cameraSource">
                 Camera (&apos;c&apos; to rotate)
               </label>
               <SourceSelectComposed name="cameraSource" type="videoinput" />
             </div>
 
             <div className="gap-2 flex-col flex">
-              <label
-                className="text-xs text-black-primary-text font-medium"
-                htmlFor="microphoneSource"
-              >
+              <label className="text-xs text-black-primary-text font-medium" htmlFor="microphoneSource">
                 Microphone (&apos;m&apos; to rotate)
               </label>
-              <SourceSelectComposed
-                name="microphoneSource"
-                type="audioinput"
-              />
+              <SourceSelectComposed name="microphoneSource" type="audioinput" />
             </div>
           </div>
           <Popover.Close
@@ -78,8 +58,8 @@ export const Settings = React.forwardRef(function Settings(
 });
 
 export const SourceSelectComposed = React.forwardRef(function SourceSelectComposed(
-  { name, type, className }: { name: string; type: "audioinput" | "videoinput"; className?: string },
-  ref: React.Ref<HTMLButtonElement> | undefined
+  { name, type, className }: { name: string; type: 'audioinput' | 'videoinput'; className?: string },
+  ref: React.Ref<HTMLButtonElement> | undefined,
 ) {
   return (
     <Broadcast.SourceSelect name={name} type={type}>
@@ -89,17 +69,13 @@ export const SourceSelectComposed = React.forwardRef(function SourceSelectCompos
             <Broadcast.SelectTrigger
               ref={ref}
               className={clsx(
-                "flex w-full items-center bg-white border-2 py-4 border-border-gray overflow-hidden justify-between rounded-sm px-1 outline-1 outline-white/50 text-xs leading-none h-7 gap-1 outline-none disabled:opacity-70 disabled:cursor-not-allowed",
-                className
+                'flex w-full items-center bg-white border-2 py-4 border-border-gray overflow-hidden justify-between rounded-sm px-1 outline-1 outline-white/50 text-xs leading-none h-7 gap-1 outline-none disabled:opacity-70 disabled:cursor-not-allowed',
+                className,
               )}
-              aria-label={type === "audioinput" ? "Audio input" : "Video input"}
+              aria-label={type === 'audioinput' ? 'Audio input' : 'Video input'}
             >
               <Broadcast.SelectValue
-                placeholder={
-                  type === "audioinput"
-                    ? "Select an audio input"
-                    : "Select a video input"
-                }
+                placeholder={type === 'audioinput' ? 'Select an audio input' : 'Select a video input'}
               />
               <Broadcast.SelectIcon>
                 <ChevronDownIcon className="h-4 w-4" />
@@ -110,10 +86,7 @@ export const SourceSelectComposed = React.forwardRef(function SourceSelectCompos
                 <Broadcast.SelectViewport className="p-1 border border-border-gray">
                   <Broadcast.SelectGroup>
                     {devices?.map((device) => (
-                      <RateSelectItem
-                        key={device.deviceId}
-                        value={device.deviceId}
-                      >
+                      <RateSelectItem key={device.deviceId} value={device.deviceId}>
                         {device.friendlyName}
                       </RateSelectItem>
                     ))}
@@ -130,22 +103,23 @@ export const SourceSelectComposed = React.forwardRef(function SourceSelectCompos
   );
 });
 
-const RateSelectItem = React.forwardRef<HTMLDivElement, Broadcast.SelectItemProps>(
-  function RateSelectItem({ children, className, ...props }, forwardedRef) {
-    return (
-      <Broadcast.SelectItem
-        className={clsx(
-          "text-xs leading-none w-full rounded-sm bg-slate-50 flex items-center h-7 pr-[35px] pl-[25px] relative select-none data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-white/20",
-          className
-        )}
-        {...props}
-        ref={forwardedRef}
-      >
-        <Broadcast.SelectItemText>{children}</Broadcast.SelectItemText>
-        <Broadcast.SelectItemIndicator className="absolute left-0 w-[25px] inline-flex items-center justify-center">
-          <CheckIcon className="w-4 h-4" />
-        </Broadcast.SelectItemIndicator>
-      </Broadcast.SelectItem>
-    );
-  }
-);
+const RateSelectItem = React.forwardRef<HTMLDivElement, Broadcast.SelectItemProps>(function RateSelectItem(
+  { children, className, ...props },
+  forwardedRef,
+) {
+  return (
+    <Broadcast.SelectItem
+      className={clsx(
+        'text-xs leading-none w-full rounded-sm bg-slate-50 flex items-center h-7 pr-[35px] pl-[25px] relative select-none data-[disabled]:pointer-events-none data-[highlighted]:outline-none data-[highlighted]:bg-white/20',
+        className,
+      )}
+      {...props}
+      ref={forwardedRef}
+    >
+      <Broadcast.SelectItemText>{children}</Broadcast.SelectItemText>
+      <Broadcast.SelectItemIndicator className="absolute left-0 w-[25px] inline-flex items-center justify-center">
+        <CheckIcon className="w-4 h-4" />
+      </Broadcast.SelectItemIndicator>
+    </Broadcast.SelectItem>
+  );
+});

@@ -13,27 +13,26 @@ interface LinkAccountProps {
   children: ReactNode;
 }
 
-
 const LinkAccount = ({ children }: LinkAccountProps) => {
   const { linkWallet, linkEmail, linkApple, linkDiscord, linkGithub, linkGoogle, linkPhone, linkTwitter } = usePrivy();
-const linkOptions = [
-  { label: 'Email', action: linkEmail },
-  { label: 'Wallet', action: linkWallet },
-  { label: 'Apple', action: linkApple },
-  { label: 'Discord', action: linkDiscord },
-  { label: 'Github', action: linkGithub },
-  { label: 'Google', action: linkGoogle },
-  { label: 'Phone', action: linkPhone },
-  { label: 'Twitter', action: linkTwitter },
-];
-//   const router = useRouter();
-const [selectedLink, setSelectedLink] = useState<string>('');
-const handleLinkClick = () => {
-  const selected = linkOptions.find((option) => option.label === selectedLink);
-  if (selected) {
-    selected.action();
-  }
-};
+  const linkOptions = [
+    { label: 'Email', action: linkEmail },
+    { label: 'Wallet', action: linkWallet },
+    { label: 'Apple', action: linkApple },
+    { label: 'Discord', action: linkDiscord },
+    { label: 'Github', action: linkGithub },
+    { label: 'Google', action: linkGoogle },
+    { label: 'Phone', action: linkPhone },
+    { label: 'Twitter', action: linkTwitter },
+  ];
+  //   const router = useRouter();
+  const [selectedLink, setSelectedLink] = useState<string>('');
+  const handleLinkClick = () => {
+    const selected = linkOptions.find((option) => option.label === selectedLink);
+    if (selected) {
+      selected.action();
+    }
+  };
   const { user } = usePrivy();
   return (
     <Dialog.Root>

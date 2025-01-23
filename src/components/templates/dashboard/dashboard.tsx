@@ -55,7 +55,7 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Header userId={user?.wallet?.address || ''}  />
+      <Header userId={user?.wallet?.address || ''} />
       <div className="m-2">
         <Analytics />
         <SectionCard title="Your Channels">
