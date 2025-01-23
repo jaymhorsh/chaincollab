@@ -6,7 +6,6 @@ import { Inter } from 'next/font/google';
 import { LuArrowLeftFromLine } from 'react-icons/lu';
 import clsx from 'clsx';
 
-
 const inter = Inter({ subsets: ['latin'] });
 // Rename the component to follow React naming conventions
 const DashboardLayout = ({
@@ -68,5 +67,3 @@ const DashboardLayout = ({
   );
 };
 export default DashboardLayout;
-
-

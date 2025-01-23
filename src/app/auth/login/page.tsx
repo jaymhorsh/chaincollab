@@ -9,11 +9,12 @@ const Page = () => {
   const navigate = useRouter();
   const { ready, authenticated } = usePrivy();
 
-  if (ready && !authenticated) {
-    useEffect(() => {
+  useEffect(() => {
+    if (ready && !authenticated) {
       login();
-    }, [navigate]);
-  }
+    }
+  }, [ready, authenticated]);
+
   if (ready && authenticated) {
     navigate.push('/dashboard');
   }
@@ -24,5 +25,4 @@ const Page = () => {
     </AuthLayout>
   );
 };
-
 export default Page;
