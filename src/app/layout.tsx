@@ -13,11 +13,11 @@ export const metadata: Metadata = {
     icon: './assets/images/favicon.ico',
   },
 };
-
-interface RootLayoutProps {
+export default function RootLayout({
+  children,
+}: Readonly<{
   children: React.ReactNode;
-}
-export default function RootLayout({ children }: RootLayoutProps) {
+}>) {
   return (
     <html lang="en">
       <body className={`${inter.className} antialiased`}>
