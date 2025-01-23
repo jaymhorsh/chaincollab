@@ -1,18 +1,22 @@
 'use client';
 import Sidebar from '@/components/Sidebar';
 import React, { useState } from 'react';
-import { FaTimes, FaBars } from 'react-icons/fa';
+import { FaTimes } from 'react-icons/fa';
 import { Inter } from 'next/font/google';
 import { LuArrowLeftFromLine } from 'react-icons/lu';
 import clsx from 'clsx';
-import { useRouter } from 'next/navigation';
+
 
 const inter = Inter({ subsets: ['latin'] });
 // Rename the component to follow React naming conventions
-const DashboardLayout = ({ children }: { children: React.ReactNode; name: string }) => {
+const DashboardLayout = ({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
-  const navigate = useRouter();
+
   return (
     <div className={`${inter.className} text-black-primary-text flex h-screen `}>
       {/* Sidebar for desktop */}
@@ -63,5 +67,6 @@ const DashboardLayout = ({ children }: { children: React.ReactNode; name: string
     </div>
   );
 };
-
 export default DashboardLayout;
+
+
