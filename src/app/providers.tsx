@@ -1,6 +1,8 @@
 'use client';
 
 import { PrivyProvider } from '@privy-io/react-auth';
+import { Provider } from 'react-redux';
+import store from '../store/store';
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -25,7 +27,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         },
       }}
     >
-      {children}
+     <Provider store={store}>{children}</Provider>
     </PrivyProvider>
   );
 }

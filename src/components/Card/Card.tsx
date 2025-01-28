@@ -2,7 +2,8 @@
 import React, { useRef, useState } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
-import { Popup } from '../Popup';
+import {Popup } from "../Popup"
+
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -31,19 +32,12 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
 };
 
 export const ChannelCard = ({ title, goLive, streamId, playbackId, host }: ChannelCardProps) => {
-  const [showOptions, setShowOptions] = useState(false);
-  const optionsRef = useRef<HTMLDivElement | null>(null);
+  // const [showOptions, setShowOptions] = useState(false);
+  // const optionsRef = useRef<HTMLDivElement | null>(null);
 
-  const toggleOptions = () => {
-    setShowOptions((prevShowOptions) => !prevShowOptions);
-  };
-
-  const handleClickOutside = (event: MouseEvent) => {
-    if (optionsRef.current && !optionsRef.current.contains(event.target as Node)) {
-      setShowOptions(false);
-    }
-  };
-
+  // const toggleOptions = () => {
+  //   setShowOptions((prevShowOptions) => !prevShowOptions);
+  // };
   return (
     <div className="w-full h-full relative">
       {/* Image */}
@@ -51,15 +45,14 @@ export const ChannelCard = ({ title, goLive, streamId, playbackId, host }: Chann
       {/* Title */}
       <div className="flex justify-between items-center">
         <div>
-          <div className="font-bold text-black-primary-text text-lg pt-2">{title}</div>
+          <div className="font-bold text-black-primary-text text-lg capitalize pt-2">{title}</div>
         </div>
         <div className="ml-auto pt-2">
           {/* Popup */}
+
           <Popup
-            showOptions={showOptions}
-            toggleOptions={toggleOptions}
-            handleClickOutside={handleClickOutside}
-            optionsRef={optionsRef}
+            // showOptions={showOptions}
+            // toggleOptions={toggleOptions}
             streamId={streamId}
             playbackId={playbackId}
             host={host}
@@ -68,7 +61,7 @@ export const ChannelCard = ({ title, goLive, streamId, playbackId, host }: Chann
       </div>
       <div className="flex justify-start">
         <button
-          className="mt-2 bg-main-blue cursor-pointer text-white py-2 text-sm font-bold px-4 rounded-[4px]"
+          className="mt-2 bg-main-blue cursor-pointer text-white py-2 text-sm font-bold px-4 rounded-[6px]"
           onClick={goLive}
         >
           Go Live
@@ -88,7 +81,7 @@ export const VideoCard = ({ title, onAction, imageUrl }: VideoCardProps) => {
         onClick={onAction}
       />
       {/* Content Container */}
-      <p className="font-bold text-black-secondary-text text-sm">{title}</p>
+      <p className="font-bold text-black-secondary-text uppercase text-sm">{title}</p>
     </div>
   );
 };

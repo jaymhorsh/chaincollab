@@ -14,12 +14,23 @@ import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
 import clsx from 'clsx';
 import { usePrivy } from '@privy-io/react-auth';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllStreams, createLivestream, deleteStream, terminateStream, updateLivestream } from '@/features/streamAPI';
+import { RootState, AppDispatch } from '@/store/store';
 
 const Dashboard = () => {
-  const { user, logout } = usePrivy();
-  const [streams, setStreams] = useState<Stream[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { user, } = usePrivy();
+  const dispatch = useDispatch<AppDispatch>();
+  const { streams, loading, error } = useSelector((state: RootState) => state.streams);
+  
+  useEffect(() => {
+    dispatch(getAllStreams());
+  }, [dispatch]);
+  // const [streams, setStreams] = useState<Stream[]>([]);
+  // const [loading, setLoading] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
+
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const totalPages = Math.ceil(streams.length / itemsPerPage);
@@ -105,9 +116,9 @@ const Dashboard = () => {
               <div key={stream.id}>
                 <ChannelCard
                   title={stream.name}
-                  goLive={() => initiateLiveVideo(stream)}
+                  // goLive={() => initiateLiveVideo(stream)}
                   streamId={stream.id}
-                  playbackId={stream.playbackId}
+                  // playbackId={stream.playbackId}
                   host={''}
                 />
               </div>

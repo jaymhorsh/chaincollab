@@ -23,3 +23,12 @@ export interface Stream {
   playbackId: string;
   streamKey: string;
 }
+
+export interface PopupProps {
+  // showOptions: boolean;
+  // toggleOptions: () => void;
+  // optionsRef: React.RefObject<HTMLDivElement>;
+  streamId?: string;
+  playbackId?: string;
+  host?: string;
+}

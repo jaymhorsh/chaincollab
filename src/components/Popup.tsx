@@ -1,4 +1,41 @@
-import React, { useEffect, useState } from 'react';
+"use client"
+import * as React from "react"
+import * as PopoverPrimitive from "@radix-ui/react-popover"
+
+import { cn } from "@/lib/utils"
+
+const Popover = PopoverPrimitive.Root
+
+const PopoverTrigger = PopoverPrimitive.Trigger
+
+const PopoverAnchor = PopoverPrimitive.Anchor
+
+const PopoverContent = React.forwardRef<
+  React.ElementRef<typeof PopoverPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
+>(({ className, align = "center", sideOffset = 4, ...props }, ref) => (
+  <PopoverPrimitive.Portal  >
+    <PopoverPrimitive.Content
+      ref={ref}
+      align={align}
+      sideOffset={sideOffset}
+      className={cn(
+        "z-50 w-56 rounded-md py-1 border bg-popover text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        className
+      )}
+      {...props}
+    />
+  </PopoverPrimitive.Portal>
+))
+PopoverContent.displayName = PopoverPrimitive.Content.displayName
+
+export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor }
+
+
+
+
+//
+import { useEffect, useState } from 'react';
 import { AiOutlineEdit } from 'react-icons/ai';
 import { BiNotepad } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
@@ -6,87 +43,52 @@ import { HiLink } from 'react-icons/hi';
 import { PiCalendarCheckBold } from 'react-icons/pi';
 import { RiDeleteBin6Line, RiTokenSwapFill } from 'react-icons/ri';
 import { AlertDialogs } from './Alert';
-// import { deleteStream } from "@/app/actions";
+import {PopupProps} from '@/interfaces/index';
 import { toast } from 'sonner';
+import { useDispatch, useSelector } from "react-redux"
+import { deleteStream } from "@/features/streamAPI"
+import { AppDispatch, RootState } from "@/store/store"
 
 const listItemClassNames = {
   option: 'flex items-center px-5 py-2  hover:bg-gray-100 cursor-pointer',
   icon: 'text-black-primary-text text-lg font-bold ',
 };
 
-interface PopupProps {
-  showOptions: boolean;
-  toggleOptions: () => void;
-  handleClickOutside: (event: MouseEvent) => void;
-  optionsRef: React.RefObject<HTMLDivElement>;
-  streamId?: string;
-  playbackId?: string;
-  host?: string;
-}
 
-export const Popup = ({
-  showOptions,
-  toggleOptions,
-  handleClickOutside,
-  optionsRef,
-  streamId,
-  playbackId,
-  host,
-}: PopupProps) => {
+
+
+export const Popup = ({playbackId, streamId, host}:PopupProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const {loading, error } = useSelector((state: RootState) => state.streams);
+  const [alertOpen, setAlertOpen] = useState(false);
+  // const [loading, setLoading] = useState(false);
   const playbackUrl = `${host}/view/${playbackId}`;
-  console.log(playbackUrl);
+  //   console.log(playbackUrl);
 
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-
-  const handleDelete = async () => {
-    setLoading(true);
-    // try {
-    //   const response = await deleteStream(streamId);
-    //   if (response.success) {
-    //     toast.success("Stream deleted successfully");
-    //     // toggleOptions();
-    //     setTimeout(() => setOpen(false), 50);
-    //   } else {
-    //     toast.error(response.error);
-    //   }
-    // } catch (error) {
-    //   toast.error((error as Error).message || "An error occurred while deleting the stream.");
-    // }
-    // finally {
-    //   setLoading(false);
-    // }
-  };
-
-  useEffect(() => {
-    if (showOptions) {
-      document.addEventListener('mousedown', handleClickOutside);
+  const handleDelete = () => {
+    if (streamId) {
+      dispatch(deleteStream(streamId));
     } else {
-      document.removeEventListener('mousedown', handleClickOutside);
+      console.error("streamId is undefined");
     }
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showOptions, handleClickOutside]);
+  };
 
   const handleDeleteClick = () => {
-    toggleOptions();
-    setTimeout(() => setOpen(true), 50);
+    // toggleOptions();
+    setTimeout(() => setAlertOpen(true), 50);
   };
 
-  return (
-    <div className="relative">
-      <BsThreeDotsVertical
-        className="text-lg cursor-pointer text-black-primary-text focus:ring-blue-600 focus:ring-2 focus:ring-offset-2"
-        onClick={toggleOptions}
-      />
-      {showOptions && (
-        <div
-          ref={optionsRef}
-          className="absolute right-0 w-60 z-10 py-2  bg-white border border-border-gray rounded-lg shadow-lg"
-        >
+  return(
+    <Popover >
+      <PopoverTrigger >
+        <BsThreeDotsVertical
+        className="text-lg cursor-pointer text-black-primary-text focus:bg-main-blue focus:ring-2 focus:ring-offset-2"
+        // onClick={toggleOptions}
+      /></PopoverTrigger>
+      <PopoverContent className="left-[30]" > 
+        <div>
           <ul>
-            <li className={listItemClassNames.option} onClick={toggleOptions}>
+            <li className={listItemClassNames.option} onClick={()=>{}}>
               <HiLink className={listItemClassNames.icon} />
               <p className="ml-2 text-sm text-black-primary-text font-medium  ">Edit details</p>
             </li>
@@ -101,17 +103,17 @@ export const Popup = ({
                   .catch(() => {
                     toast.error('Stream link isnt available.');
                   });
-                toggleOptions();
+                // toggleOptions();
               }}
             >
               <AiOutlineEdit className={listItemClassNames.icon} />
               <p className="ml-2 text-sm font-medium text-black-primary-text ">Copy Stream Link</p>
             </li>
-            <li className={listItemClassNames.option} onClick={toggleOptions}>
+            <li className={listItemClassNames.option} onClick={()=>{}}>
               <PiCalendarCheckBold className={listItemClassNames.icon} />
               <p className="ml-2 text-sm font-medium text-black-primary-text ">Schedule stream</p>
             </li>
-            <li className={listItemClassNames.option} onClick={toggleOptions}>
+            <li className={listItemClassNames.option} onClick={()=>{}}>
               <BiNotepad className={listItemClassNames.icon} />
               <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
             </li>
@@ -126,15 +128,16 @@ export const Popup = ({
             <p className="ml-2 text-sm font-medium text-black-primary-text ">Token set-up</p>
           </div>
         </div>
-      )}
       <AlertDialogs
         title="Delete channel"
         description="Are you sure you want to delete this stream? This action cannot be undone."
         onConfirm={handleDelete}
-        open={open}
+        open={alertOpen}
         loading={loading}
-        setOpen={setOpen}
+        setOpen={setAlertOpen}
       />
-    </div>
-  );
-};
+
+</PopoverContent>
+    </Popover>
+  )
+}
