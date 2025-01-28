@@ -1,6 +1,12 @@
-
 import { createSlice } from '@reduxjs/toolkit';
-import { createLivestream, getAllStreams, deleteStream, getStreamById, terminateStream, updateLivestream } from './streamAPI';
+import {
+  createLivestream,
+  getAllStreams,
+  deleteStream,
+  getStreamById,
+  terminateStream,
+  updateLivestream,
+} from './streamAPI';
 
 interface Stream {
   id: string;
@@ -12,13 +18,17 @@ interface Stream {
 interface StreamsState {
   streams: Stream[];
   loading: boolean;
+  success: boolean;
   error: string | null;
+  stream: any | null;
 }
 
 const initialState: StreamsState = {
   streams: [],
+  stream: null,
   loading: false,
   error: null,
+  success: false,
 };
 
 const streamsSlice = createSlice({
@@ -29,13 +39,16 @@ const streamsSlice = createSlice({
     builder
       .addCase(createLivestream.pending, (state) => {
         state.loading = true;
+        state.success = false;
       })
       .addCase(createLivestream.fulfilled, (state, action) => {
         state.loading = false;
+        state.success = true;
         state.streams.push(action.payload);
       })
       .addCase(createLivestream.rejected, (state, action) => {
         state.loading = false;
+        state.success = false;
         state.error = action.error.message || 'Failed to create livestream';
       })
       .addCase(getAllStreams.pending, (state) => {
@@ -55,15 +68,27 @@ const streamsSlice = createSlice({
       .addCase(deleteStream.fulfilled, (state, action) => {
         state.streams = state.streams.filter((stream) => stream.id !== action.payload);
       })
-     .addCase(deleteStream.rejected, (state, action) => {
-            state.error = action.error.message || 'Failed to delete stream';
-        })
+      .addCase(deleteStream.rejected, (state, action) => {
+        state.error = action.error.message || 'Failed to delete stream';
+      })
       .addCase(getStreamById.pending, (state) => {
         state.loading = true;
       })
+      // .addCase(getStreamById.fulfilled, (state, action) => {
+      //   state.loading = false;
+      //   state.stream = action.payload;
+      //   // handle the fetched stream data
+      // })
       .addCase(getStreamById.fulfilled, (state, action) => {
         state.loading = false;
-        // handle the fetched stream data
+        state.stream = action.payload;
+        // Optionally, you can update the streams array with the fetched stream data
+        const index = state.streams.findIndex((stream) => stream.id === action.payload.id);
+        if (index !== -1) {
+          state.streams[index] = action.payload;
+        } else {
+          state.streams.push(action.payload);
+        }
       })
       .addCase(getStreamById.rejected, (state, action) => {
         state.loading = false;

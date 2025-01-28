@@ -1,7 +1,11 @@
-import React from 'react';
+import StreamPage from '@/components/templates/dashboard/stream';
 
 const Page = () => {
-  return <div> Stream Page</div>;
+  return (
+    <div>
+      <StreamPage />
+    </div>
+  );
 };
 
 export default Page;

@@ -28,7 +28,7 @@ export const createLivestream = createAsyncThunk(
       },
     });
     return response.data;
-  }
+  },
 );
 
 export const getAllStreams = createAsyncThunk('streams/getAllStreams', async () => {
@@ -36,23 +36,24 @@ export const getAllStreams = createAsyncThunk('streams/getAllStreams', async () 
   return response.data;
 });
 
-
 export const deleteStream = createAsyncThunk('streams/deleteStream', async (id: string) => {
   await api.delete(`/stream/${id}`);
   return id;
 });
-
 
 export const getStreamById = createAsyncThunk('streams/getStreamById', async (id: string) => {
   const response = await api.get(`/stream/${id}`);
   return response.data;
 });
 
-export const updateLivestream = createAsyncThunk('streams/updateStream', async ({ id, data }: UpdateLivestreamProps) => {
-  const response = await api.put(`/stream/${id}`, data);
-  return response.data;
-});
-// 
+export const updateLivestream = createAsyncThunk(
+  'streams/updateStream',
+  async ({ id, data }: UpdateLivestreamProps) => {
+    const response = await api.put(`/stream/${id}`, data);
+    return response.data;
+  },
+);
+//
 export const terminateStream = createAsyncThunk('streams/terminateStream', async (id: string) => {
   await api.delete(`/stream/${id}/terminate`);
   return id;

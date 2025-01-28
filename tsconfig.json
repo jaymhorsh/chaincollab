@@ -23,6 +23,13 @@
       "@/*": ["*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "backend/routes/moderation.js"],
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "backend/routes/moderation.js",
+    "src/features/streamAPI.ts"
+  ],
   "exclude": ["node_modules"]
 }

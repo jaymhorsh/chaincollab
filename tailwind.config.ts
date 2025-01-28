@@ -6,11 +6,11 @@ const config: Config = {
     extend: {
       colors: {
         'main-blue': '#3351FF',
-        // black: {
-        //   'primary-text': '#0E0E0F',
-        //   'secondary-text': '#53525F',
-        //   'tertiary-text': '#838294',
-        // },
+        black: {
+          'primary-text': '#0E0E0F',
+          'secondary-text': '#53525F',
+          'tertiary-text': '#838294',
+        },
         'orange-drop': '#FE5C2B',
         'green-drop': '#00E36E',
         'background-gray': '#EEEFF1',

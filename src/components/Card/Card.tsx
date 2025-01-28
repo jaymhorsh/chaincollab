@@ -2,8 +2,8 @@
 import React, { useRef, useState } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
-import {Popup } from "../Popup"
-
+import { Popup } from '../Popup';
+import Image from 'next/image';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -31,32 +31,22 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
   );
 };
 
-export const ChannelCard = ({ title, goLive, streamId, playbackId, host }: ChannelCardProps) => {
-  // const [showOptions, setShowOptions] = useState(false);
-  // const optionsRef = useRef<HTMLDivElement | null>(null);
-
-  // const toggleOptions = () => {
-  //   setShowOptions((prevShowOptions) => !prevShowOptions);
-  // };
+export const ChannelCard = ({ title, goLive, streamId, playbackId, image, host }: ChannelCardProps) => {
   return (
     <div className="w-full h-full relative">
       {/* Image */}
-      <div className="w-full h-[180px] bg-background-gray rounded-md"></div>
+      <div className="w-full  bg--gray rounded-md">
+        <Image src={image} objectFit="contain" className="rounded-md" alt="channel image" />
+      </div>
       {/* Title */}
       <div className="flex justify-between items-center">
         <div>
-          <div className="font-bold text-black-primary-text text-lg capitalize pt-2">{title}</div>
+          <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2">{title}</h2>
         </div>
         <div className="ml-auto pt-2">
           {/* Popup */}
 
-          <Popup
-            // showOptions={showOptions}
-            // toggleOptions={toggleOptions}
-            streamId={streamId}
-            playbackId={playbackId}
-            host={host}
-          />
+          <Popup streamId={streamId} playbackId={playbackId} host={host} />
         </div>
       </div>
       <div className="flex justify-start">

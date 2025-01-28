@@ -21,7 +21,16 @@ const Page = () => {
 
   return (
     <AuthLayout>
-      <div className="flex justify-center items-center h-screen"></div>
+      <div className="flex justify-center items-center h-screen">
+        <button
+          className="p-4 bg-main-blue cursor-pointer"
+          onClick={() => {
+            // login();
+          }}
+        >
+          Login
+        </button>
+      </div>
     </AuthLayout>
   );
 };

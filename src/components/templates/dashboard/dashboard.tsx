@@ -7,7 +7,6 @@ import { RiVideoAddLine } from 'react-icons/ri';
 import * as Dialog from '@radix-ui/react-dialog';
 import { IoMdClose } from 'react-icons/io';
 import { CreateLivestream } from '@/components/CreateLivestream';
-import { Stream } from '@/interfaces';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
@@ -15,32 +14,32 @@ import { Skeleton } from '@/components/ui/skeleton';
 import clsx from 'clsx';
 import { usePrivy } from '@privy-io/react-auth';
 import { useDispatch, useSelector } from 'react-redux';
-import { getAllStreams, createLivestream, deleteStream, terminateStream, updateLivestream } from '@/features/streamAPI';
+import { getAllStreams } from '@/features/streamAPI';
 import { RootState, AppDispatch } from '@/store/store';
+import image1 from '../../../../public/assets/images/image1.png';
+import image2 from '../../../../public/assets/images/image2.png';
+import image3 from '../../../../public/assets/images/image3.png';
+import { Stream } from '@/interfaces';
 
 const Dashboard = () => {
-  const { user, } = usePrivy();
+  const { user } = usePrivy();
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading, error } = useSelector((state: RootState) => state.streams);
-  
+
   useEffect(() => {
     dispatch(getAllStreams());
   }, [dispatch]);
-  // const [streams, setStreams] = useState<Stream[]>([]);
-  // const [loading, setLoading] = useState(false);
-  // const [error, setError] = useState<string | null>(null);
-
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const totalPages = Math.ceil(streams.length / itemsPerPage);
   const navigate = useRouter();
 
-  useEffect(() => {
-    if (!user) {
-      navigate.push('/auth/login');
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  if (!user) {
+    navigate.push('/auth/login');
+  }
+  // }, [user, navigate]);
 
   useEffect(() => {
     if (error) {
@@ -48,14 +47,8 @@ const Dashboard = () => {
     }
   }, [error]);
 
-  const initiateLiveVideo = (stream: Stream) => {
-    const { playbackId, streamKey, name } = stream;
-    if (playbackId && streamKey) {
-      toast.success('Navigating to broadcast...');
-      navigate.push('/dashboard/stream');
-    } else {
-      toast.error('This stream is not available.');
-    }
+  const initiateLiveVideo = (id: string) => {
+    navigate.push(`/dashboard/stream?id=${id}`);
   };
 
   const handlePageChange = (pageNumber: number) => {
@@ -64,15 +57,17 @@ const Dashboard = () => {
 
   const paginatedStreams = streams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
   return (
     <div>
       <Header userId={user?.wallet?.address || ''} />
       <div className="m-2">
         <Analytics />
         <SectionCard title="Your Channels">
-          <Dialog.Root>
+          <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <Dialog.Trigger asChild>
-              <div className="flex w-full flex-col">
+              <div className="flex w-full flex-col" onClick={() => setIsDialogOpen(true)}>
                 <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
                   <RiVideoAddLine className="text-main-blue w-24 h-24" />
                 </div>
@@ -85,7 +80,7 @@ const Dashboard = () => {
                 <Dialog.Title className="text-black-primary-text text-center my-4 text-base font-bold">
                   Create New Channel
                 </Dialog.Title>
-                <CreateLivestream />
+                <CreateLivestream close={() => setIsDialogOpen(false)} />
                 <Dialog.Close asChild>
                   <button
                     className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
@@ -97,7 +92,7 @@ const Dashboard = () => {
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
-          {loading ? (
+          {loading &&
             Array.from({ length: 5 }, (_, index) => (
               <div key={index} className="flex flex-col space-y-3">
                 <Skeleton className="h-[180px] w-[318px] rounded-xl" />
@@ -106,21 +101,15 @@ const Dashboard = () => {
                   <Skeleton className="h-7 w-[44px] rounded-md" />
                 </div>
               </div>
-            ))
-          ) : streams.length === 0 ? (
+            ))}{' '}
+          {streams.length === 0 ? (
             <div className="flex justify-center items-center h-60">
               <p className="text-black-primary-text">No streams available.</p>
             </div>
           ) : (
             paginatedStreams.map((stream) => (
               <div key={stream.id}>
-                <ChannelCard
-                  title={stream.name}
-                  // goLive={() => initiateLiveVideo(stream)}
-                  streamId={stream.id}
-                  // playbackId={stream.playbackId}
-                  host={''}
-                />
+                <ChannelCard title={stream.name} image={image1} goLive={() => initiateLiveVideo(stream.id)} host={''} />
               </div>
             ))
           )}

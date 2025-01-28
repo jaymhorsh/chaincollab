@@ -1,3 +1,5 @@
+import { StaticImageData } from 'next/image';
+
 export interface AnalyticCardProps {
   title: string;
   views: number;
@@ -11,6 +13,7 @@ export interface ChannelCardProps {
   streamId?: string;
   playbackId?: string;
   host?: string;
+  image: StaticImageData;
 }
 export interface VideoCardProps {
   title: string;

@@ -21,7 +21,7 @@ export default function Home() {
     return (
       <div
         style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-        onClick={(e) => e.stopPropagation()}
+        // onClick={(e) => e.stopPropagation()}
       >
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
           <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900" />
@@ -33,7 +33,7 @@ export default function Home() {
   return (
     <div
       style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}
-      onClick={(e) => e.stopPropagation()}
+      // onClick={(e) => e.stopPropagation()}
     >
       <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
         <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-gray-900" />
