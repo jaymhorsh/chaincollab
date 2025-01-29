@@ -82,13 +82,8 @@ const streamsSlice = createSlice({
       .addCase(getStreamById.fulfilled, (state, action) => {
         state.loading = false;
         state.stream = action.payload;
-        // Optionally, you can update the streams array with the fetched stream data
-        const index = state.streams.findIndex((stream) => stream.id === action.payload.id);
-        if (index !== -1) {
-          state.streams[index] = action.payload;
-        } else {
-          state.streams.push(action.payload);
-        }
+        state.error = null;
+       
       })
       .addCase(getStreamById.rejected, (state, action) => {
         state.loading = false;

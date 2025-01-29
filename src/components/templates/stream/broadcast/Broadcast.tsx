@@ -18,10 +18,8 @@ import { getIngest } from '@livepeer/react/external';
 import { toast } from 'sonner';
 import { Settings } from './Settings';
 import styles from './BroadcastScroll.module.css';
-import Link from 'next/link';
 import { useState } from 'react';
 import { VideoCard } from '@/components/Card/Card';
-import { FaPlus } from 'react-icons/fa';
 import { RiVideoAddLine } from 'react-icons/ri';
 
 interface Streams {

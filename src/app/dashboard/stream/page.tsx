@@ -1,4 +1,4 @@
-import StreamPage from '@/components/templates/dashboard/stream';
+import StreamPage from '@/components/templates/stream/stream';
 
 const Page = () => {
   return (
