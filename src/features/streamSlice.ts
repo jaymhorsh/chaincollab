@@ -25,7 +25,7 @@ interface StreamsState {
 
 const initialState: StreamsState = {
   streams: [],
-  stream: null,
+  stream: {},
   loading: false,
   error: null,
   success: false,
@@ -56,6 +56,7 @@ const streamsSlice = createSlice({
       })
       .addCase(getAllStreams.fulfilled, (state, action) => {
         state.loading = false;
+        state.error = null;
         state.streams = action.payload;
       })
       .addCase(getAllStreams.rejected, (state, action) => {
@@ -83,7 +84,6 @@ const streamsSlice = createSlice({
         state.loading = false;
         state.stream = action.payload;
         state.error = null;
-       
       })
       .addCase(getStreamById.rejected, (state, action) => {
         state.loading = false;

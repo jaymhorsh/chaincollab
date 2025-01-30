@@ -11,37 +11,36 @@ import { BroadcastWithControls } from './broadcast/Broadcast';
 
 const StreamPage = () => {
   const searchParams = useSearchParams();
+  const id = searchParams ? searchParams.get('id') : '';
   const dispatch = useDispatch<AppDispatch>();
   const { stream, loading, error } = useSelector((state: RootState) => state.streams);
-  const id = searchParams ? searchParams.get('id') : '';
-
   useEffect(() => {
     if (id) {
       dispatch(getStreamById(id));
-    } else if( error) {
+    } else if (error) {
       toast.error(error || 'Stream ID is required');
     }
   }, [id, dispatch]);
 
   if (loading) {
     return <Spinner />;
-  }  else if (!loading && !stream) {
+  } else if (!loading && !stream) {
     return <ErrorPage message="Stream not available." />;
-    }
-  else if (!loading && error) {
+  } else if (!loading && error) {
     return <ErrorPage message="Failed to fetch the stream. Please try again later." />;
   }
 
-
+  console.log('stream', stream);
   return (
     <div>
-    <BroadcastWithControls
-      streamName={stream.streamName}
-      streamKey={stream.streamKey}
-      playbackUrl={stream.playbackUrl}
-      playbackId={stream.playbackId}
-    />
-  </div>
+      <BroadcastWithControls
+        streamName={stream.name}
+        streamKey={stream.streamKey}
+        isActive={stream.isActive}
+        createdAt={stream.createdAt}
+        playbackId={stream.playbackId}
+      />
+    </div>
   );
 };
 

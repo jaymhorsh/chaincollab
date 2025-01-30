@@ -43,7 +43,7 @@ export const deleteStream = createAsyncThunk('streams/deleteStream', async (id: 
 
 export const getStreamById = createAsyncThunk('streams/getStreamById', async (id: string) => {
   const response = await api.get(`/stream/${id}`);
-  return response;
+  return response.data;
 });
 
 export const updateLivestream = createAsyncThunk(

@@ -21,20 +21,26 @@ import styles from './BroadcastScroll.module.css';
 import { useState } from 'react';
 import { VideoCard } from '@/components/Card/Card';
 import { RiVideoAddLine } from 'react-icons/ri';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 interface Streams {
   streamKey: string;
-  playbackUrl: string;
+  // playbackUrl?: string;
   playbackId: string;
   streamName: string;
+  isActive?: boolean;
+  createdAt?: string;
 }
 
-export function BroadcastWithControls({ streamName, streamKey, playbackUrl, playbackId }: Streams) {
-  const [isChatVisible, setChatVisible] = useState(false);
-  console.log('broasadcst', streamName, streamKey, playbackUrl, playbackId);
-  const toggleChat = () => {
-    setChatVisible((prev) => !prev);
-  };
+export function BroadcastWithControls({ streamName, streamKey, playbackId }: Streams) {
+  // const host = window.location.hostname;
+  // const playbackUrl = playbackId ? `${window.location.protocol}//${host}/view/${playbackId}` : null;
+  const host = 'localhost:3000';
+  const playbackUrl =
+    host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
+  // console.log('playbackUrl', playbackUrl);
+
   const videos = [
     {
       title: 'Title 1',
@@ -67,13 +73,17 @@ export function BroadcastWithControls({ streamName, streamKey, playbackUrl, play
 
   const handleCopyLink = async () => {
     try {
-      await navigator.clipboard.writeText(playbackUrl);
+      if (playbackUrl) {
+        await navigator.clipboard.writeText(playbackUrl);
+      } else {
+        toast.error('No playback URL available to copy.');
+      }
       toast.success('Stream link successfully copied!');
     } catch (err) {
       toast.error('Failed to copy the stream link.');
     }
   };
-
+  const navigate = useRouter();
   return (
     <Broadcast.Root
       onError={(error) =>
@@ -91,8 +101,18 @@ export function BroadcastWithControls({ streamName, streamKey, playbackUrl, play
           <BroadcastLoadingIndicator />
           {/* Channel and Session */}
           <div className="flex items-center gap-x-3">
-            <button className=" flexx rounded-md bg-background-gray px-4 py-2">Change Channel</button>
-            <button className="rounded-md bg-background-gray   px-4 py-2">Custom Channel</button>
+            <button
+              className=" flexx rounded-md bg-background-gray px-4 py-2"
+              onClick={() => navigate.push('/dashboard')}
+            >
+              Change Channel
+            </button>
+            <button
+              className="rounded-md bg-background-gray   px-4 py-2"
+              onClick={() => navigate.push('/dashboard/customise-channel')}
+            >
+              Custom Channel
+            </button>
             <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
               <span className="text-base font-medium">00:00:00</span>
               <span className="text-sm">Session</span>
@@ -133,12 +153,15 @@ export function BroadcastWithControls({ streamName, streamKey, playbackUrl, play
                         <span className="text-sm text-black-secondary-text font-medium select-none">Copy Link</span>
                       </button>
 
-                      <button
-                        className="flex rounded-md bg-background-gray h-[33px] items-center px-3"
-                        onClick={() => window.open(`${playbackUrl}?streamName=${streamName}`, '_blank')}
-                      >
-                        <span className="text-sm text-black-secondary-text font-medium select-none">View Link</span>
-                      </button>
+                      {playbackUrl && (
+                        <Link href={playbackUrl} target="_blank" rel="noopener noreferrer">
+                          <button className="flex rounded-md bg-background-gray h-[33px] items-center px-3">
+                            <span className="text-sm text-black-secondary-text font-medium select-none">
+                              Visit Link
+                            </span>
+                          </button>
+                        </Link>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -154,7 +177,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackUrl, play
                     <div className="flex flex-col mb-3 gap-y-2">
                       <h1 className="text-base text-black-secondary-text font-medium select-none">Title</h1>
                       <input
-                        value={'Olarekjdfdfjghfhdffffffff'}
+                        value={streamName}
                         disabled
                         className="w-full text-sm outline-none border bg-transparent p-3 text-black-secondary-text border-[#c2c2c2] rounded-md  font-medium select-none"
                       />
