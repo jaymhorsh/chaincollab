@@ -12,6 +12,8 @@ interface Stream {
   id: string;
   name: string;
   isActive: boolean;
+  playbackId: string;
+  streamKey: string;
   // other stream properties
 }
 

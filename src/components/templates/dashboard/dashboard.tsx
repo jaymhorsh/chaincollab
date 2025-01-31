@@ -32,14 +32,13 @@ const Dashboard = () => {
 
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
-  const totalPages = Math.ceil(streams.length / itemsPerPage);
+  const filteredStreams = streams.filter((stream: Stream) => !!stream.playbackId);
+  const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
   const navigate = useRouter();
 
-  // useEffect(() => {
   if (!user) {
     navigate.push('/auth/login');
   }
-  // }, [user, navigate]);
 
   useEffect(() => {
     if (error) {
@@ -48,22 +47,19 @@ const Dashboard = () => {
   }, [error]);
 
   const initiateLiveVideo = (id: string) => {
-    if (id){
-        navigate.push(`/dashboard/stream?id=${id}`);
+    if (id) {
+      navigate.push(`/dashboard/stream?id=${id}`);
     }
-    else{
-        toast.error('This is recorded stream not a Live stream');
-    }
-  
   };
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  const paginatedStreams = streams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
 
   return (
     <div>
@@ -108,7 +104,7 @@ const Dashboard = () => {
                 </div>
               </div>
             ))}{' '}
-          {streams.length === 0 ? (
+          {filteredStreams.length === 0 ? (
             <div className="flex justify-center items-center h-60">
               <p className="text-black-primary-text">No streams available.</p>
             </div>
