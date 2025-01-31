@@ -99,7 +99,8 @@ export const Settings = React.forwardRef(
 
 Settings.displayName = "Settings";
 
-export default Settings;
+
+
 const RateSelectItem = React.forwardRef<HTMLDivElement, Player.RateSelectItemProps>(
   ({ children, className, ...props }, forwardedRef) => {
     return (
@@ -119,6 +120,7 @@ const RateSelectItem = React.forwardRef<HTMLDivElement, Player.RateSelectItemPro
     );
   },
 );
+RateSelectItem.displayName = "RateSelectItem";
 
 const VideoQualitySelectItem = React.forwardRef<HTMLDivElement, Player.VideoQualitySelectItemProps>(
   ({ children, className, ...props }, forwardedRef) => {
@@ -139,3 +141,6 @@ const VideoQualitySelectItem = React.forwardRef<HTMLDivElement, Player.VideoQual
     );
   },
 );
+VideoQualitySelectItem.displayName = "VideoQualitySelectItem";
+
+export default Settings;
