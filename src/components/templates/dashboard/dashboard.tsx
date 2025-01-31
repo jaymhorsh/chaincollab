@@ -48,7 +48,13 @@ const Dashboard = () => {
   }, [error]);
 
   const initiateLiveVideo = (id: string) => {
-    navigate.push(`/dashboard/stream?id=${id}`);
+    if (id){
+        navigate.push(`/dashboard/stream?id=${id}`);
+    }
+    else{
+        toast.error('This is recorded stream not a Live stream');
+    }
+  
   };
 
   const handlePageChange = (pageNumber: number) => {
