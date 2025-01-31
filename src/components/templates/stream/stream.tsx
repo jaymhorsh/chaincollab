@@ -4,10 +4,11 @@ import Spinner from '@/components/Spinner';
 import { getStreamById } from '@/features/streamAPI';
 import { AppDispatch, RootState } from '@/store/store';
 import { useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { BroadcastWithControls } from './broadcast/Broadcast';
+import Link from 'next/link';
 
 const StreamPage = () => {
   const searchParams = useSearchParams();
@@ -32,16 +33,29 @@ const StreamPage = () => {
 
   console.log('stream', stream);
   return (
-    <div>
+
+       <div className="">
+      {!id ? (
+        <Suspense fallback={<div className="animate-pulse h-8 w-96 bg-gray-200 rounded" />}>
+          <h1 className="justify-center text-right flex text-3xl font-medium mr-3 font-display">
+            Go live to an audience in seconds
+          </h1>
+          <Link href="/dashboard" prefetch>
+            <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+              Go Live
+            </button>
+          </Link>
+        </Suspense>
+      ) : (
       <BroadcastWithControls
         streamName={stream.name}
         streamKey={stream.streamKey}
         isActive={stream.isActive}
         createdAt={stream.createdAt}
         playbackId={stream.playbackId}
-      />
+      />)}
     </div>
-  );
-};
+  );}
+
 
 export default StreamPage;
