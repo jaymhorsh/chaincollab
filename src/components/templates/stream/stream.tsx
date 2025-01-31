@@ -4,7 +4,7 @@ import Spinner from '@/components/Spinner';
 import { getStreamById } from '@/features/streamAPI';
 import { AppDispatch, RootState } from '@/store/store';
 import { useSearchParams } from 'next/navigation';
-import { useEffect, Suspense } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'sonner';
 import { BroadcastWithControls } from './broadcast/Broadcast';
@@ -32,14 +32,6 @@ const StreamPage = () => {
 
   console.log('stream', stream);
   return (
-   
-    <div className="">
-    {!id ? (
-      <Suspense fallback={<div className="animate-pulse h-8 w-96 bg-gray-200 rounded" />}>
-        <ErrorPage message="Stream not available." />;
-      </Suspense>
-    ) : (
-    
     <div>
       <BroadcastWithControls
         streamName={stream.name}
@@ -49,9 +41,6 @@ const StreamPage = () => {
         playbackId={stream.playbackId}
       />
     </div>
-   
-    )}
-  </div>
   );
 };
 
