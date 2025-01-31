@@ -1,4 +1,4 @@
-// 'use client';
+'use client';
 import {
   DisableAudioIcon,
   DisableVideoIcon,
@@ -34,8 +34,10 @@ interface Streams {
 }
 
 export function BroadcastWithControls({ streamName, streamKey, playbackId }: Streams) {
-  const host = window.location.hostname;
-  const playbackUrl = host && playbackId ? `${host.includes('localhost') ? 'http://' : 'https://www.'}${host}/view/${playbackId}` : null;
+  const host = process.env.NEXT_PUBLIC_BASE_URL
+  const playbackUrl =
+    host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
+  console.log('playbackUrl', host);
 
   const videos = [
     {
@@ -80,6 +82,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     }
   };
   const navigate = useRouter();
+
   return (
     <Broadcast.Root
       onError={(error) =>
@@ -165,9 +168,9 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                 <div className="w-full border border-border-gray mt-2 rounded-t-md  h-full">
                   <div className="flex items-center gap-x-3 px-4  p-2 rounded-md">
                     <h1 className="text-base font-bold text-black-primary-text select-none">Basics</h1>
-                    {/* <button className=" flex rounded-md bg-background-gray h-[33px] items-center px-4">
+                    <button className=" flex rounded-md bg-background-gray h-[33px] items-center px-4">
                       <span className="text-xs text-black-secondary-text font-medium select-none">Edit</span>
-                    </button> */}
+                    </button>
                   </div>
                   <div className=" w-full p-3 pl-4 rounded-b-md bg-white border-t text-justify">
                     <div className="flex flex-col mb-3 gap-y-2">

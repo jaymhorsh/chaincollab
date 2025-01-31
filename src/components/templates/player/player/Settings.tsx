@@ -83,7 +83,6 @@ export const Settings = React.forwardRef(
                           <VideoQualitySelectItem value="1080p">1080p (HD)</VideoQualitySelectItem>
                           <VideoQualitySelectItem value="720p">720p</VideoQualitySelectItem>
                           <VideoQualitySelectItem value="480p">480p</VideoQualitySelectItem>
-                          <VideoQualitySelectItem value="360p">360p</VideoQualitySelectItem>
                         </Player.SelectGroup>
                       </Player.SelectViewport>
                     </Player.SelectContent>
@@ -91,20 +90,16 @@ export const Settings = React.forwardRef(
                 </Player.VideoQualitySelect>
               </div>
             </div>
-            <Popover.Close
-              className="rounded-full h-5 w-5 inline-flex items-center justify-center absolute top-2.5 right-2.5 outline-none"
-              aria-label="Close"
-            >
-              <BiX />
-            </Popover.Close>
-            <Popover.Arrow className="fill-white/50" />
           </Popover.Content>
         </Popover.Portal>
       </Popover.Root>
     );
-  },
+  }
 );
 
+Settings.displayName = "Settings";
+
+export default Settings;
 const RateSelectItem = React.forwardRef<HTMLDivElement, Player.RateSelectItemProps>(
   ({ children, className, ...props }, forwardedRef) => {
     return (

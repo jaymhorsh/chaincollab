@@ -4,8 +4,6 @@ import { PlayerLoading } from '@/components/templates/player/player/Player';
 import PlayerWithChat from './PlayerWithChat';
 
 export default async function PlayerPage({ params }: { params: { playbackId: string } }) {
-  console.log('jjjkkkkkkkj', params.playbackId);
-
   const inputSource = await getPlaybackInfo(params.playbackId);
   const src = getSrc(inputSource);
 
