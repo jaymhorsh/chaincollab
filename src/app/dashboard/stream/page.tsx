@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import StreamPage from '@/components/templates/stream/stream';
 import { Suspense } from 'react';
 
@@ -8,7 +8,6 @@ const Page = () => {
       <Suspense fallback={<div className="animate-pulse h-8 w-96 bg-gray-200 rounded" />}>
         <StreamPage />
       </Suspense>
-    
     </div>
   );
 };

@@ -16,11 +16,7 @@ import { toast } from 'sonner';
 import { ethers } from 'ethers';
 // import Link from 'next/link';
 
-interface HeaderProps {
-  userId: string;
-}
-
-const Header: React.FC<HeaderProps> = ({ userId }) => {
+const Header = () => {
   const navigate = useRouter();
   const { linkWallet, linkEmail, linkApple, linkDiscord, user, ready, linkGithub, linkGoogle, linkPhone, linkTwitter } =
     usePrivy();

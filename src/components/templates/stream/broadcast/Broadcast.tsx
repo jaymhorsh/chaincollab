@@ -34,7 +34,7 @@ interface Streams {
 }
 
 export function BroadcastWithControls({ streamName, streamKey, playbackId }: Streams) {
-  const host = process.env.NEXT_PUBLIC_BASE_URL
+  const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
   console.log('playbackUrl', host);

@@ -17,8 +17,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getAllStreams } from '@/features/streamAPI';
 import { RootState, AppDispatch } from '@/store/store';
 import image1 from '../../../../public/assets/images/image1.png';
-import image2 from '../../../../public/assets/images/image2.png';
-import image3 from '../../../../public/assets/images/image3.png';
 import { Stream } from '@/interfaces';
 
 const Dashboard = () => {
@@ -60,10 +58,9 @@ const Dashboard = () => {
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-
   return (
     <div>
-      <Header userId={user?.wallet?.address || ''} />
+      <Header />
       <div className="m-2">
         <Analytics />
         <SectionCard title="Your Channels">

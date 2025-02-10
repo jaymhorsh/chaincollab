@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth'; // Make sure to import the login function from Privy
 import { useRouter } from 'next/navigation';
 import AuthLayout from '@/layout/AuthLayout';
+import Spinner from '@/components/Spinner';
 
 const Page = () => {
   const { login } = usePrivy();
@@ -22,14 +23,7 @@ const Page = () => {
   return (
     <AuthLayout>
       <div className="flex justify-center items-center h-screen">
-        <button
-          className="p-4 bg-main-blue cursor-pointer"
-          onClick={() => {
-            // login();
-          }}
-        >
-          Login
-        </button>
+        <Spinner />
       </div>
     </AuthLayout>
   );
