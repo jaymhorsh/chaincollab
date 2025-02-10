@@ -94,12 +94,10 @@ export const Settings = React.forwardRef(
         </Popover.Portal>
       </Popover.Root>
     );
-  }
+  },
 );
 
-Settings.displayName = "Settings";
-
-
+Settings.displayName = 'Settings';
 
 const RateSelectItem = React.forwardRef<HTMLDivElement, Player.RateSelectItemProps>(
   ({ children, className, ...props }, forwardedRef) => {
@@ -120,7 +118,7 @@ const RateSelectItem = React.forwardRef<HTMLDivElement, Player.RateSelectItemPro
     );
   },
 );
-RateSelectItem.displayName = "RateSelectItem";
+RateSelectItem.displayName = 'RateSelectItem';
 
 const VideoQualitySelectItem = React.forwardRef<HTMLDivElement, Player.VideoQualitySelectItemProps>(
   ({ children, className, ...props }, forwardedRef) => {
@@ -141,6 +139,6 @@ const VideoQualitySelectItem = React.forwardRef<HTMLDivElement, Player.VideoQual
     );
   },
 );
-VideoQualitySelectItem.displayName = "VideoQualitySelectItem";
+VideoQualitySelectItem.displayName = 'VideoQualitySelectItem';
 
 export default Settings;
