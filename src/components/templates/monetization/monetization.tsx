@@ -4,6 +4,7 @@ import Subscription from './Tabs/Subscription';
 import Donations from './Tabs/Donations';
 import Store from './Tabs/Store';
 import Header from '@/components/Header';
+import History from './Tabs/History/History';
 
 interface CustomTabPanelProps {
   children?: React.ReactNode;
@@ -35,6 +36,9 @@ const Monetization: React.FC = () => {
           </TabsContent>
           <TabsContent value="store">
             <Store />
+          </TabsContent>
+          <TabsContent value="history">
+            <History/>
           </TabsContent>
         </Tabs>
       </div>
