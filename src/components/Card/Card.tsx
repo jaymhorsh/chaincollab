@@ -7,7 +7,7 @@ import Image from 'next/image';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
-    <div className="w-full h-full ">
+    <div className="w-full h-full">
       <div className=" border flex flex-col justify-center bg-background-gray border-border-gray rounded-lg p-4 gap-y-5">
         <div className="">
           <p className="text-2xl  font-bold">{title}</p>
