@@ -13,10 +13,10 @@ const Analytics = () => {
             <div className='flex items-center justify-between'>
                 <h1 className='text-[20px] text-[#0E0E0F] font-[700]'>Summary</h1>
                 <div className="flex items-center gap-5">
-                    <Button>All Channels</Button>
+                    <Button className=' bg-main-blue'>All Channels</Button>
                     <DatePickerWithRange />
-                    <Button>All</Button>
-                    <Button>This month</Button>
+                    <Button className=' bg-main-blue'>All</Button>
+                    <Button className=' bg-main-blue'>This month</Button>
                 </div>
             </div>
             <div className='grid grid-cols-3 items-center gap-5 mx-'>

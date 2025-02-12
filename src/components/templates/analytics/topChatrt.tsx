@@ -26,8 +26,8 @@ export function TopChart() {
   return (
     <Card className="w-[930px] h-[500px] overflow-hidden border border-[#DFE0E1]">
       <CardHeader>
-        <CardTitle>Temperature Range Chart</CardTitle>
-        <CardDescription>Temperature fluctuations over time</CardDescription>
+        <CardTitle>View Trend</CardTitle>
+        {/* <CardDescription>Temperature fluctuations over time</CardDescription> */}
       </CardHeader>
       <CardContent className="h-[350px] w-full">
         <ResponsiveContainer width="100%" height={400}>

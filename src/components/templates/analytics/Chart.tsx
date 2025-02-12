@@ -27,7 +27,7 @@ export function ChartComponent() {
   return (
     <Card className="w-[930px] h-[500px] overflow-hidden rounded-md border border-[#DFE0E1]">
       <CardHeader>
-        <CardTitle>Bar Chart</CardTitle>
+        <CardTitle>Watch time distribution</CardTitle>
         <CardDescription>April - December 2024</CardDescription>
       </CardHeader>
       <CardContent className="h-[350px] w-full">
@@ -45,7 +45,7 @@ export function ChartComponent() {
             <Tooltip />
             <Legend />
             {/* Changed the bar color to #3351FF */}
-            <Bar dataKey="pv" fill="#3351FF" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="Time Distribution" fill="#3351FF" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
