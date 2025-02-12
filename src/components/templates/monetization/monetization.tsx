@@ -18,12 +18,12 @@ const Monetization: React.FC = () => {
       <Header />
       <div className="m-2 ">
         <Tabs defaultValue="overview" className="w-full mx-auto">
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="subcribtion">Subcribtions</TabsTrigger>
-            <TabsTrigger value="donations">Donations</TabsTrigger>
-            <TabsTrigger value="store">Store</TabsTrigger>
-            <TabsTrigger value="history">History</TabsTrigger>
+          <TabsList className="border-b shadow-none rounded-none pb-2 bg-transparent my-4 gap-4">
+            <TabsTrigger value="overview" className="data-[state=active]:border-b-2 data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue">Overview</TabsTrigger>
+            <TabsTrigger value="subcribtion" className="  data-[state=active]:border-b-2  data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue ">Subcribtions</TabsTrigger>
+            <TabsTrigger value="donations" className= "data-[state=active]:border-b-2  data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue">Donations</TabsTrigger>
+            <TabsTrigger value="store" className="  data-[state=active]:border-b-2  data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue ">Store</TabsTrigger>
+            <TabsTrigger value="history" className="  data-[state=active]:border-b-2   data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue ">History</TabsTrigger>
           </TabsList>
           <TabsContent value="overview">
             <Money />
