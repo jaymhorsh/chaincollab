@@ -12,15 +12,15 @@ import {
 } from "@/components/ui/card"
 
 const data = [
-  { name: "APR", pv: 24000 },
-  { name: "MAY", pv: 39800 },
-  { name: "JUN", pv: 58000 },
-  { name: "JUL", pv: 69000 },
-  { name: "AUG", pv: 75000 },
-  { name: "SEP", pv: 86000 },
-  { name: "OCT", pv: 91000 },
-  { name: "NOV", pv: 103000 },
-  { name: "DEC", pv: 120000 },
+  { name: "APR", time: 24000 },
+  { name: "MAY", time: 39800 },
+  { name: "JUN", time: 58000 },
+  { name: "JUL", time: 69000 },
+  { name: "AUG", time: 75000 },
+  { name: "SEP", time: 86000 },
+  { name: "OCT", time: 91000 },
+  { name: "NOV", time: 103000 },
+  { name: "DEC", time: 120000 },
 ]
 
 export function ChartComponent() {
@@ -45,7 +45,7 @@ export function ChartComponent() {
             <Tooltip />
             <Legend />
             {/* Changed the bar color to #3351FF */}
-            <Bar dataKey="Time Distribution" fill="#3351FF" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="time" fill="#3351FF" radius={[8, 8, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </CardContent>
