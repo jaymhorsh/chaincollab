@@ -72,7 +72,7 @@ const Monetize = () => {
                   <Image src={Ramp} alt="Ramp" layout="fill" objectFit="contain" />
                 </div>
                 <div className="w-14 h-14 relative">
-                  <Image src={Tranzak} alt="Tranzak" layout="fill" objectFit="contain" /> 
+                  <Image src={Tranzak} alt="Tranzak" layout="fill" objectFit="contain" />
                 </div>
               </div>
               <div className="bg-[#E4E6E8] flex rounded-md gap-3 p-2 mt-[20px]">

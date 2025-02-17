@@ -1,26 +1,19 @@
-"use client"
+'use client';
 
-import { AreaChart, Area, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from "recharts"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { AreaChart, Area, CartesianGrid, XAxis, YAxis, ResponsiveContainer, Tooltip, Legend } from 'recharts';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 
 const rangeData = [
-  { day: "APR", min: 24000 },
-  { day: "MAY", min: 39800 },
-  { day: "JUN", min: 58000 },
-  { day: "JUL", min: 45000 },
-  { day: "AUG", min: 50000 },
-  { day: "SEP", min: 32000 },
-  { day: "OCT", min: 41000 },
-  { day: "NOV", min: 53000 },
-  { day: "DEC", min: 60000 },
-]
+  { day: 'APR', min: 24000 },
+  { day: 'MAY', min: 39800 },
+  { day: 'JUN', min: 58000 },
+  { day: 'JUL', min: 45000 },
+  { day: 'AUG', min: 50000 },
+  { day: 'SEP', min: 32000 },
+  { day: 'OCT', min: 41000 },
+  { day: 'NOV', min: 53000 },
+  { day: 'DEC', min: 60000 },
+];
 
 export function TopChart() {
   return (
@@ -47,5 +40,5 @@ export function TopChart() {
         </ResponsiveContainer>
       </CardContent>
     </Card>
-  )
+  );
 }

@@ -70,7 +70,8 @@ h6 {
     min-width: 600px; /* Adjust as needed */
   }
 
-  th, td {
+  th,
+  td {
     padding: 8px;
     text-align: left;
   }
