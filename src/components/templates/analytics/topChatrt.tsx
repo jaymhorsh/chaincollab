@@ -24,13 +24,12 @@ const rangeData = [
 
 export function TopChart() {
   return (
-    <Card className="w-[930px] h-[500px] overflow-hidden border border-[#DFE0E1]">
+    <Card className="w-full h-[520px] overflow-hidden border border-[#DFE0E1]">
       <CardHeader>
         <CardTitle>View Trend</CardTitle>
-        {/* <CardDescription>Temperature fluctuations over time</CardDescription> */}
       </CardHeader>
-      <CardContent className="h-[350px] w-full">
-        <ResponsiveContainer width="100%" height={400}>
+      <CardContent className="h-[450px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={rangeData} margin={{ top: 20, right: 30, bottom: 20, left: 20 }}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="day" tickLine={false} axisLine={false} tickMargin={10} />
@@ -43,7 +42,6 @@ export function TopChart() {
             />
             <Tooltip />
             <Legend />
-            {/* Min Temperature */}
             <Area type="monotone" dataKey="min" stroke="#3351FF" fill="#3351FF66" />
           </AreaChart>
         </ResponsiveContainer>

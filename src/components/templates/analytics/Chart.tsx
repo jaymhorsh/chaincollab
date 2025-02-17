@@ -25,13 +25,13 @@ const data = [
 
 export function ChartComponent() {
   return (
-    <Card className="w-[930px] h-[500px] overflow-hidden rounded-md border border-[#DFE0E1]">
+    <Card className="w-full h-[500px] overflow-hidden rounded-md border border-[#DFE0E1]">
       <CardHeader>
         <CardTitle>Watch time distribution</CardTitle>
         <CardDescription>April - December 2024</CardDescription>
       </CardHeader>
-      <CardContent className="h-[350px] w-full">
-        <ResponsiveContainer width="100%" height={400}>
+      <CardContent className="h-[420px] w-full">
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />
             <XAxis dataKey="name" tickLine={false} axisLine={false} tickMargin={10} />
@@ -44,8 +44,7 @@ export function ChartComponent() {
             />
             <Tooltip />
             <Legend />
-            {/* Changed the bar color to #3351FF */}
-            <Bar dataKey="time" fill="#3351FF" radius={[8, 8, 0, 0]} />
+            <Bar dataKey="time" fill="#3351FF" radius={[8, 8, 0, 0]} style={{paddingTop:10}}/>
           </BarChart>
         </ResponsiveContainer>
       </CardContent>

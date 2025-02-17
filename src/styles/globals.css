@@ -60,3 +60,18 @@ h6 {
   height: 100% !important;
   z-index: 9999 !important;
 }
+@media (max-width: 768px) {
+  .table-container {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    min-width: 600px; /* Adjust as needed */
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+  }
+}
