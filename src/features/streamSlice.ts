@@ -14,7 +14,10 @@ interface Stream {
   isActive: boolean;
   playbackId: string;
   streamKey: string;
-  // other stream properties
+  creatorId?: {
+    type: string;
+    value: string;
+  };
 }
 
 interface StreamsState {
@@ -23,6 +26,7 @@ interface StreamsState {
   success: boolean;
   error: string | null;
   stream: any | null;
+
 }
 
 const initialState: StreamsState = {

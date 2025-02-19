@@ -8,7 +8,7 @@ const SectionCard = ({ children, title }: { children: React.ReactNode; title: st
           <div>
             <p className="text-xl font-bold">{title}</p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-[95%]">{children}</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-[90%]">{children}</div>
         </div>
       </div>
     </section>

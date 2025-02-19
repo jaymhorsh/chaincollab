@@ -4,6 +4,7 @@ import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
 import { Popup } from '../Popup';
 import Image from 'next/image';
+import { FaPlay } from 'react-icons/fa';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -31,12 +32,12 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
   );
 };
 
-export const ChannelCard = ({ title, goLive, streamId, playbackId, image, host }: ChannelCardProps) => {
+export const ChannelCard = ({ title, goLive, streamId, playbackId, image }: ChannelCardProps) => {
   return (
     <div className="w-full h-full relative">
       {/* Image */}
-      <div className="w-full  bg--gray rounded-md">
-        <Image src={image} objectFit="contain" className="rounded-md" alt="channel image" />
+      <div className="w-full bg--gray rounded-md">
+        <Image src={image} objectFit="contain" className="rounded-md w-full" alt="channel image" />
       </div>
       {/* Title */}
       <div className="flex justify-between items-center">
@@ -45,8 +46,7 @@ export const ChannelCard = ({ title, goLive, streamId, playbackId, image, host }
         </div>
         <div className="ml-auto pt-2">
           {/* Popup */}
-
-          <Popup streamId={streamId} playbackId={playbackId} host={host} />
+          {streamId && playbackId && <Popup streamId={streamId} playbackId={playbackId || ''} />}
         </div>
       </div>
       <div className="flex justify-start">
@@ -61,17 +61,34 @@ export const ChannelCard = ({ title, goLive, streamId, playbackId, image, host }
   );
 };
 
-export const VideoCard = ({ title, onAction, imageUrl }: VideoCardProps) => {
+export const VideoCard = ({ title, onAction, imageUrl, createdAt }: VideoCardProps) => {
   return (
-    <div className="w-full h-full relative">
-      {/* Image Container */}
-      <div
-        className="w-full h-28 py-3 cursor-pointer bg-cover bg-center rounded-md"
-        style={{ backgroundImage: `url(${imageUrl})` }}
-        onClick={onAction}
-      />
-      {/* Content Container */}
-      <p className="font-bold text-black-secondary-text uppercase text-sm">{title}</p>
+    <div className="w-full h-full relative group">
+      {/* Image */}
+      <div className="w-full bg-gray-200 rounded-md overflow-hidden relative">
+        <Image src={imageUrl} objectFit="contain" className="rounded-md w-full" alt="channel image" />
+        {/* Overlay Play Button */}
+        <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <button
+            className="text-white text-4xl"
+            onClick={onAction}
+          >
+            <FaPlay />
+          </button> 
+        </div>
+      </div>
+      {/* Title */}
+      <div className="flex justify-between items-center mt-2">
+        <div>
+          <h2 className="font-bold text-black-primary-text text-lg capitalize">{title}</h2>
+        </div>
+        <div className="ml-auto">
+          {/* Popup */}
+        </div>
+      </div>
+      <div className="flex justify-start">
+        <p className="text-xs text-gray-500">{createdAt}</p>
+      </div>
     </div>
   );
 };

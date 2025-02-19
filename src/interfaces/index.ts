@@ -18,7 +18,12 @@ export interface ChannelCardProps {
 export interface VideoCardProps {
   title: string;
   onAction: () => void;
-  imageUrl: string;
+  imageUrl: StaticImageData | string;
+  createdAt?: string;
+}
+interface creatorId {
+  type: string;
+  value: string;
 }
 export interface Stream {
   id: string;
@@ -31,7 +36,6 @@ export interface PopupProps {
   // showOptions: boolean;
   // toggleOptions: () => void;
   // optionsRef: React.RefObject<HTMLDivElement>;
-  streamId?: string;
-  playbackId?: string;
-  host?: string;
+  streamId: string;
+  playbackId: string;
 }

@@ -1,8 +1,6 @@
-// import { createLivestream } from "@/app/actions";
 'use client';
 import { clsx } from 'clsx';
-import React, { useEffect, useState } from 'react';
-// import { toast } from 'sonner';
+import React, { useState } from 'react';
 import InputField from '@/components/ui/InputField';
 import { RiVideoAddLine } from 'react-icons/ri';
 import { RotatingLines } from 'react-loader-spinner';
@@ -11,16 +9,19 @@ import { AppDispatch } from '@/store/store';
 import { RootState } from '@/store/store';
 import { createLivestream } from '@/features/streamAPI';
 import { toast } from 'sonner';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface CreateLivestreamProps {
   close: () => void; // Function to close the dialog
 }
 
 export function CreateLivestream({ close }: CreateLivestreamProps) {
+  
+  const {user} =  usePrivy()
   const [formData, setFormData] = useState({
     streamName: '',
     record: false,
-    creatorId: '',
+    creatorId: user?.wallet?.address || '', 
   });
   //
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -95,7 +96,7 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
             onChange={handleChange}
             placeholder="Stream Name"
             className={clsx(
-              'border w-full focus:outline-none placeholder:text-black-tertiary-text focus:ring-1 transition duration-200',
+              'border w-full focus:outline-none placeholder:text-black-tertiary-text focus:ring-1 focus:ring-main-blue transition duration-200',
               { 'border-red-500': errors.streamName },
             )}
           />
@@ -127,11 +128,12 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
               type="text"
               label="Creator ID"
               name="creatorId"
+              readOnly
               value={formData.creatorId}
               onChange={handleChange}
               placeholder="Creator ID"
               className={clsx(
-                'mb-2 p-2 border text-base placeholder:text-black-tertiary-text  focus:outline-none focus:ring-2 transition duration-200',
+                'mb-2 p-2 border text-base placeholder:text-black-tertiary-text outline-none  transition duration-200',
                 { 'border-red-500': errors.creatorId },
               )}
             />

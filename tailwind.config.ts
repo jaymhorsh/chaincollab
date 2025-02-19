@@ -22,9 +22,8 @@ const config: Config = {
         'pubnub-light-grey': '#94A3B7',
         'pubnub-yellow': '#FBBF24',
         'pubnub-white': '#F8FAFC',
-        // 'loginImage': "url('./public/images/background.jpeg')",
-        // 'footer-texture': "url('/images/footer-texture.png')",
-        background: 'hsl(var(--background))',
+       
+        background: '#000000',
         foreground: 'hsl(var(--foreground))',
         card: {
           DEFAULT: 'hsl(var(--card))',

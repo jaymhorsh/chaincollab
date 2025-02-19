@@ -52,12 +52,15 @@ const listItemClassNames = {
   icon: 'text-black-primary-text text-lg font-bold',
 };
 
-export const Popup = ({ playbackId, streamId, host }: PopupProps) => {
+export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, success } = useSelector((state: RootState) => state.streams);
   const [alertOpen, setAlertOpen] = useState(false);
   const [isloading, setLoading] = useState(false);
-  const playbackUrl = `${host}/view/${playbackId}`;
+
+  const host = process.env.NEXT_PUBLIC_BASE_URL;
+  const playbackUrl =
+    host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
 
   const handleDelete = () => {
     setLoading(true);
@@ -74,9 +77,6 @@ export const Popup = ({ playbackId, streamId, host }: PopupProps) => {
     }
   };
 
-  // useEffect(() => {
-
-  // }, [success, error]);
 
   const handleDeleteClick = () => {
     setTimeout(() => setAlertOpen(true), 50);
@@ -97,14 +97,18 @@ export const Popup = ({ playbackId, streamId, host }: PopupProps) => {
             <li
               className={listItemClassNames.option}
               onClick={() => {
-                navigator.clipboard
-                  .writeText(playbackUrl)
-                  .then(() => {
-                    toast.success('Stream link copied!');
-                  })
-                  .catch(() => {
-                    toast.error("Stream link isn't available.");
-                  });
+                if (playbackUrl) {
+                  navigator.clipboard
+                    .writeText(playbackUrl)
+                    .then(() => {
+                      toast.success('Stream link copied!');
+                    })
+                    .catch(() => {
+                      toast.error("Stream link isn't available.");
+                    });
+                } else {
+                  toast.error("Stream link isn't available.");
+                }
               }}
             >
               <AiOutlineEdit className={listItemClassNames.icon} />

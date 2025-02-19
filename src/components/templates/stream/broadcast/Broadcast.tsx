@@ -26,7 +26,6 @@ import Link from 'next/link';
 
 interface Streams {
   streamKey: string;
-  // playbackUrl?: string;
   playbackId: string;
   streamName: string;
   isActive?: boolean;
@@ -208,7 +207,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
 
                     <div className="grid grid-cols-4 lg:grid-cols-4 gap-2">
                       {videos.slice(0, showAll ? videos.length : 3).map((video, index) => (
-                        <VideoCard key={index} title={video.title} onAction={() => {}} imageUrl={video.imageUrl} />
+                        <VideoCard key={index} title={video.title} onAction={() => {}}  imageUrl={video.imageUrl} />
                       ))}
                       <div className="flex w-full flex-col">
                         <div className="w-full justify-center flex items-center h-28 rounded-md cursor-pointer bg-background-gray">

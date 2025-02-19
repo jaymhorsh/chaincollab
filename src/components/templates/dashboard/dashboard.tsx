@@ -2,7 +2,7 @@
 import Header from '@/components/Header';
 import Analytics from './Analytics';
 import SectionCard from '@/components/Card/SectionCard';
-import { ChannelCard } from '@/components/Card/Card';
+import { ChannelCard, VideoCard } from '@/components/Card/Card';
 import { RiVideoAddLine } from 'react-icons/ri';
 import * as Dialog from '@radix-ui/react-dialog';
 import { IoMdClose } from 'react-icons/io';
@@ -23,14 +23,21 @@ const Dashboard = () => {
   const { user } = usePrivy();
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading, error } = useSelector((state: RootState) => state.streams);
-
   useEffect(() => {
     dispatch(getAllStreams());
   }, [dispatch]);
 
   const [currentPage, setCurrentPage] = useState(1);
+
   const itemsPerPage = 5;
-  const filteredStreams = streams.filter((stream: Stream) => !!stream.playbackId);
+
+  const filteredStreams = streams.filter(
+    (stream:any) =>
+      !!stream.playbackId &&
+      stream.creatorId.value === user?.wallet?.address
+  );
+
+  const updatedStreams = streams.filter((stream: Stream) => !stream.playbackId);
   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
   const navigate = useRouter();
 
@@ -57,6 +64,8 @@ const Dashboard = () => {
   const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  console.log('streams', paginatedStreams.map((stream) => stream.creatorId?.value));
+  console.log('user', user?.wallet?.address);
 
   return (
     <div>
@@ -74,8 +83,8 @@ const Dashboard = () => {
               </div>
             </Dialog.Trigger>
             <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 bg-black-primary-text opacity-80" />
-              <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-16 max-sm:px-6 py-6 shadow-lg">
+              <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+              <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
                 <Dialog.Title className="text-black-primary-text text-center my-4 text-base font-bold">
                   Create New Channel
                 </Dialog.Title>
@@ -91,7 +100,8 @@ const Dashboard = () => {
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
-          {loading &&
+        
+          {loading ? (
             Array.from({ length: 5 }, (_, index) => (
               <div key={index} className="flex flex-col space-y-3">
                 <Skeleton className="h-[180px] w-[318px] rounded-xl" />
@@ -100,17 +110,27 @@ const Dashboard = () => {
                   <Skeleton className="h-7 w-[44px] rounded-md" />
                 </div>
               </div>
-            ))}{' '}
-          {filteredStreams.length === 0 ? (
-            <div className="flex justify-center items-center h-60">
-              <p className="text-black-primary-text">No streams available.</p>
-            </div>
-          ) : (
-            paginatedStreams.map((stream) => (
-              <div key={stream.id}>
-                <ChannelCard title={stream.name} image={image1} goLive={() => initiateLiveVideo(stream.id)} host={''} />
-              </div>
             ))
+          ) : (
+            <>
+              {filteredStreams.length === 0 ? (
+                <div className="flex justify-center items-center h-60">
+                  <p className="text-black-primary-text">No streams available.</p>
+                </div>
+              ) : (
+                paginatedStreams.map((stream) => (
+                  <div key={stream.id}>
+                    <ChannelCard
+                      title={stream.name}
+                      image={image1}
+                      goLive={() => initiateLiveVideo(stream.id)}
+                      streamId={stream.id}
+                      playbackId={stream.id}
+                    />
+                  </div>
+                ))
+              )}
+            </>
           )}
           {/* Pagination */}
           {totalPages > 1 && (
@@ -150,6 +170,16 @@ const Dashboard = () => {
               </div>
             </div>
           )}
+        </SectionCard>
+
+        <hr className=" border-border-gray" />
+        <SectionCard title="Your Videos">
+          {updatedStreams.length > 0 &&
+            updatedStreams.map((stream: Stream) => (
+              <div key={stream.id}>
+                <VideoCard title={stream.name} createdAt={''} onAction={() => initiateLiveVideo(stream.id)} imageUrl={image1} />
+              </div>
+            ))}
         </SectionCard>
       </div>
     </div>
