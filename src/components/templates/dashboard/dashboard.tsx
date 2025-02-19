@@ -32,12 +32,11 @@ const Dashboard = () => {
   const itemsPerPage = 5;
 
   const filteredStreams = streams.filter(
-    (stream:any) =>
-      !!stream.playbackId &&
-      stream.creatorId.value === user?.wallet?.address
+    (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
   );
 
   const updatedStreams = streams.filter((stream: Stream) => !stream.playbackId);
+
   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
   const navigate = useRouter();
 
@@ -64,7 +63,10 @@ const Dashboard = () => {
   const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log('streams', paginatedStreams.map((stream) => stream.creatorId?.value));
+  console.log(
+    'streams',
+    paginatedStreams.map((stream) => stream.creatorId?.value),
+  );
   console.log('user', user?.wallet?.address);
 
   return (
@@ -100,7 +102,7 @@ const Dashboard = () => {
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
-        
+
           {loading ? (
             Array.from({ length: 5 }, (_, index) => (
               <div key={index} className="flex flex-col space-y-3">
@@ -177,7 +179,12 @@ const Dashboard = () => {
           {updatedStreams.length > 0 &&
             updatedStreams.map((stream: Stream) => (
               <div key={stream.id}>
-                <VideoCard title={stream.name} createdAt={''} onAction={() => initiateLiveVideo(stream.id)} imageUrl={image1} />
+                <VideoCard
+                  title={stream.name}
+                  createdAt={stream.createdAt ? new Date(stream.createdAt) : undefined}
+                  onAction={() => initiateLiveVideo(stream.id)}
+                  imageUrl={image1}
+                />
               </div>
             ))}
         </SectionCard>

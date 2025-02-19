@@ -69,12 +69,9 @@ export const VideoCard = ({ title, onAction, imageUrl, createdAt }: VideoCardPro
         <Image src={imageUrl} objectFit="contain" className="rounded-md w-full" alt="channel image" />
         {/* Overlay Play Button */}
         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button
-            className="text-white text-4xl"
-            onClick={onAction}
-          >
+          <button className="text-white text-4xl" onClick={onAction}>
             <FaPlay />
-          </button> 
+          </button>
         </div>
       </div>
       {/* Title */}
@@ -84,10 +81,11 @@ export const VideoCard = ({ title, onAction, imageUrl, createdAt }: VideoCardPro
         </div>
         <div className="ml-auto">
           {/* Popup */}
+          <Popup streamId="1" playbackId="1" />
         </div>
       </div>
       <div className="flex justify-start">
-        <p className="text-xs text-gray-500">{createdAt}</p>
+        <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
       </div>
     </div>
   );

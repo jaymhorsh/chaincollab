@@ -38,33 +38,33 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
   console.log('playbackUrl', host);
 
-  const videos = [
-    {
-      title: 'Title 1',
-      imageUrl:
-        'https://s3-alpha-sig.figma.com/img/dbd5/37f3/4d381ee70bca3a9e7795da780d92aca1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Td00xEQxD8dOVfonC3OwZaa83vn8tSUWm0DDs8rAsGQ8m72JLYBj2YsxekS-OjflSKVrB-GtpHGJwYLHsq7y5ikmJhS6Abrio5GLCkD0FFhumxt~ydbhGK~MV~emKu4q2OuTQwUlEvV1aqm~T9eRRXnk8CXGdr5-pJ31weNHHUXRW7tSs~BNiCtmM783qLRz7Hp8ZW0-m649-W1CJBU~GFGeysguG8pdHwOx1hlCVFkSTBiGz49b7MEW5NlIHj09uAyrBpTyU1G2ULG~wQ54ZDMklVUlNsi1NWTi0TNoB-yXlGyxB0MlpLkBgw-46R8iW621YFOGQYjJpFtgNeFgMA__',
-    },
-    {
-      title: 'Title 2',
-      imageUrl:
-        'https://s3-alpha-sig.figma.com/img/3215/c6a2/baf26130f143986d29b11b93692c398e?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mx2FM~J6FrPPlcDmiWxVjUFU8NJGM0uwYHdyDE404cCZ4i1U3ANRGH9xTgesDIkHD41KBumug6O4gC~CtR0YqJtMqUmBjOfhijctUVzffD6vj~Ep9UO8ARlfR-6AZUS~ua081u7D8V8uxPfFDT0alzq0kocplnLRt20sdgNIAFHLdfvi6z~yvdhyI7u2kzgFmsW-fo77~qGg1ZcSHlGG2tJOsB9mjcKkHIIi3ZuLt7NiYhdYpIxgv0h1-9LlJAhIkCCwRo8XUS~h5ZFfqkuTvKQVHZvv27E0cqd6tPr8bpyBDRIGHFcdIAWhP-su~WQZsrYfxfiG9GlrwE-B7qwOng__',
-    },
-    {
-      title: 'Title 3',
-      imageUrl:
-        'https://s3-alpha-sig.figma.com/img/b3cc/c082/80d93de3738ee917c5396efb063566b1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=g6ZUpeYWC1tOEypxBc6h45e8pYbrWQQCPNcN~neROaSdV7PFBF5YTxGpSPHT7~TBjjSQk7JHCIjQDaqv-bOZz1B3SXlbxE4OGyuZ-7bd~5tPT5-DNd~2SJn2zHrNjQdQzVeAr8dsQIXQs1-dLBHlJWUq4LorcdgPW2v24lPzIZKAUJXvDgRVXGpnCRPHzSzUxYXdzqX4MtyIAXj0kaO2qBMrizNtdyj19olNF~um-k5qxDK22oMfbVv7GCrBDTOXME0GB0vo7sZBQ9ZPq6O4cno8pbvDcmzVXPFgKeg~2W7jLSV2B7ZskV8vCaRMROYvKCTiOPYflP-2R9vbagpNpQ__',
-    },
-    {
-      title: 'Title 3',
-      imageUrl:
-        'https://s3-alpha-sig.figma.com/img/b3cc/c082/80d93de3738ee917c5396efb063566b1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=g6ZUpeYWC1tOEypxBc6h45e8pYbrWQQCPNcN~neROaSdV7PFBF5YTxGpSPHT7~TBjjSQk7JHCIjQDaqv-bOZz1B3SXlbxE4OGyuZ-7bd~5tPT5-DNd~2SJn2zHrNjQdQzVeAr8dsQIXQs1-dLBHlJWUq4LorcdgPW2v24lPzIZKAUJXvDgRVXGpnCRPHzSzUxYXdzqX4MtyIAXj0kaO2qBMrizNtdyj19olNF~um-k5qxDK22oMfbVv7GCrBDTOXME0GB0vo7sZBQ9ZPq6O4cno8pbvDcmzVXPFgKeg~2W7jLSV2B7ZskV8vCaRMROYvKCTiOPYflP-2R9vbagpNpQ__',
-    },
-    {
-      title: 'Title 3',
-      imageUrl:
-        'https://s3-alpha-sig.figma.com/img/b3cc/c082/80d93de3738ee917c5396efb063566b1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=g6ZUpeYWC1tOEypxBc6h45e8pYbrWQQCPNcN~neROaSdV7PFBF5YTxGpSPHT7~TBjjSQk7JHCIjQDaqv-bOZz1B3SXlbxE4OGyuZ-7bd~5tPT5-DNd~2SJn2zHrNjQdQzVeAr8dsQIXQs1-dLBHlJWUq4LorcdgPW2v24lPzIZKAUJXvDgRVXGpnCRPHzSzUxYXdzqX4MtyIAXj0kaO2qBMrizNtdyj19olNF~um-k5qxDK22oMfbVv7GCrBDTOXME0GB0vo7sZBQ9ZPq6O4cno8pbvDcmzVXPFgKeg~2W7jLSV2B7ZskV8vCaRMROYvKCTiOPYflP-2R9vbagpNpQ__',
-    },
-  ];
+  // const videos = [
+  //   {
+  //     title: 'Title 1',
+  //     imageUrl:
+  //       'https://s3-alpha-sig.figma.com/img/dbd5/37f3/4d381ee70bca3a9e7795da780d92aca1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=Td00xEQxD8dOVfonC3OwZaa83vn8tSUWm0DDs8rAsGQ8m72JLYBj2YsxekS-OjflSKVrB-GtpHGJwYLHsq7y5ikmJhS6Abrio5GLCkD0FFhumxt~ydbhGK~MV~emKu4q2OuTQwUlEvV1aqm~T9eRRXnk8CXGdr5-pJ31weNHHUXRW7tSs~BNiCtmM783qLRz7Hp8ZW0-m649-W1CJBU~GFGeysguG8pdHwOx1hlCVFkSTBiGz49b7MEW5NlIHj09uAyrBpTyU1G2ULG~wQ54ZDMklVUlNsi1NWTi0TNoB-yXlGyxB0MlpLkBgw-46R8iW621YFOGQYjJpFtgNeFgMA__',
+  //   },
+  //   {
+  //     title: 'Title 2',
+  //     imageUrl:
+  //       'https://s3-alpha-sig.figma.com/img/3215/c6a2/baf26130f143986d29b11b93692c398e?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=mx2FM~J6FrPPlcDmiWxVjUFU8NJGM0uwYHdyDE404cCZ4i1U3ANRGH9xTgesDIkHD41KBumug6O4gC~CtR0YqJtMqUmBjOfhijctUVzffD6vj~Ep9UO8ARlfR-6AZUS~ua081u7D8V8uxPfFDT0alzq0kocplnLRt20sdgNIAFHLdfvi6z~yvdhyI7u2kzgFmsW-fo77~qGg1ZcSHlGG2tJOsB9mjcKkHIIi3ZuLt7NiYhdYpIxgv0h1-9LlJAhIkCCwRo8XUS~h5ZFfqkuTvKQVHZvv27E0cqd6tPr8bpyBDRIGHFcdIAWhP-su~WQZsrYfxfiG9GlrwE-B7qwOng__',
+  //   },
+  //   {
+  //     title: 'Title 3',
+  //     imageUrl:
+  //       'https://s3-alpha-sig.figma.com/img/b3cc/c082/80d93de3738ee917c5396efb063566b1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=g6ZUpeYWC1tOEypxBc6h45e8pYbrWQQCPNcN~neROaSdV7PFBF5YTxGpSPHT7~TBjjSQk7JHCIjQDaqv-bOZz1B3SXlbxE4OGyuZ-7bd~5tPT5-DNd~2SJn2zHrNjQdQzVeAr8dsQIXQs1-dLBHlJWUq4LorcdgPW2v24lPzIZKAUJXvDgRVXGpnCRPHzSzUxYXdzqX4MtyIAXj0kaO2qBMrizNtdyj19olNF~um-k5qxDK22oMfbVv7GCrBDTOXME0GB0vo7sZBQ9ZPq6O4cno8pbvDcmzVXPFgKeg~2W7jLSV2B7ZskV8vCaRMROYvKCTiOPYflP-2R9vbagpNpQ__',
+  //   },
+  //   {
+  //     title: 'Title 3',
+  //     imageUrl:
+  //       'https://s3-alpha-sig.figma.com/img/b3cc/c082/80d93de3738ee917c5396efb063566b1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=g6ZUpeYWC1tOEypxBc6h45e8pYbrWQQCPNcN~neROaSdV7PFBF5YTxGpSPHT7~TBjjSQk7JHCIjQDaqv-bOZz1B3SXlbxE4OGyuZ-7bd~5tPT5-DNd~2SJn2zHrNjQdQzVeAr8dsQIXQs1-dLBHlJWUq4LorcdgPW2v24lPzIZKAUJXvDgRVXGpnCRPHzSzUxYXdzqX4MtyIAXj0kaO2qBMrizNtdyj19olNF~um-k5qxDK22oMfbVv7GCrBDTOXME0GB0vo7sZBQ9ZPq6O4cno8pbvDcmzVXPFgKeg~2W7jLSV2B7ZskV8vCaRMROYvKCTiOPYflP-2R9vbagpNpQ__',
+  //   },
+  //   {
+  //     title: 'Title 3',
+  //     imageUrl:
+  //       'https://s3-alpha-sig.figma.com/img/b3cc/c082/80d93de3738ee917c5396efb063566b1?Expires=1733702400&Key-Pair-Id=APKAQ4GOSFWCVNEHN3O4&Signature=g6ZUpeYWC1tOEypxBc6h45e8pYbrWQQCPNcN~neROaSdV7PFBF5YTxGpSPHT7~TBjjSQk7JHCIjQDaqv-bOZz1B3SXlbxE4OGyuZ-7bd~5tPT5-DNd~2SJn2zHrNjQdQzVeAr8dsQIXQs1-dLBHlJWUq4LorcdgPW2v24lPzIZKAUJXvDgRVXGpnCRPHzSzUxYXdzqX4MtyIAXj0kaO2qBMrizNtdyj19olNF~um-k5qxDK22oMfbVv7GCrBDTOXME0GB0vo7sZBQ9ZPq6O4cno8pbvDcmzVXPFgKeg~2W7jLSV2B7ZskV8vCaRMROYvKCTiOPYflP-2R9vbagpNpQ__',
+  //   },
+  // ];
 
   const [showAll, setShowAll] = useState(false);
 
@@ -92,7 +92,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
       aspectRatio={16 / 9}
       ingestUrl={getIngest(streamKey)}
     >
-      <div className="h-screen overflow-hidden">
+      <div className="h-screen w-full overflow-hidden">
         {/* Header */}
         <div className="flex justify-between items-center px-3 w-full border-b border-green-400 h-[60px] bg-white">
           {/* Loading Indicator */}
@@ -205,7 +205,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   <div className="w-full  rounded-b-md p-4 rounded-md bg-white border-t text-justify">
                     <h1 className=" text-black-secondary-text font-medium">Video</h1>
 
-                    <div className="grid grid-cols-4 lg:grid-cols-4 gap-2">
+                    {/* <div className="grid grid-cols-4 lg:grid-cols-4 gap-2">
                       {videos.slice(0, showAll ? videos.length : 3).map((video, index) => (
                         <VideoCard key={index} title={video.title} onAction={() => {}}  imageUrl={video.imageUrl} />
                       ))}
@@ -214,12 +214,12 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                           <RiVideoAddLine className="text-main-blue w-24 h-24" />
                         </div>
                       </div>
-                    </div>
-                    {videos.length > 3 && (
+                    </div> */}
+                    {/* {videos.length > 3 && (
                       <button onClick={() => setShowAll(!showAll)} className="mt-2 text-blue-500">
                         {showAll ? 'Show Less' : 'Show More'}
                       </button>
-                    )}
+                    )} */}
                   </div>
                 </div>
               </div>

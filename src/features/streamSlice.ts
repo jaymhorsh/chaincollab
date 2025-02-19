@@ -26,7 +26,6 @@ interface StreamsState {
   success: boolean;
   error: string | null;
   stream: any | null;
-
 }
 
 const initialState: StreamsState = {

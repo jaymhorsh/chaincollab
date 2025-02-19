@@ -22,7 +22,7 @@ const config: Config = {
         'pubnub-light-grey': '#94A3B7',
         'pubnub-yellow': '#FBBF24',
         'pubnub-white': '#F8FAFC',
-       
+
         background: '#000000',
         foreground: 'hsl(var(--foreground))',
         card: {

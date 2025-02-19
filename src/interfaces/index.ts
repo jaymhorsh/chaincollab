@@ -19,17 +19,18 @@ export interface VideoCardProps {
   title: string;
   onAction: () => void;
   imageUrl: StaticImageData | string;
-  createdAt?: string;
+  createdAt?: Date;
 }
-interface creatorId {
-  type: string;
-  value: string;
-}
+// interface creatorId {
+//   type: string;
+//   value: string;
+// }
 export interface Stream {
   id: string;
   name: string;
   playbackId: string;
   streamKey: string;
+  createdAt?: Date;
 }
 
 export interface PopupProps {

@@ -16,12 +16,11 @@ interface CreateLivestreamProps {
 }
 
 export function CreateLivestream({ close }: CreateLivestreamProps) {
-  
-  const {user} =  usePrivy()
+  const { user } = usePrivy();
   const [formData, setFormData] = useState({
     streamName: '',
     record: false,
-    creatorId: user?.wallet?.address || '', 
+    creatorId: user?.wallet?.address || '',
   });
   //
   const [errors, setErrors] = useState<{ [key: string]: string }>({});

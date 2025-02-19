@@ -77,7 +77,6 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
     }
   };
 
-
   const handleDeleteClick = () => {
     setTimeout(() => setAlertOpen(true), 50);
   };
