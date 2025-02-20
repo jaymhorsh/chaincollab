@@ -67,7 +67,6 @@ const Dashboard = () => {
     'streams',
     paginatedStreams.map((stream) => stream.creatorId?.value),
   );
-  console.log('user', user?.wallet?.address);
 
   return (
     <div>
