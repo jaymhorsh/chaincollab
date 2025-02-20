@@ -23,6 +23,10 @@ import { VideoCard } from '@/components/Card/Card';
 import { RiVideoAddLine } from 'react-icons/ri';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { dummyText } from '../../../../../public/assets/data';
+import InputField from '@/components/ui/InputField';
+import { SettingsIcon, Smile } from 'lucide-react';
 
 interface Streams {
   streamKey: string;
@@ -99,31 +103,40 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
           {/* Loading Indicator */}
           <BroadcastLoadingIndicator />
           {/* Channel and Session */}
-          <div className="flex items-center gap-x-3">
-            <button
-              className=" flexx rounded-md bg-background-gray px-4 py-2"
+          <div className="flex items-center gap-x-3 justify-between w-full">
+            <Button
+              className=" flex items-center rounded-md bg-background-gray px-4 py-2"
               onClick={() => navigate.push('/dashboard')}
             >
-              Change Channel
-            </button>
-            <button
+              <span className="w-[12px] h-[12px] rounded-full bg-[#04EB2A]"></span>
+              <span className="">Live</span>
+            </Button>
+            {/* <Button
               className="rounded-md bg-background-gray   px-4 py-2"
               onClick={() => navigate.push('/dashboard/customise-channel')}
             >
               Custom Channel
-            </button>
-            <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
-              <span className="text-base font-medium">00:00:00</span>
-              <span className="text-sm">Session</span>
-            </button>
-            <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
-              <span className="text-base font-medium">0</span>
-              <span className="text-sm">Followers</span>
-            </button>
-            <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
-              <span className=" font-medium">0</span>
-              <span className="text-sm">Viewers</span>
-            </button>
+            </Button> */}
+            <div className='flex items-center gap-[10px]'>
+              <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
+                <span className="text-base font-medium">00:00:00</span>
+                <span className="text-sm">Session</span>
+              </button>
+              <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
+                <span className=" font-medium">0</span>
+                <span className="text-sm">Viewers</span>
+              </button>
+              <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3  flex flex-col">
+                <span className="text-base font-medium">0</span>
+                <span className="text-sm">Followers</span>
+              </button>
+            </div>
+            <Button
+              className="rounded-md text-[#FFFFFF] text-[14px] font-[600] px-[24px] py-[15px] bg-[#EA4335]"
+              onClick={() => navigate.push('/dashboard/customise-channel')}
+            >
+              End Stream
+            </Button>
           </div>
           {/* Start and Stop Broadcast */}
           <BroadcastTrigger />
@@ -150,6 +163,12 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                         onClick={handleCopyLink}
                       >
                         <span className="text-sm text-black-secondary-text font-medium select-none">Copy Link</span>
+                      </button>
+                      <button
+                        className="flex rounded-md bg-background-gray h-[33px] items-center px-3"
+                        onClick={handleCopyLink}
+                      >
+                        <span className="text-sm text-black-secondary-text font-medium select-none">View Site</span>
                       </button>
 
                       {playbackUrl && (
@@ -231,6 +250,29 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
             <div className="w-full border-2 rounded-md border-border-gray h-full flex flex-col">
               <div className="flex bg-background-gray items-center w-full">
                 <h1 className="text-base px-4 py-3 rounded-md text-black-primary-text font-medium select-none">Chat</h1>
+              </div>
+              <p className="text-[14px] text-center font-[500] text-[#53525F] mt-5 mb-3">Welcome to the chat!</p>
+              <div className='flex flex-col gap-1 mb-24'>
+                {
+                  dummyText.map((item, index) => (
+                    <div key={index} className='flex items-start'>
+                      <p className='text-[14px] text-gray-400 font-[700] px-4 w-[40%]'>{item.name}:</p>
+                      <p className='text-[14px] text-black font-[500] px-4 w-[80%]'>{item.text}</p>
+                    </div>
+                  ))
+                }
+              </div>
+              <div className='px-4 flex flex-col gap-[10px]'>
+                <div className='relative'>
+                  <InputField type='text' placeholder='send a message' label='text' className='border border-[#0E0E0F] rounded-[4px]' />
+                  <Smile className='absolute top-1/2 -translate-y-1/2 right-2 text-[#000000]'/>
+                </div>
+                <div className="flex items-center gap-[12px] justify-end">
+                  <SettingsIcon />
+                  <Button className='bg-[#3351FF] py-[12px] px-[14px]'>
+                    Chat
+                  </Button>
+                </div>
               </div>
             </div>
           </section>
