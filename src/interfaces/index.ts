@@ -25,10 +25,6 @@ export interface VideoCardProps {
   imageUrl: StaticImageData | string;
   createdAt?: Date;
 }
-// interface creatorId {
-//   type: string;
-//   value: string;
-// }
 export interface Stream {
   id: string;
   name: string;
