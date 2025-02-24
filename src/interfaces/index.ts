@@ -6,7 +6,11 @@ export interface AnalyticCardProps {
   value: number;
   change: string;
 }
-
+export type EthBalanceContextType = {
+  ethBalance: string;
+  embeddedWallet: any;
+  refreshBalance: () => Promise<void>;
+};
 export interface ChannelCardProps {
   title: string;
   goLive?: () => void;

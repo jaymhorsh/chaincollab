@@ -5,17 +5,24 @@ import Lefi from '../../../../assets/Lefi.png';
 import { AiOutlineExclamationCircle } from 'react-icons/ai';
 import { useState } from 'react';
 import Image from 'next/image';
-
+import { useEthBalance } from '@/app/providers';
+import SendTransaction from '@/components/SendTransaction';
+import { usePrivy } from '@privy-io/react-auth';
 const Monetize = () => {
+  const { sendTransaction: send } = usePrivy();
+  const { ethBalance } = useEthBalance();
   const [showPayment, setShowPayment] = useState(false);
+  const [withdrawalAmount, setWithdrawalAmount] = useState('');
+  const [withdrawalAddress, setWithdrawalAddress] = useState('');
+
   const showPaymntHandler = () => {
     setShowPayment(!showPayment);
   };
 
   const dummyData = [
-    { id: 1, name: 'Revenue', balance: '$5,000.00' },
-    { id: 2, name: 'Subscribers', balance: '$3,200.00' },
-    { id: 3, name: 'Store Holders', balance: '$1,800.00' },
+    { id: 1, name: 'Revenue', balance: '$0.00' },
+    { id: 2, name: 'Subscribers', balance: '$0.00' },
+    { id: 3, name: 'Store Holders', balance: '$0.00' },
   ];
 
   return (
@@ -28,7 +35,7 @@ const Monetize = () => {
                 <p className="text-2xl font-normal">Wallet Balance</p>
                 <button className="text-gray-400 text-sm">History</button>
               </div>
-              <p className="text-[2rem] p-[10px] font-semibold">$10,000.00</p>
+              <p className="text-[2rem] p-[10px] font-semibold">{ethBalance ? `${ethBalance}ETH` : '***'}</p>
             </div>
           </div>
           <div className="mt-6">
@@ -46,7 +53,9 @@ const Monetize = () => {
               <label className="font-semibold text-[#9EAAB6]">Amount</label>
               <input
                 type="number"
-                placeholder="$"
+                placeholder="withdrawal Amount ETH"
+                value={withdrawalAmount}
+                onChange={(e) => setWithdrawalAmount(e.target.value)}
                 className="w-full p-2 mt-2 border-2 border-[#DFE0E1] rounded-md focus:outline-none"
               />
 
@@ -56,10 +65,13 @@ const Monetize = () => {
               <input
                 type="text"
                 placeholder="Wallet address"
+                value={withdrawalAddress}
+                onChange={(e) => setWithdrawalAddress(e.target.value)}
                 className="w-full p-2 mt-2 border-2 border-[#DFE0E1] rounded-md focus:outline-none"
               />
 
-              <button className="w-full mt-4 bg-main-blue text-white py-2 rounded-md font-semibold">Withdraw</button>
+              <SendTransaction sendTransaction={send} sendAddress={withdrawalAddress} amount={withdrawalAmount} />
+
               <p className="text-center text-[#5D7285] text-sm p-[10px]"> Or use </p>
               <div className="flex justify-around mt-2">
                 <div className="w-14 h-14 relative">

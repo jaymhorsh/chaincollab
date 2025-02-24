@@ -14,59 +14,18 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
+import TransactionFlow from './TransactionFlow';
 // import Link from 'next/link';
 
 const Header = () => {
   const navigate = useRouter();
   const { linkWallet, linkEmail, linkApple, linkDiscord, user, ready, linkGithub, linkGoogle, linkPhone, linkTwitter } =
     usePrivy();
-  const linkOptions = [
-    { label: 'Email', action: linkEmail },
-    { label: 'Wallet', action: linkWallet },
-    { label: 'Apple', action: linkApple },
-    { label: 'Discord', action: linkDiscord },
-    { label: 'Github', action: linkGithub },
-    { label: 'Google', action: linkGoogle },
-    { label: 'Phone', action: linkPhone },
-    { label: 'Twitter', action: linkTwitter },
-  ];
-
-  const { logout: handleLogout } = useLogout({
-    onSuccess: () => {
-      toast.success('Successfully logged out');
-      navigate.push('/');
-    },
-  });
   const { wallets } = useWallets();
   const [selectedLink, setSelectedLink] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
-
-  const handleLinkClick = async () => {
-    const selected = linkOptions.find((option) => option.label === selectedLink);
-    if (selected) {
-      setIsLoading(true);
-      try {
-        selected.action();
-        // toast.success(``);
-      } catch (error: any) {
-        toast.error(error.message || `Failed to link ${selectedLink}`);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
-
-  const {} = useLinkAccount({
-    onSuccess: ({ user, linkMethod, linkedAccount }) => {
-      toast.success(`Successfully linked ${linkMethod}`);
-    },
-    onError: (error) => {
-      toast.error(error.toUpperCase());
-    },
-  });
-
   useEffect(() => {
     if (!ready) {
       return;
@@ -84,11 +43,52 @@ const Header = () => {
         const ethProvider = new ethers.providers.Web3Provider(provider);
         const walletBalance = await ethProvider.getBalance(embeddedWallet.address);
         const ethStringAmount = ethers.utils.formatEther(walletBalance);
-        setEmbeddedWallet(embeddedWallet);
         setWalletBalance(ethStringAmount);
+        setEmbeddedWallet(embeddedWallet);
       }
     }
   }, [ready, wallets]);
+  const linkOptions = [
+    { label: 'Email', action: linkEmail },
+    { label: 'Wallet', action: linkWallet },
+    { label: 'Apple', action: linkApple },
+    { label: 'Discord', action: linkDiscord },
+    { label: 'Github', action: linkGithub },
+    { label: 'Google', action: linkGoogle },
+    { label: 'Phone', action: linkPhone },
+    { label: 'Twitter', action: linkTwitter },
+  ];
+
+  const handleLinkClick = async () => {
+    const selected = linkOptions.find((option) => option.label === selectedLink);
+    if (selected) {
+      setIsLoading(true);
+      try {
+        selected.action();
+        // toast.success(``);
+      } catch (error: any) {
+        toast.error(error.message || `Failed to link ${selectedLink}`);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+  const { logout: handleLogout } = useLogout({
+    onSuccess: () => {
+      toast.success('Successfully logged out');
+      navigate.push('/');
+    },
+  });
+
+  const {} = useLinkAccount({
+    onSuccess: ({ user, linkMethod, linkedAccount }) => {
+      toast.success(`Successfully linked ${linkMethod}`);
+    },
+    onError: (error) => {
+      toast.error(error.toUpperCase());
+    },
+  });
+
   return (
     <header className="shadow-sm">
       <div className="max-w-7xl mx-auto py-4 border border-[#DFE0E1] bg-white px-4 sm:px-6 lg:px-10 flex justify-between items-center">
@@ -160,7 +160,7 @@ const Header = () => {
                       >
                         <DropdownMenu.Item
                           className="group cursor-pointer px-3 relative flex gap-4 py-3 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
-                          onClick={() => navigate.replace('#')}
+                          // onClick={() => navigate.replace('#')}
                         >
                           <FaRegUserCircle className="text-lg text-black-primary-text" />
                           <p className="text-black-primary-text font-medium text-sm">Profile</p>
@@ -189,26 +189,32 @@ const Header = () => {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div className="flex flex-col col-span-3 sm:flex-col gap-4 w-full">
                         <div className="text-sm font-semibold w-full sm:w-1/2 textcenter">
-                          <span className="text-main-blue text-base">Wallet Balance:</span> {walletBalance} ETH
+                          <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
+                          {`${walletBalance && walletBalance} ${' '} ${'ETH'}`}
                         </div>
-                        <div className="text-sm font-semibold w-full sm:w-1/2 textcenter">
-                          <span className="text-main-blue text-base">Wallet Address:</span>
-                          <div className="flex items-center gap-2">
-                            <input
-                              type="text"
-                              value={user?.wallet?.address}
-                              readOnly
-                              className="border font-inter font-normal rounded-lg px-4 py-2 w-full"
-                            />
-                            <button
-                              onClick={() => {
-                                navigator.clipboard.writeText(user?.wallet?.address || '');
-                                toast.success('Copied to clipboard');
-                              }}
-                              className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
-                            >
-                              Copy
-                            </button>
+                        <div className="flex items-cente gap-2">
+                          <div className="text-sm font-semibold w-full sm:w-1/2 ">
+                            <span className="text-main-blue text-base">Wallet Address:</span>
+                            <div className="flex items-center gap-2">
+                              <input
+                                type="text"
+                                value={embeddedWallet?.address}
+                                readOnly
+                                className="border font-inter font-normal rounded-lg px-4 py-2 w-full"
+                              />
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(embeddedWallet?.address || '');
+                                  toast.success('Copied to clipboard');
+                                }}
+                                className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
+                              >
+                                Copy
+                              </button>
+                            </div>
+                          </div>
+                          <div className=" flex-1 items-center justify-center">
+                            <TransactionFlow />
                           </div>
                         </div>
                       </div>
@@ -256,6 +262,7 @@ const Header = () => {
                         </div>
                         <p className="text-sm break-all text-gray-600">{user?.discord?.username || 'Not connected'}</p>
                       </div>
+                      {/* Send Transaction */}
 
                       {/* Twitter Card */}
                       <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
