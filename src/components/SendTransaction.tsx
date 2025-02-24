@@ -1,7 +1,9 @@
 import { ethers } from 'ethers';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 import { toast } from 'sonner';
-import { useRouter } from 'next/router';
+
+
 type Props = {
   sendTransaction: any;
   amount: string;
@@ -31,7 +33,7 @@ function SendTransaction({ sendTransaction, amount, sendAddress }: Props) {
 
       await sendTransaction(unsignedTx, txUiConfig);
       toast.success('Transaction sent successfully!');
-      router.reload();
+        router.push('/dashboard/monetization');
     } catch (error: any) {
       toast.error('Transaction failed: ' + error.message);
     }
