@@ -39,7 +39,7 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     refreshBalance();
-  }, [ready, wallets]);
+  }, [ready, wallets, refreshBalance]);
 
   return (
     <EthBalanceContext.Provider value={{ ethBalance, embeddedWallet, refreshBalance }}>

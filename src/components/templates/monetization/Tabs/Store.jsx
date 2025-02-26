@@ -1,5 +1,6 @@
 import React from 'react';
 import Shirt from '@/assets/Shirt.png';
+import Image from 'next/image';
 
 const Store = () => {
   return (
@@ -25,7 +26,7 @@ const Store = () => {
           </div>
 
           <div className="flex mt-6 border-2 border-[#DFE0E1] p-6 rounded-lg bg-white ">
-            <img src={Shirt} alt="" />
+            <Image src={Shirt} alt="" />
             <div className="ml-2 flex justify-between items-center w-full">
               <div className="">
                 <h3 className="font-bold text-2xl uppercase">WAGMI DAO T-Shirt - Black</h3>
@@ -38,7 +39,7 @@ const Store = () => {
           </div>
 
           <div className="flex mt-6 border-2 border-[#DFE0E1] p-6 rounded-lg">
-            <img src={Shirt} alt="" />
+            <Image src={Shirt} alt="" />
             <div className="ml-2 flex justify-between items-center w-full">
               <div className="">
                 <h3 className="font-bold text-2xl uppercase">WAGMI DAO T-Shirt - Black</h3>
