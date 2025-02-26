@@ -18,55 +18,67 @@ import { getAllStreams } from '@/features/streamAPI';
 import { RootState, AppDispatch } from '@/store/store';
 import image1 from '../../../../public/assets/images/image1.png';
 import { Stream } from '@/interfaces';
+import Spinner from '@/components/Spinner';
 
 const Dashboard = () => {
-  const { user } = usePrivy();
+  const { user, ready, authenticated } = usePrivy();
+  const navigate = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading, error } = useSelector((state: RootState) => state.streams);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const itemsPerPage = 5;
   useEffect(() => {
     dispatch(getAllStreams());
   }, [dispatch]);
-
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const itemsPerPage = 5;
-
-  const filteredStreams = streams.filter(
-    (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
-  );
-
-  const updatedStreams = streams.filter((stream: Stream) => !stream.playbackId);
-
-  const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
-  const navigate = useRouter();
-
-  if (!user) {
-    navigate.push('/auth/login');
-  }
-
   useEffect(() => {
     if (error) {
       toast.error('Failed to fetch streams: ' + error);
     }
   }, [error]);
 
+  // Handle unauthorized access when auth is ready.
+  useEffect(() => {
+    if (ready && !authenticated) {
+      navigate.push('/auth/login');
+    }
+  }, [ready, authenticated, navigate]);
+
+  // Filter streams based on user's wallet address
+  const filteredStreams = streams.filter(
+    (stream: any) =>
+      !!stream.playbackId && stream.creatorId.value === user?.wallet?.address
+  );
+
+  // Streams that are not live (without playbackId)
+  const updatedStreams = streams.filter((stream: Stream) => !stream.playbackId);
+
+  const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
+  const paginatedStreams = filteredStreams.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // Navigation handler for live video initiation
   const initiateLiveVideo = (id: string) => {
     if (id) {
       navigate.push(`/dashboard/stream?id=${id}`);
     }
   };
 
+  // Pagination change handler
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
 
-  const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log(
-    'streams',
-    paginatedStreams.map((stream) => stream.creatorId?.value),
-  );
+  // If auth is not ready or the user is not authenticated, show a spinner.
+  if (!ready || !authenticated) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Spinner />
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -80,7 +92,9 @@ const Dashboard = () => {
                 <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
                   <RiVideoAddLine className="text-main-blue w-24 h-24" />
                 </div>
-                <div className="text-black-primary-text text-xl font-bold pt-2">Create new stream channel</div>
+                <div className="text-black-primary-text text-xl font-bold pt-2">
+                  Create new stream channel
+                </div>
               </div>
             </Dialog.Trigger>
             <Dialog.Portal>
@@ -142,7 +156,7 @@ const Dashboard = () => {
                   onClick={() => handlePageChange(currentPage - 1)}
                   disabled={currentPage === 1}
                 >
-                  &lt; {/* Left Chevron */}
+                  &lt;
                 </button>
                 <span className="text-black">
                   {currentPage} of {totalPages}
@@ -152,7 +166,7 @@ const Dashboard = () => {
                   onClick={() => handlePageChange(currentPage + 1)}
                   disabled={currentPage === totalPages}
                 >
-                  &gt; {/* Right Chevron */}
+                  &gt;
                 </button>
               </div>
               <div>
@@ -161,7 +175,9 @@ const Dashboard = () => {
                     key={index}
                     className={clsx(
                       'px-3 py-1 mx-1 rounded-md',
-                      currentPage === index + 1 ? 'bg-main-blue text-white' : 'bg-gray-200 text-black',
+                      currentPage === index + 1
+                        ? 'bg-main-blue text-white'
+                        : 'bg-gray-200 text-black'
                     )}
                     onClick={() => handlePageChange(index + 1)}
                   >
@@ -173,20 +189,41 @@ const Dashboard = () => {
           )}
         </SectionCard>
 
-        <hr className=" border-border-gray" />
+        <hr className="border-border-gray" />
         <SectionCard title="Your Videos">
-          {updatedStreams.length > 0 &&
-            updatedStreams.map((stream: Stream) => (
-              <div key={stream.id}>
-                <VideoCard
-                  title={stream.name}
-                  createdAt={stream.createdAt ? new Date(stream.createdAt) : undefined}
-                  onAction={() => initiateLiveVideo(stream.id)}
-                  imageUrl={image1}
-                />
-              </div>
-            ))}
-        </SectionCard>
+  {loading ? (
+    // Render skeletons while loading
+    Array.from({ length: 5 }, (_, index) => (
+      <div key={index} className="flex flex-col space-y-3 mb-4">
+        {/* Mimic image area */}
+        <Skeleton className="h-[180px] w-[318px] rounded-xl" />
+        {/* Mimic text lines */}
+        <div className="space-y-2">
+          <Skeleton className="h-4 w-[316px] rounded-md" />
+          <Skeleton className="h-7 w-[44px] rounded-md" />
+        </div>
+      </div>
+    ))
+  ) : updatedStreams.length > 0 ? (
+    // Render the video cards when streams are available
+    updatedStreams.map((stream: Stream) => (
+      <div key={stream.id}>
+        <VideoCard
+          title={stream.name}
+          createdAt={stream.createdAt ? new Date(stream.createdAt) : undefined}
+          onAction={() => initiateLiveVideo(stream.id)}
+          imageUrl={image1}
+        />
+      </div>
+    ))
+  ) : (
+    // Show message if no videos are available
+    <div className="flex justify-center items-center h-60">
+      <p className="text-black-primary-text">No videos available.</p>
+    </div>
+  )}
+</SectionCard>
+
       </div>
     </div>
   );

@@ -1,15 +1,17 @@
 'use client';
 import { clsx } from 'clsx';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import InputField from '@/components/ui/InputField';
 import { RiVideoAddLine } from 'react-icons/ri';
 import { RotatingLines } from 'react-loader-spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { RootState } from '@/store/store';
-import { createLivestream } from '@/features/streamAPI';
+import { createLivestream } from '@/features/streamAPI'; // Assume you have a reset action
+
 import { toast } from 'sonner';
 import { usePrivy } from '@privy-io/react-auth';
+import { resetStreamStatus } from '@/features/streamSlice';
 
 interface CreateLivestreamProps {
   close: () => void; // Function to close the dialog
@@ -22,12 +24,34 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
     record: false,
     creatorId: user?.wallet?.address || '',
   });
-  //
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, success } = useSelector((state: RootState) => state.streams);
 
-  // Handle form submission
+  useEffect(() => {
+    if (success) {
+      toast.success('Stream created successfully');
+      setTimeout(() => {
+        setFormData({
+          streamName: '',
+          record: false,
+          creatorId: user?.wallet?.address || '',
+        });
+        dispatch(resetStreamStatus());
+        close();
+      }, 1200);
+    }
+  }, [success, dispatch, close, user]);
+
+  // Effect to handle error feedback
+  useEffect(() => {
+    if (error) {
+      toast.error(error);
+      dispatch(resetStreamStatus());
+    }
+  }, [error, dispatch]);
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
@@ -49,20 +73,6 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
         creatorId: formData.creatorId,
       }),
     );
-    if (success) {
-      toast.success('Stream created successfully');
-      setTimeout(() => {
-        setFormData({
-          streamName: '',
-          record: false,
-          creatorId: '',
-        });
-        close(); // Close the dialog on success
-      }, 10);
-    }
-    if (error) {
-      toast.error(error);
-    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -86,7 +96,6 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
           <label htmlFor="streamName" className="block text-sm font-medium pb-2 text-gray-900">
             Stream Name
           </label>
-
           <InputField
             type="text"
             label="Stream Name"
@@ -99,50 +108,48 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
               { 'border-red-500': errors.streamName },
             )}
           />
-
           {errors.streamName && <p className="text-red-500 text-sm pb-1">{errors.streamName}</p>}
         </div>
 
-        <div className="flex flex-col ">
-          <label htmlFor="record" className="block text-sm/6 font-medium text-gray-900">
+        <div className="flex flex-col">
+          <label htmlFor="record" className="block text-sm font-medium text-gray-900">
             Do you want your stream to be recorded?
           </label>
           <select
             name="record"
             value={formData.record ? 'yes' : 'no'}
             onChange={handleChange}
-            className="mb-2 p-3 placeholder:text-black-tertiary-text border rounded-md focus:outline-none text-sm text-black-secondary-text focus:ring-1 focus:ring-main-blue transition duration-200"
+            className="mb-2 p-3 border rounded-md focus:outline-none text-sm text-black-secondary-text focus:ring-1 focus:ring-main-blue transition duration-200"
           >
             <option value="no">Do not record</option>
             <option value="yes">Record</option>
           </select>
         </div>
 
-        <div className="flex flex-col ">
-          <div>
-            <label htmlFor="creatorId" className="block text-sm font-medium pb-2 text-gray-900">
-              Creator ID
-            </label>
-            <InputField
-              type="text"
-              label="Creator ID"
-              name="creatorId"
-              readOnly
-              value={formData.creatorId}
-              onChange={handleChange}
-              placeholder="Creator ID"
-              className={clsx(
-                'mb-2 p-2 border text-base placeholder:text-black-tertiary-text outline-none  transition duration-200',
-                { 'border-red-500': errors.creatorId },
-              )}
-            />
-          </div>
+        <div className="flex flex-col">
+          <label htmlFor="creatorId" className="block text-sm font-medium pb-2 text-gray-900">
+            Creator ID
+          </label>
+          <InputField
+            type="text"
+            label="Creator ID"
+            name="creatorId"
+            readOnly
+            value={formData.creatorId}
+            onChange={handleChange}
+            placeholder="Creator ID"
+            className={clsx(
+              'mb-2 p-2 border text-base placeholder:text-black-tertiary-text outline-none transition duration-200',
+              { 'border-red-500': errors.creatorId },
+            )}
+          />
           {errors.creatorId && <p className="text-red-500 text-sm pb-1">{errors.creatorId}</p>}
         </div>
 
         <div className="flex justify-end">
           <button
-            className="flex items-center justify-center w-32 p-2 border rounded bg-main-blue text-white transition duration-200"
+            type="submit"
+            className="flex items-center justify-center w-32 p-2 border rounded bg-main-blue text-white transition duration-200 disabled:opacity-50"
             disabled={loading}
           >
             {loading ? (
@@ -162,7 +169,6 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
             )}
           </button>
         </div>
-        {/* </div> */}
       </form>
     </div>
   );
