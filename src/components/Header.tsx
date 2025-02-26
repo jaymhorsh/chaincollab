@@ -19,7 +19,7 @@ import TransactionFlow from './TransactionFlow';
 
 const Header = () => {
   const navigate = useRouter();
-  const { linkWallet, linkEmail, linkApple, linkDiscord, user, ready, linkGithub, linkGoogle, linkPhone, linkTwitter } =
+  const {  user, ready, } =
     usePrivy();
   const { wallets } = useWallets();
   const [selectedLink, setSelectedLink] = useState<string>('');
@@ -48,31 +48,7 @@ const Header = () => {
       }
     }
   }, [ready, wallets]);
-  const linkOptions = [
-    { label: 'Email', action: linkEmail },
-    { label: 'Wallet', action: linkWallet },
-    { label: 'Apple', action: linkApple },
-    { label: 'Discord', action: linkDiscord },
-    { label: 'Github', action: linkGithub },
-    { label: 'Google', action: linkGoogle },
-    { label: 'Phone', action: linkPhone },
-    { label: 'Twitter', action: linkTwitter },
-  ];
-
-  const handleLinkClick = async () => {
-    const selected = linkOptions.find((option) => option.label === selectedLink);
-    if (selected) {
-      setIsLoading(true);
-      try {
-        selected.action();
-        // toast.success(``);
-      } catch (error: any) {
-        toast.error(error.message || `Failed to link ${selectedLink}`);
-      } finally {
-        setIsLoading(false);
-      }
-    }
-  };
+  
   const { logout: handleLogout } = useLogout({
     onSuccess: () => {
       toast.success('Successfully logged out');
@@ -80,14 +56,7 @@ const Header = () => {
     },
   });
 
-  const {} = useLinkAccount({
-    onSuccess: ({ user, linkMethod, linkedAccount }) => {
-      toast.success(`Successfully linked ${linkMethod}`);
-    },
-    onError: (error) => {
-      toast.error(error.toUpperCase());
-    },
-  });
+
 
   return (
     <header className="shadow-sm">
@@ -271,30 +240,7 @@ const Header = () => {
                       </div>
                     </div>
 
-                    {/* Link New Account Section */}
-                    <div className="mt-6 pt-4 border-t">
-                      <h3 className="text-lg font-medium mb-4">Link New Account</h3>
-                      <div className="flex gap-4 flex-wrap">
-                        <select
-                          value={selectedLink}
-                          onChange={(e) => setSelectedLink(e.target.value)}
-                          className="border rounded-lg px-4 py-2 focus:outline-none "
-                        >
-                          <option>Select an account to link</option>
-                          {linkOptions.map((option, index) => (
-                            <option key={index} value={option.label}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                        <button
-                          onClick={handleLinkClick}
-                          className="px-6 py-2 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
-                        >
-                          {isLoading ? <FaSpinner className="text-white text-2xl" /> : 'Link Account'}
-                        </button>
-                      </div>
-                    </div>
+                
                   </div>
                   <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
                     <IoClose className="text-xl" />

@@ -111,7 +111,7 @@ const presetTextColors = ['black', 'red', 'green', 'blue', 'purple', 'gray'];
             </div>
           </div>
           <div className="mt-6 flex justify-end space-x-4">
-            <Dialog.Close asChild>
+            <Dialog.Close >
               <button className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition-colors">
                 Cancel
               </button>

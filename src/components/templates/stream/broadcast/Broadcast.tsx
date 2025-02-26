@@ -88,6 +88,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
       >
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center px-3 w-full border-b border-green-400 h-[60px] bg-white">
+        <BroadcastLoadingIndicator />
           <div className="flex items-center gap-x-3">
             <button
               className="rounded-md bg-background-gray px-4 py-2 hover:bg-gray-200 transition-colors"
@@ -240,6 +241,10 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
 export const BroadcastContainer = () => {
   return (
     <Broadcast.Container className="flex relative">
+
+      {/* <div>
+        <BroadcastLoadingIndicator />
+        </div> */}
       <Broadcast.Video
         title="Live streaming"
         style={{
@@ -342,7 +347,7 @@ export const BroadcastTrigger = () => {
 export const BroadcastLoadingIndicator = () => {
   return (
     <Broadcast.LoadingIndicator asChild matcher={false}>
-      <div className="overflow-hidden h-[34px] rounded-md bg-background-gray top-1 left-1 bg-black/50 flex items-center backdrop-blur">
+      <div className="overflow-hidden h-[34px] rounded-md  top-1 left-1 bg-black/50 flex items-center backdrop-blur">
         <Broadcast.StatusIndicator matcher="live" className="flex p-2 gap-2 items-center">
           <div className="bg-[#34A853] h-3 w-3 rounded-full" />
           <span className="text-sm text-black-primary-text font-medium select-none">Live</span>

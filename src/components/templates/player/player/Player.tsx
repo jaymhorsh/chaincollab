@@ -222,7 +222,7 @@ export function PlayerWithControls({ src }: { src: Src[] }) {
           >
             <OfflineErrorIcon className="h-[120px] w-full sm:flex hidden" />
             <div className="flex flex-col gap-1">
-              <div className="text-2xl font-bold">Stream is offline</div>
+              <div className="text-2xl text-white font-bold">Stream is offline</div>
               <div className="text-sm text-gray-100">
                 Playback will start automatically once the stream has started
               </div>
