@@ -213,9 +213,6 @@ const Header = () => {
                               </button>
                             </div>
                           </div>
-                          <div className=" flex-1 items-center justify-center">
-                            <TransactionFlow />
-                          </div>
                         </div>
                       </div>
                       {/* User ID Card */}

@@ -1,6 +1,7 @@
 'use client';
 import * as React from 'react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 import { cn } from '@/lib/utils';
 
@@ -46,113 +47,175 @@ import { useDispatch, useSelector } from 'react-redux';
 import { deleteStream } from '@/features/streamAPI';
 import { AppDispatch, RootState } from '@/store/store';
 import { RotatingLines } from 'react-loader-spinner';
+import { resetStreamStatus } from '@/features/streamSlice';
 
 const listItemClassNames = {
-  option: 'flex items-center px-5 py-2 hover:bg-gray-100 cursor-pointer',
-  icon: 'text-black-primary-text text-lg font-bold',
+  option: 'flex items-center text-lg px-5 py-2 hover:bg-gray-100 cursor-pointer',
+  icon: 'text-black-primary-text text-xl font-bold',
 };
 
 export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error, success } = useSelector((state: RootState) => state.streams);
+  const { error, success } = useSelector((state: RootState) => state.streams);
   const [alertOpen, setAlertOpen] = useState(false);
-  const [isloading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
 
-  const handleDelete = () => {
-    setLoading(true);
-    if (streamId) {
-      dispatch(deleteStream(streamId));
-    }
-    if (success) {
-      toast.success('Stream deleted successfully');
-      setAlertOpen(false);
-      setLoading(false);
-    } else if (error) {
-      setLoading(false);
+ 
+    const handleEditDetails = () => {
+      toast('Edit details clicked');
+      // TODO: Open edit modal or navigate to edit page.
+    };
+  
+    const handleCopyStreamLink = () => {
+      if (playbackUrl) {
+        navigator.clipboard
+          .writeText(playbackUrl)
+          .then(() => {
+            toast.success('Stream link copied!');
+          })
+          .catch(() => {
+            toast.error("Stream link isn't available.");
+          });
+      } else {
+        toast.error("Stream link isn't available.");
+    }};
+  
+    const handleScheduleStream = () => {
+      toast('Schedule stream clicked');
+      // TODO: Open schedule modal or navigate accordingly.
+    };
+  
+    const handleCustomizeChannel = () => {
+      toast('Customize channel clicked');
+      // TODO: Open customization modal or navigate accordingly.
+    };
+  
+    const handleDeleteChannel = () => {
+      // Simply open the alert dialog.
+      setAlertOpen(true);
+    };
+  const confirmDelete = async () => {
+    setIsLoading(true);
+    try {
+      await dispatch(deleteStream(streamId)).unwrap();
+      if (success) {
+        toast.success('Channel deleted successfully');
+        dispatch(resetStreamStatus());
+      }
+    } catch (err: any) {
+      if(error) {
       toast.error(error);
+      toast.error(error || 'Failed to delete channel');
+      }
     }
-  };
-
-  const handleDeleteClick = () => {
-    setTimeout(() => setAlertOpen(true), 50);
+    setIsLoading(false);
+    setAlertOpen(false);
   };
 
   return (
-    <Popover>
-      <PopoverTrigger>
-        <BsThreeDotsVertical className="text-lg cursor-pointer text-black-primary-text focus:bg-main-blue focus:ring-2 focus:ring-offset-2" />
-      </PopoverTrigger>
-      <PopoverContent className="left-[30]">
-        <div>
-          <ul>
-            <li className={listItemClassNames.option} onClick={() => {}}>
-              <HiLink className={listItemClassNames.icon} />
-              <p className="ml-2 text-sm text-black-primary-text font-medium">Edit details</p>
-            </li>
-            <li
-              className={listItemClassNames.option}
-              onClick={() => {
-                if (playbackUrl) {
-                  navigator.clipboard
-                    .writeText(playbackUrl)
-                    .then(() => {
-                      toast.success('Stream link copied!');
-                    })
-                    .catch(() => {
-                      toast.error("Stream link isn't available.");
-                    });
-                } else {
-                  toast.error("Stream link isn't available.");
-                }
-              }}
-            >
-              <AiOutlineEdit className={listItemClassNames.icon} />
-              <p className="ml-2 text-sm font-medium text-black-primary-text">Copy Stream Link</p>
-            </li>
-            <li className={listItemClassNames.option} onClick={() => {}}>
-              <PiCalendarCheckBold className={listItemClassNames.icon} />
-              <p className="ml-2 text-sm font-medium text-black-primary-text">Schedule stream</p>
-            </li>
-            <li className={listItemClassNames.option} onClick={() => {}}>
-              <BiNotepad className={listItemClassNames.icon} />
-              <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
-            </li>
-            <li className={listItemClassNames.option} onClick={handleDeleteClick}>
-              <RiDeleteBin6Line className={listItemClassNames.icon} />
-              <p className="ml-2 text-sm font-medium text-black-primary-text">Delete channel</p>
-            </li>
-          </ul>
-          <div className="border-t border-border-gray my-2"></div>
-          <div className={listItemClassNames.option}>
-            <RiTokenSwapFill className={listItemClassNames.icon} />
-            <p className="ml-2 text-sm font-medium text-black-primary-text">Token set-up</p>
-          </div>
-        </div>
+    <>   
+  
+    <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>
+          <button className="p-2">
+          <BsThreeDotsVertical className="text-lg cursor-pointer text-black-primary-text focus:bg-main-blue focus:ring-2 focus:ring-offset-2" />
+          </button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content className="min-w-[200px] min-h-[200px] z-50 bg-white rounded shadow-md p-2">
+          <DropdownMenu.Item
+            onSelect={handleEditDetails}
+            className={listItemClassNames.option}
+          >
+            <HiLink className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm text-black-primary-text font-medium">Edit details</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleCopyStreamLink}
+            className={listItemClassNames.option}
+          >
+           <AiOutlineEdit className={listItemClassNames.icon} />
+           <p className="ml-2 text-sm font-medium text-black-primary-text">Copy Stream Link</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleScheduleStream}
+            className={listItemClassNames.option}
+          >
+           <PiCalendarCheckBold className={listItemClassNames.icon} />
+           <p className="ml-2 text-sm font-medium text-black-primary-text">Schedule stream</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleCustomizeChannel}
+            className={listItemClassNames.option}
+          >
+               <BiNotepad className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleDeleteChannel}
+            className={listItemClassNames.option}
+          >
+           <RiDeleteBin6Line className={listItemClassNames.icon} />
+           <p className="ml-2 text-sm font-medium text-black-primary-text">Delete channel</p>
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root>
         <AlertDialogs
-          title="Delete channel"
-          description="Are you sure you want to delete this stream? This action cannot be undone."
-          onConfirm={handleDelete}
-          open={alertOpen}
-          loading={loading}
-          setOpen={setAlertOpen}
-        />
-        {isloading && (
-          <div className="flex justify-center items-center mt-2">
-            <RotatingLines
-              visible={true}
-              strokeWidth="5"
-              animationDuration="0.75"
-              strokeColor="#000"
-              ariaLabel="rotating-lines-loading"
-              width="24"
-            />
-          </div>
-        )}
-      </PopoverContent>
-    </Popover>
-  );
-};
+        open={alertOpen}
+        setOpen={setAlertOpen}
+        title="Delete Channel"
+        description="Are you sure you want to delete this channel? This action cannot be undone."
+        cancelLabel="Cancel"
+        confirmLabel="Yes, delete channel"
+        onConfirm={confirmDelete}
+        loading={isLoading}
+      />
+       
+    </>
+
+  )
+}
+
+
+{/* <DropdownMenu.Root>
+        <DropdownMenu.Trigger asChild>
+          <button className="p-2">
+            <IoMdMore className="text-xl" />
+          </button>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Content className="min-w-[200px] bg-white rounded shadow-md p-2">
+          <DropdownMenu.Item
+            onSelect={handleEditDetails}
+            className="cursor-pointer p-2 hover:bg-gray-100"
+          >
+            Edit details
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleCopyStreamLink}
+            className="cursor-pointer p-2 hover:bg-gray-100"
+          >
+            Copy Stream Link
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleScheduleStream}
+            className="cursor-pointer p-2 hover:bg-gray-100"
+          >
+            Schedule stream
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleCustomizeChannel}
+            className="cursor-pointer p-2 hover:bg-gray-100"
+          >
+            Customize channel
+          </DropdownMenu.Item>
+          <DropdownMenu.Item
+            onSelect={handleDeleteChannel}
+            className="cursor-pointer p-2 hover:bg-gray-100"
+          >
+            Delete channel
+          </DropdownMenu.Item>
+        </DropdownMenu.Content>
+      </DropdownMenu.Root> */}

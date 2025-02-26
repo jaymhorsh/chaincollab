@@ -39,7 +39,13 @@ const initialState: StreamsState = {
 const streamsSlice = createSlice({
   name: 'streams',
   initialState,
-  reducers: {},
+  reducers: {
+    resetStreamStatus: (state) => {
+      state.loading = false;
+      state.error = null;
+      state.success = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(createLivestream.pending, (state) => {
@@ -118,5 +124,5 @@ const streamsSlice = createSlice({
       });
   },
 });
-
+export const { resetStreamStatus } = streamsSlice.actions;
 export default streamsSlice.reducer;
