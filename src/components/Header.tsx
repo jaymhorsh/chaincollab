@@ -15,15 +15,13 @@ import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
 import TransactionFlow from './TransactionFlow';
+import { useEthBalance } from '@/app/providers';
 // import Link from 'next/link';
 
 const Header = () => {
   const navigate = useRouter();
-  const {  user, ready, } =
-    usePrivy();
+  const {  user, ready, } = usePrivy();
   const { wallets } = useWallets();
-  const [selectedLink, setSelectedLink] = useState<string>('');
-  const [isLoading, setIsLoading] = useState(false);
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
   useEffect(() => {
@@ -36,10 +34,6 @@ const Header = () => {
       const embeddedWallet = wallets.find((wallet) => wallet.walletClientType === 'privy');
       if (embeddedWallet) {
         const provider = await embeddedWallet.getEthereumProvider();
-        await provider.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: `0x${Number(11155111).toString(16)}` }],
-        });
         const ethProvider = new ethers.providers.Web3Provider(provider);
         const walletBalance = await ethProvider.getBalance(embeddedWallet.address);
         const ethStringAmount = ethers.utils.formatEther(walletBalance);
@@ -56,7 +50,7 @@ const Header = () => {
     },
   });
 
-
+const {chainName}= useEthBalance()
 
   return (
     <header className="shadow-sm">
@@ -68,6 +62,7 @@ const Header = () => {
         <div className=" flex items-center gap-2">
           <div className="text-sm  font-semibold">
             <span className="text-main-blue text-base">Wallet Address:</span> {user?.wallet?.address}
+           
           </div>
 
           <div className="flex items-center gap-4">
@@ -161,6 +156,9 @@ const Header = () => {
                           <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
                           {`${walletBalance && walletBalance} ${' '} ${'ETH'}`}
                         </div>
+                        <div className="text-sm font-semibold w-full sm:w-1/2 textcenter">
+                          <span className="text-main-blue text-base">Chain Type</span> {chainName}
+                        </div>
                         <div className="flex items-cente gap-2">
                           <div className="text-sm font-semibold w-full sm:w-1/2 ">
                             <span className="text-main-blue text-base">Wallet Address:</span>
@@ -179,8 +177,11 @@ const Header = () => {
                                 className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
                               >
                                 Copy
-                              </button>
+                              </button> <br />
+                           
                             </div>
+
+                            
                           </div>
                         </div>
                       </div>

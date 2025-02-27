@@ -10,7 +10,7 @@ import SendTransaction from '@/components/SendTransaction';
 import { usePrivy } from '@privy-io/react-auth';
 const Monetize = () => {
   const { sendTransaction: send } = usePrivy();
-  const { ethBalance } = useEthBalance();
+  const { ethBalance,chainName } = useEthBalance();
   const [showPayment, setShowPayment] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [withdrawalAddress, setWithdrawalAddress] = useState('');
@@ -27,16 +27,17 @@ const Monetize = () => {
 
   return (
     <div>
-      <div className="flex flex-wrap md:grid md:grid-cols-7 md:gap-x-5 md:w-[85%]">
+      <div className="md:w-[85%] mx-auo flex md:grid md:grid-cols-7  md:gap-x-5">
         <div className="bg-white shadow-lg p-6 rounded-lg border border-[#DFE0E1] md:col-span-3 w-full">
-          <div className="bg-black text-white h-[164px] p-4 rounded-lg">
-            <div className="">
-              <div className="flex justify-between items-center p-[10px]">
-                <p className="text-2xl font-normal">Wallet Balance</p>
+          <div className="bg-black flex flex-col text-white h-[170px] p-4 rounded-lg">
+           
+              <div className="flex justify-between items-center pb-4 pt-2 px-3">
+                <p className="text-xl font-normal">Wallet Balance</p>
                 <button className="text-gray-400 text-sm">History</button>
               </div>
-              <p className="text-[2rem] p-[10px] font-semibold">{ethBalance ? `${ethBalance}ETH` : '***'}</p>
-            </div>
+              <p className="text-xl py-4 px-3 font-semibold">{ethBalance ? `${ethBalance} ETH` : '***'}</p>
+              <p className='text-xs text-gray-400 pt-2  px-3 self-end'>Chain Type: {chainName}</p>
+           
           </div>
           <div className="mt-6">
             <button
@@ -98,13 +99,13 @@ const Monetize = () => {
           )}
         </div>
         <div className="w-full mt-4 md:mt-0 md:col-span-4">
-          <div className="flex flex-col gap-3 md:grid md:grid-cols-2 md:gap-3">
-            {dummyData.map(({ id, name, balance }) => (
-              <div key={id} className="col-span-1 font-inter border-2 px-5 p-4 border-[#DFE0E1] rounded-lg">
-                <h3 className="font-bold text-xl text-[#0E0E0F] pb-3">{name}</h3>
-                <p className="text-[34px] font-bold text-[#0E0E0F]">{balance}</p>
-              </div>
-            ))}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {dummyData.map(({ id, name, balance }) => (
+               <div key={id} className="border border-[#DFE0E1] rounded-lg p-4">
+                 <h3 className="font-bold text-xl text-[#0E0E0F] pb-3">{name}</h3>
+                 <p className="text-2xl font-bold text-[#0E0E0F]">{balance}</p>
+               </div>
+             ))}
           </div>
         </div>
       </div>
@@ -113,3 +114,5 @@ const Monetize = () => {
 };
 
 export default Monetize;
+
+
