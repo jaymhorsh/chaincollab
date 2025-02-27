@@ -30,11 +30,11 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const refreshBalance = useCallback(async () => {
     if (!ready) return;
-    const wallet = wallets.find((w) => w.walletClientType === 'privy');
+    const wallet = wallets[0]
     if (wallet) {
       try {
         const provider = await wallet.getEthereumProvider();
-
+console.log(provider)
         // Get the current chain id (in hex)
         const currentChainId = await provider.request({ method: 'eth_chainId' });
         console.log('Connected chain ID (hex):', currentChainId);
@@ -50,10 +50,16 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         // Create an ethers.js provider and fetch the balance
         const ethProvider = new ethers.providers.Web3Provider(provider);
-        const balance = await ethProvider.getBalance(wallet.address);
+        const balance = (await ethProvider.getBalance(wallet.address));
+        console.log('mount', balance);
         const formattedBalance = ethers.utils.formatEther(balance);
         console.log('Balance:', formattedBalance);
 
+        
+
+        //  const balance = ethers.formatEther(
+  //   (await provider.getBalance(address)).toString() // balance is in wei
+  // );
         setEthBalance(formattedBalance);
         setEmbeddedWallet(wallet);
       } catch (error) {
@@ -72,6 +78,31 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     </EthBalanceContext.Provider>
   );
 };
+import {base} from 'viem/chains'
+import { defineChain } from 'viem';
+
+export const ethereumMainnet = defineChain({
+  id: 1, // Ethereum Mainnet chain ID
+  name: 'Ethereum Mainnet',
+  network: 'homestead', // This is the network name used for Ethereum Mainnet
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: {
+      // Cloudflare's free Ethereum mainnet endpoint.
+      // You can replace this with another provider (e.g., Infura or Alchemy) if desired.
+      http: ['https://cloudflare-eth.com'],
+      // Optionally, if you have a WebSocket endpoint, include it here:
+      // webSocket: ['wss://mainnet.infura.io/ws/v3/YOUR-PROJECT-ID'],
+    },
+  },
+  blockExplorers: {
+    default: { name: 'Etherscan', url: 'https://etherscan.io' },
+  },
+});
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -89,8 +120,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         },
         loginMethods: ['email', 'wallet', 'google', 'twitter', 'discord', 'linkedin'],
         embeddedWallets: {
-          createOnLogin: 'users-without-wallets',
+          createOnLogin: 'all-users',
         },
+        defaultChain: ethereumMainnet,
+        supportedChains: [ethereumMainnet, base, ] ,
+
       }}
     >
       <Provider store={store}>

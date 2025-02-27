@@ -23,6 +23,7 @@ import { RiVideoAddLine } from 'react-icons/ri';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CustomizeChannelDialog } from '@/components/Dialog'; // our customized dialog
+import Image from 'next/image';
 
 interface Streams {
   streamKey: string;
@@ -45,6 +46,10 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     bgColor: '#ffffff',
     fontSize: '16',
     textColor: '#000000',
+    logo: '',
+    title: streamName,
+    description: '',
+
   });
 
   useEffect(() => {
@@ -96,8 +101,18 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
             >
               Change Channel
             </button>
-            {/* Customize Channel Dialog */}
-            <CustomizeChannelDialog initialValues={customization} onSave={setCustomization} />
+           
+            <div className='px-10'>
+              <CustomizeChannelDialog
+  initialValues={customization}
+  onSave={(newSettings) =>
+    setCustomization({ ...newSettings, logo: newSettings.logo ?? '' })
+  }
+/>
+            </div>
+            <div>
+              <Image src={customization.logo} alt='logo' width={80} height={80}/>
+            </div>
           </div>
           <div style={{
           fontSize: customization.fontSize, color: customization.textColor}} className="flex items-center gap-x-3 mt-2 sm:mt-0">
@@ -347,9 +362,9 @@ export const BroadcastTrigger = () => {
 export const BroadcastLoadingIndicator = () => {
   return (
     <Broadcast.LoadingIndicator asChild matcher={false}>
-      <div className="overflow-hidden h-[34px] rounded-md  top-1 left-1 bg-black/50 flex items-center backdrop-blur">
+      <div className="overflow-hidden h-[34px] rounded-md  top-1 left-1 bg-gray-200 flex items-center backdrop-blur">
         <Broadcast.StatusIndicator matcher="live" className="flex p-2 gap-2 items-center">
-          <div className="bg-[#34A853] h-3 w-3 rounded-full" />
+          <div className="bg-[#04EB2A] h-3 w-3 rounded-full" />
           <span className="text-sm text-black-primary-text font-medium select-none">Live</span>
         </Broadcast.StatusIndicator>
         <Broadcast.StatusIndicator className="flex p-2 gap-2 items-center" matcher="pending">
