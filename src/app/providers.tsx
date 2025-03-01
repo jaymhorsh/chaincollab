@@ -1,5 +1,4 @@
 'use client';
-
 import { PrivyProvider } from '@privy-io/react-auth';
 import { Provider } from 'react-redux';
 import store from '../store/store';
@@ -7,8 +6,18 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ethers } from 'ethers';
 import { EthBalanceContextType } from '@/interfaces';
+import {base, qMainnet,mainnet,metachain, Chain,baseSepolia} from 'viem/chains'
+import { defineChain } from 'viem';
 
 const EthBalanceContext = createContext<EthBalanceContextType | undefined>(undefined);
+
+export const useEthBalance = () => {
+  const context = useContext(EthBalanceContext);
+  if (!context) {
+    throw new Error('useEthBalance must be used within an EthBalanceProvider');
+  }
+  return context;
+};
 
 const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { ready } = usePrivy();
@@ -34,32 +43,18 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     if (wallet) {
       try {
         const provider = await wallet.getEthereumProvider();
-console.log(provider)
         // Get the current chain id (in hex)
         const currentChainId = await provider.request({ method: 'eth_chainId' });
-        console.log('Connected chain ID (hex):', currentChainId);
-
         // Convert hex chain id to decimal
         const chainIdDecimal = parseInt(currentChainId, 16);
-        console.log('Connected chain ID (decimal):', chainIdDecimal);
-
         // Get the human-friendly chain name
         const displayName = chainNames[chainIdDecimal] || `Chain ID: ${chainIdDecimal}`;
-        setChainName(displayName);
-        console.log('Connected chain name:', displayName);
-
+        setChainName(displayName);       
         // Create an ethers.js provider and fetch the balance
         const ethProvider = new ethers.providers.Web3Provider(provider);
         const balance = (await ethProvider.getBalance(wallet.address));
-        console.log('mount', balance);
         const formattedBalance = ethers.utils.formatEther(balance);
         console.log('Balance:', formattedBalance);
-
-        
-
-        //  const balance = ethers.formatEther(
-  //   (await provider.getBalance(address)).toString() // balance is in wei
-  // );
         setEthBalance(formattedBalance);
         setEmbeddedWallet(wallet);
       } catch (error) {
@@ -78,8 +73,7 @@ console.log(provider)
     </EthBalanceContext.Provider>
   );
 };
-import {base} from 'viem/chains'
-import { defineChain } from 'viem';
+
 
 export const ethereumMainnet = defineChain({
   id: 1, // Ethereum Mainnet chain ID
@@ -123,7 +117,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           createOnLogin: 'all-users',
         },
         defaultChain: ethereumMainnet,
-        supportedChains: [ethereumMainnet, base, ] ,
+        supportedChains: [ethereumMainnet, base, qMainnet, mainnet, metachain, baseSepolia] ,
 
       }}
     >
@@ -133,14 +127,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     </PrivyProvider>
   );
 }
-
-export const useEthBalance = () => {
-  const context = useContext(EthBalanceContext);
-  if (!context) {
-    throw new Error('useEthBalance must be used within an EthBalanceProvider');
-  }
-  return context;
-};
 
 
 
