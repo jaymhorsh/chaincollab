@@ -1,32 +1,32 @@
 import Image from 'next/image';
 import Chainfren_Logo from '../../public/assets/images/chainfren_logo.svg';
-import { FaBars, FaSpinner, FaWallet, FaRegUserCircle, FaGoogle, FaDiscord, FaTwitter } from 'react-icons/fa';
-import { BsShieldLock } from 'react-icons/bs';
-import { MdOutlineLogout, MdEmail } from 'react-icons/md';
-import { IoClose } from 'react-icons/io5';
+import { FaBars, FaSpinner } from 'react-icons/fa6';
 import * as Avatar from '@radix-ui/react-avatar';
+import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
+import { MdOutlineLogout } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
 import * as Dialog from '@radix-ui/react-dialog';
-import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { useLinkAccount, useLogout, usePrivy, useWallets } from '@privy-io/react-auth';
+import { useLogout, usePrivy, useWallets } from '@privy-io/react-auth';
 import { useSolanaWallets } from '@privy-io/react-auth/solana';
 import { useEffect, useState } from 'react';
+import { FaRegUserCircle, FaWallet, FaGoogle, FaDiscord, FaTwitter } from 'react-icons/fa';
+import { MdEmail } from 'react-icons/md';
+import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
-import TransactionFlow from './TransactionFlow';
 import { useEthBalance } from '@/app/providers';
+import Spinner from './Spinner';
 
 const Header = () => {
   const navigate = useRouter();
   const { user, ready } = usePrivy();
   const { wallets } = useWallets();
-  const { chainName } = useEthBalance();
-  const { createWallet } = useSolanaWallets();
+  const {wallets: solana, createWallet} = useSolanaWallets();
 
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
   const [solanaWallet, setSolanaWallet] = useState<any>(null);
-
+  // const [solanaWalletBalance, setSolanaWalletBalance] = useState<string>('');
   useEffect(() => {
     if (!ready) {
       return;
@@ -35,30 +35,44 @@ const Header = () => {
     }
     async function setUp() {
       const embeddedWallet = wallets.find((wallet) => wallet.walletClientType === 'privy');
+
       if (embeddedWallet) {
         const provider = await embeddedWallet.getEthereumProvider();
         const ethProvider = new ethers.providers.Web3Provider(provider);
-        const balance = await ethProvider.getBalance(embeddedWallet.address);
-        const ethStringAmount = ethers.utils.formatEther(balance);
+        const walletBalance = await ethProvider.getBalance(embeddedWallet.address);
+        const ethStringAmount = ethers.utils.formatEther(walletBalance);
         setWalletBalance(ethStringAmount);
         setEmbeddedWallet(embeddedWallet);
       }
     }
   }, [ready, wallets]);
 
-  const { logout: handleLogout } = useLogout({
-    onSuccess: () => {
-      toast.success('Successfully logged out');
-      navigate.push('/');
-    },
-  });
-
+  useEffect(() => {
+    if (!ready) {
+      return;
+    } else {
+      setUp();
+    }
+    async function setUp() {
+      const solanaWallet = solana.find((wallet) => wallet.walletClientType === 'privy');
+      if (solanaWallet) {
+        // const provider = await solanaWallet.getProvider();
+        // const solProvider = new ethers.providers.Web3Provider(provider);
+        // const walletBalance = await solProvider.getBalance(solanaWallet.address);
+        // const solStringAmount = ethers.utils.formatEther(walletBalance);
+        // setSolanaWalletBalance(solStringAmount);
+        setSolanaWallet(solanaWallet.address);
+      }
+    }
+  }, [ready, solana]);
+  const [ loading, setLoading ] = useState(false);
   // Handler for creating the Solana wallet.
   const handleCreateSolanaWallet = async () => {
     if (!user) {
       toast.error('Please login first');
       return;
     }
+    setLoading(true)
     try {
       const wallet = await createWallet();
       setSolanaWallet(wallet);
@@ -68,163 +82,252 @@ const Header = () => {
     } catch (error) {
       toast.error('Failed to create Solana wallet');
     }
+    finally {
+      setLoading(false);
+    } 
   };
-
-  const host = process.env.NEXT_PUBLIC_BASE_URL;
+  const { logout: handleLogout } = useLogout({
+    onSuccess: () => {
+      toast.success('Successfully logged out');
+      navigate.push('/');
+    },
+  });
+const [showWallets, setShowWallets] = useState(false);
 
   return (
     <header className="shadow-sm">
       <div className="max-w-7xl mx-auto py-4 border border-[#DFE0E1] bg-white px-4 sm:px-6 lg:px-10 flex justify-between items-center">
         <div className="text-lg font-black text-black-primary-text">
-          <Image src={Chainfren_Logo} alt="Chainfren Logo" />
+          <Image src={Chainfren_Logo} alt={'header_Logo'} />
         </div>
-        {/* Wallet Dropdown and Profile Avatar */}
-        <div className="flex items-center gap-2">
-          {/* Wallet Addresses Dropdown */}
-          <DropdownMenu.Root>
-            <DropdownMenu.Trigger asChild>
-              <button className="flex items-center gap-2 text-sm font-semibold">
-                <span className="text-main-blue text-base">Wallet Addresses</span>
-                <FaWallet className="h-5 w-5" />
-              </button>
-            </DropdownMenu.Trigger>
-            <DropdownMenu.Portal>
-              <DropdownMenu.Content className="min-w-[264px] rounded-md bg-white p-4 shadow-lg" sideOffset={5}>
-                <div className="flex flex-col gap-2">
-                  <div className="text-sm">
-                    <span className="font-bold">EVM:</span> {user?.wallet?.address || 'Not connected'}
-                  </div>
-                  {solanaWallet ? (
-                    <div className="text-sm">
-                      <span className="font-bold">Solana:</span> {solanaWallet.address}
-                    </div>
-                  ) : (
-                    <button onClick={handleCreateSolanaWallet} className="text-xs text-blue-600 underline">
-                      Create Solana Wallet
-                    </button>
-                  )}
-                </div>
-              </DropdownMenu.Content>
-            </DropdownMenu.Portal>
-          </DropdownMenu.Root>
+        {/* Avatar */}
+        <div className=" flex items-center gap-2">
+          
 
-          {/* Existing Profile Info */}
-          <Dialog.Root>
-            <Dialog.Trigger asChild>
-              <button className="flex items-center gap-2">
-                <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1">
-                  <Avatar.Image
-                    className="size-full rounded-[inherit] object-cover"
-                    src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=128&h=128&dpr=2&q=80"
-                    alt="Profile Image"
-                  />
-                  <Avatar.Fallback
-                    className="leading-1 flex size-full rounded-full items-center justify-center bg-white text-[15px] font-medium text-violet11"
-                    delayMs={600}
-                  >
-                    <FaRegUserCircle className="h-6 w-6" />
-                  </Avatar.Fallback>
-                </Avatar.Root>
-              </button>
-            </Dialog.Trigger>
+          <div className="flex items-center gap-4">
+            <Dialog.Root>
+              <Dialog.Trigger asChild>
+                <button className="flex items-center gap-2">
+                  <DropdownMenu.Root>
+                    <DropdownMenu.Trigger asChild>
+                      <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
+                        <Avatar.Image
+                          className="size-full rounded-[inherit] object-cover"
+                          src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=128&h=128&dpr=2&q=80"
+                          alt="Moshood"
+                        />
+                        <Avatar.Fallback
+                          className="leading-1 flex size-full rounded-full items-center justify-center bg-white text-[15px] font-medium text-violet11"
+                          delayMs={600}
+                        >
+                          <svg
+                            width="40"
+                            height="40"
+                            viewBox="0 0 35 35"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <g clipPath="url(#clip0_85_301)">
+                              <circle cx="17.5" cy="17.5" r="15.5" fill="#3351FF" />
+                              <path
+                                fillRule="evenodd"
+                                clipRule="evenodd"
+                                d="M31 33.4445C31 26.817 25.6274 21.4445 19 21.4445C12.3726 21.4445 7 26.817 7 33.4445H31Z"
+                                fill="white"
+                              />
 
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 bg-black/80 animate-fade-in" />
-              <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 overflow-y-scroll max-h-[80vh] -translate-y-1/2 bg-white rounded-xl p-6 w-[90vw] max-w-[850px] shadow-lg animate-content-show">
-                <div className="space-y-6 pb-6">
-                  <Dialog.Title className="text-2xl font-semibold border-b pb-4">Profile Details</Dialog.Title>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <div className="flex flex-col col-span-3 gap-4">
-                      <div className="text-sm font-semibold">
-                        <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
-                        {walletBalance ? `${walletBalance} ETH` : 'N/A'}
-                      </div>
-                      <div className="text-sm font-semibold">
-                        <span className="text-main-blue text-base">Chain Type:</span> {chainName}
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="text-sm font-semibold w-full">
-                          <span className="text-main-blue text-base">Wallet Address:</span>
-                          <div className="flex items-center gap-2">
+                              <rect
+                                x="9.55884"
+                                y="9.68384"
+                                width="14"
+                                height="10"
+                                rx="1.6"
+                                transform="rotate(-5.42238 9.55884 9.68384)"
+                                fill="white"
+                              />
+                            </g>
+                            <rect x="1" y="1" width="33" height="33" rx="16.5" stroke="black" strokeWidth="2" />
+                            <defs>
+                              <clipPath id="clip0_85_301">
+                                <rect x="2" y="2" width="31" height="31" rx="15.5" fill="white" />
+                              </clipPath>
+                            </defs>
+                          </svg>
+                        </Avatar.Fallback>
+                      </Avatar.Root>
+                    </DropdownMenu.Trigger>
+                    <DropdownMenu.Portal>
+                      <DropdownMenu.Content
+                        className="min-w-[264px] rounded-md mr-2 z-10 bg-white p-4 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade"
+                        sideOffset={5}
+                      >
+                        <DropdownMenu.Item
+                          className="group cursor-pointer px-3 relative flex gap-4 py-3 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+                          // onClick={() => navigate.replace('#')}
+                        >
+                          <FaRegUserCircle className="text-lg text-black-primary-text" />
+                          <p className="text-black-primary-text font-medium text-sm">Profile</p>
+                        </DropdownMenu.Item>
+
+                        <hr className="my-3 border-[1px] border-border-color " />
+                        <DropdownMenu.Item
+                          className="group cursor-pointer px-3 relative flex gap-4 py-2 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+                          onClick={handleLogout}
+                        >
+                          <MdOutlineLogout className="text-xl text-red-600" />
+                          <p className="text-red-600 font-medium ">Logout</p>
+                        </DropdownMenu.Item>
+                      </DropdownMenu.Content>
+                    </DropdownMenu.Portal>
+                  </DropdownMenu.Root>
+                </button>
+              </Dialog.Trigger>
+
+              <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 bg-black/80 animate-fade-in " />
+                <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 overflow-y-scroll max-h-[80vh] -translate-y-1/2 bg-white rounded-xl p-6 w-[90vw] max-w-[850px] shadow-lg animate-content-show">
+                  <div className="space-y-6  pb-6">
+                    <Dialog.Title className="text-2xl font-semibold border-b pb-4">Profile Details</Dialog.Title>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {/* Wallet Details Toggle */}
+                        <div className="col-span-3">
+                        <div className="flex justify-between items-center">
+                          <div className="text-sm font-semibold">
+                          <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
+                          {walletBalance ? `${walletBalance} ETH` : 'N/A'}
+                          </div>
+                          <button
+                          onClick={() => setShowWallets((prev) => !prev)}
+                          className="px-3 py-1 border rounded text-sm"
+                          >
+                          {showWallets ? 'Hide Wallets' : 'Show Wallets'}
+                          </button>
+                        </div>
+                        {showWallets && (
+                          <div className="mt-4 space-y-4">
+                          {/* Ethereum Wallet */}
+                          <div className="flex flex-col">
+                            <span className="text-main-blue text-base">Ethereum Wallet Address:</span>
+                            <div className="flex items-center gap-2 mt-1">
                             <input
                               type="text"
                               value={embeddedWallet?.address || ''}
                               readOnly
-                              className="border font-inter rounded-lg px-4 py-2 w-full"
+                              className="border rounded-lg px-4 py-2 w-full"
                             />
                             <button
                               onClick={() => {
-                                navigator.clipboard.writeText(embeddedWallet?.address || '');
-                                toast.success('Copied to clipboard');
+                              navigator.clipboard.writeText(embeddedWallet?.address || '');
+                              toast.success('Copied to clipboard');
                               }}
                               className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
                             >
                               Copy
                             </button>
+                            </div>
                           </div>
+                          {/* Solana Wallet or Create Button */}
+                          <div className="flex flex-col">
+                            {solanaWallet ? (
+                            <>
+                              <span className="text-main-blue text-base">Solana Wallet Address:</span>
+                              <div className="flex items-center gap-2 mt-1">
+                              <input
+                                type="text"
+                                value={solanaWallet}
+                                readOnly
+                                className="border rounded-lg px-4 py-2 w-full"
+                              />
+                              <button
+                                onClick={() => {
+                                navigator.clipboard.writeText(solanaWallet || '');
+                                toast.success('Copied to clipboard');
+                                }}
+                                className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
+                              >
+                                Copy
+                              </button>
+                              </div>
+                            </>
+                            ) : (
+                            <button
+                              onClick={handleCreateSolanaWallet}
+                              className="px-4 py-3 bg-green-500 hover:bg-green-600 text-white flex justify-center items-center rounded-lg transition-colors"
+                            >
+                             {loading ? <FaSpinner/> : 'Create Solana Wallet'}
+                            </button>
+                            )}
+                          </div>
+                          </div>
+                        )}
                         </div>
+                      {/* User ID Card */}
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                        <div className="flex items-center gap-3 mb-2">
+                          <FaRegUserCircle className="text-2xl text-main-blue" />
+                          <label className="font-medium text-gray-700">User ID</label>
+                        </div>
+                        <p className="text-sm break-all text-gray-600">{user?.id}</p>
                       </div>
-                    </div>
 
-                    {/* Additional Cards */}
-                    <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
-                      <div className="flex items-center gap-3 mb-2">
-                        <FaRegUserCircle className="text-2xl text-main-blue" />
-                        <label className="font-medium text-gray-700">User ID</label>
+                      {/* Wallet Card */}
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                        <div className="flex items-center gap-3 mb-2">
+                          <FaWallet className="text-2xl text-main-blue" />
+                          <label className="font-medium text-gray-700">Wallet Address</label>
+                        </div>
+                        <p className="text-sm break-all text-gray-600">{user?.wallet?.address || 'Not connected'}</p>
                       </div>
-                      <p className="text-sm break-all text-gray-600">{user?.id}</p>
-                    </div>
 
-                    <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
-                      <div className="flex items-center gap-3 mb-2">
-                        <FaWallet className="text-2xl text-main-blue" />
-                        <label className="font-medium text-gray-700">Wallet Address</label>
+                      {/* Email Card */}
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                        <div className="flex items-center gap-3 mb-2">
+                          <MdEmail className="text-2xl text-main-blue" />
+                          <label className="font-medium text-gray-700">Email</label>
+                        </div>
+                        <p className="text-sm break-all text-gray-600">{user?.email?.address || 'Not connected'}</p>
                       </div>
-                      <p className="text-sm break-all text-gray-600">{user?.wallet?.address || 'Not connected'}</p>
-                    </div>
 
-                    <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
-                      <div className="flex items-center gap-3 mb-2">
-                        <MdEmail className="text-2xl text-main-blue" />
-                        <label className="font-medium text-gray-700">Email</label>
+                      {/* Google Card */}
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                        <div className="flex items-center gap-3 mb-2">
+                          <FaGoogle className="text-2xl text-main-blue" />
+                          <label className="font-medium text-gray-700">Google</label>
+                        </div>
+                        <p className="text-sm break-all text-gray-600">{user?.google?.email || 'Not connected'}</p>
                       </div>
-                      <p className="text-sm break-all text-gray-600">{user?.email?.address || 'Not connected'}</p>
-                    </div>
 
-                    <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
-                      <div className="flex items-center gap-3 mb-2">
-                        <FaGoogle className="text-2xl text-main-blue" />
-                        <label className="font-medium text-gray-700">Google</label>
+                      {/* Discord Card */}
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                        <div className="flex items-center gap-3 mb-2">
+                          <FaDiscord className="text-2xl text-main-blue" />
+                          <label className="font-medium text-gray-700">Discord</label>
+                        </div>
+                        <p className="text-sm break-all text-gray-600">{user?.discord?.username || 'Not connected'}</p>
                       </div>
-                      <p className="text-sm break-all text-gray-600">{user?.google?.email || 'Not connected'}</p>
-                    </div>
+                      {/* Send Transaction */}
 
-                    <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
-                      <div className="flex items-center gap-3 mb-2">
-                        <FaDiscord className="text-2xl text-main-blue" />
-                        <label className="font-medium text-gray-700">Discord</label>
+                      {/* Twitter Card */}
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                        <div className="flex items-center gap-3 mb-2">
+                          <FaTwitter className="text-2xl text-main-blue" />
+                          <label className="font-medium text-gray-700">Twitter</label>
+                        </div>
+                        <p className="text-sm break-all text-gray-600">{user?.twitter?.username || 'Not connected'}</p>
                       </div>
-                      <p className="text-sm break-all text-gray-600">{user?.discord?.username || 'Not connected'}</p>
-                    </div>
-
-                    <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
-                      <div className="flex items-center gap-3 mb-2">
-                        <FaTwitter className="text-2xl text-main-blue" />
-                        <label className="font-medium text-gray-700">Twitter</label>
-                      </div>
-                      <p className="text-sm break-all text-gray-600">{user?.twitter?.username || 'Not connected'}</p>
                     </div>
                   </div>
-                </div>
+                  <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                    <IoClose className="text-xl" />
+                  </Dialog.Close>
+                </Dialog.Content>
                 <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
                   <IoClose className="text-xl" />
                 </Dialog.Close>
-              </Dialog.Content>
-              <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                <IoClose className="text-xl" />
-              </Dialog.Close>
-            </Dialog.Portal>
-          </Dialog.Root>
+              </Dialog.Portal>
+            </Dialog.Root>
+          </div>
         </div>
         <button className="md:hidden">
           <FaBars className="h-6 w-6" />
@@ -235,3 +338,4 @@ const Header = () => {
 };
 
 export default Header;
+

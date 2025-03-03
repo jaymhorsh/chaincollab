@@ -29,13 +29,13 @@ const Monetize = () => {
     <div>
       <div className="md:w-[85%] w-full mx-auo flex flex-col md:grid md:grid-cols-7  md:gap-x-5">
         <div className="bg-white shadow-lg p-6 rounded-lg border border-[#DFE0E1] md:col-span-3 w-full">
-          <div className="bg-black flex flex-col text-white h-[170px] p-4 rounded-lg">
+          <div className="bg-black flex flex-col text-white h-[160px] justify-around p-4 rounded-lg">
             <div className="flex justify-between items-center pb-4 pt-2 px-3">
               <p className="text-xl font-normal">Wallet Balance</p>
               <button className="text-gray-400 text-sm">History</button>
             </div>
             <p className="text-xl py-4 px-3 font-semibold">{ethBalance ? `${ethBalance} ETH` : '***'}</p>
-            <p className="text-xs text-gray-400 pt-2  px-3 self-end">{chainName?.split(' ')[0]}</p>
+            {/* <p className="text-xs text-gray-400 pt-2  px-3 self-end">{chainName?.split(' ')[0]}</p> */}
           </div>
           <div className="mt-6">
             <button
