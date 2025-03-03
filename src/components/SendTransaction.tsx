@@ -3,7 +3,6 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 import { toast } from 'sonner';
 
-
 type Props = {
   sendTransaction: any;
   amount: string;
@@ -33,7 +32,7 @@ function SendTransaction({ sendTransaction, amount, sendAddress }: Props) {
 
       await sendTransaction(unsignedTx, txUiConfig);
       toast.success('Transaction sent successfully!');
-        router.push('/dashboard/monetization');
+      router.push('/dashboard/monetization');
     } catch (error: any) {
       toast.error('Transaction failed: ' + error.message);
     }

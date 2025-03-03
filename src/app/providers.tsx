@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ethers } from 'ethers';
 import { EthBalanceContextType } from '@/interfaces';
-import {base, qMainnet,mainnet,metachain, Chain,baseSepolia} from 'viem/chains'
+import { base, qMainnet, mainnet, metachain, Chain, baseSepolia } from 'viem/chains';
 import { defineChain } from 'viem';
 
 const EthBalanceContext = createContext<EthBalanceContextType | undefined>(undefined);
@@ -34,12 +34,11 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     5: 'Goerli',
     42: 'Kovan',
     11155111: 'Sepolia',
-
   };
 
   const refreshBalance = useCallback(async () => {
     if (!ready) return;
-    const wallet = wallets[0]
+    const wallet = wallets[0];
     if (wallet) {
       try {
         const provider = await wallet.getEthereumProvider();
@@ -49,10 +48,10 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const chainIdDecimal = parseInt(currentChainId, 16);
         // Get the human-friendly chain name
         const displayName = chainNames[chainIdDecimal] || `Chain ID: ${chainIdDecimal}`;
-        setChainName(displayName);       
+        setChainName(displayName);
         // Create an ethers.js provider and fetch the balance
         const ethProvider = new ethers.providers.Web3Provider(provider);
-        const balance = (await ethProvider.getBalance(wallet.address));
+        const balance = await ethProvider.getBalance(wallet.address);
         const formattedBalance = ethers.utils.formatEther(balance);
         console.log('Balance:', formattedBalance);
         setEthBalance(formattedBalance);
@@ -73,7 +72,6 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     </EthBalanceContext.Provider>
   );
 };
-
 
 export const ethereumMainnet = defineChain({
   id: 1, // Ethereum Mainnet chain ID
@@ -117,8 +115,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
           createOnLogin: 'all-users',
         },
         defaultChain: ethereumMainnet,
-        supportedChains: [ethereumMainnet, base, qMainnet, mainnet, metachain, baseSepolia] ,
-
+        supportedChains: [ethereumMainnet, base, qMainnet, mainnet, metachain, baseSepolia],
       }}
     >
       <Provider store={store}>
@@ -127,23 +124,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     </PrivyProvider>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // 'use client';
 
@@ -170,7 +150,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 //     if (wallet) {
 //       try {
 //         const provider = await wallet.getEthereumProvider();
-       
+
 //         const currentChainId = await provider.request({ method: 'eth_chainId' });
 //         console.log('Connected chain ID:', currentChainId);
 //         const ethProvider = new ethers.providers.Web3Provider(provider);
@@ -183,7 +163,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 //       }
 //     }A
 //   };
- 
+
 //   useEffect(() => {
 //     refreshBalance();
 //   }, [ready, wallets, refreshBalance]);
@@ -196,9 +176,9 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 // };
 
 // export default function Providers({ children }: { children: React.ReactNode }) {
-  
+
 //   // console.log('Connected network:', network); // logs network name and chainId
-  
+
 //   return (
 //     <PrivyProvider
 //       appId={process.env.NEXT_PUBLIC_PRIVY_ENVIRONMENT_ID ?? ''}
