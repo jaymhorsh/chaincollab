@@ -67,12 +67,12 @@ export const Settings = React.forwardRef(
                 </label>
                 <Player.VideoQualitySelect name="qualitySelect" defaultValue="1.0">
                   <Player.SelectTrigger
-                    className="inline-flex items-center justify-between rounded-sm px-1 outline-1 outline-white/50 text-xs leading-none h-7 gap-1 outline-none"
+                    className="inline-flex items-center text-white justify-between rounded-sm px-1 outline-1 outline-white/50 text-xs leading-none h-7 gap-1 outline-none"
                     aria-label="Playback quality"
                   >
-                    <Player.SelectValue placeholder="Select a quality..." />
+                    <Player.SelectValue placeholder="Select a quality..." className='text-white' />
                     <Player.SelectIcon>
-                      <BiChevronDown className="h-4 w-4" />
+                      <BiChevronDown className="h-4 w-4 text-white" />
                     </Player.SelectIcon>
                   </Player.SelectTrigger>
                   <Player.SelectPortal>
