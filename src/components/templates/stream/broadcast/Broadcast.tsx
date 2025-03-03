@@ -82,10 +82,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
       ingestUrl={getIngest(streamKey)}
     >
       {/* Wrap the broadcast container with the custom styles */}
-      <div
-       
-        className="h-screen w-full overflow-hidden"
-      >
+      <div className="h-screen w-full overflow-hidden">
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center px-3 w-full border-b border-green-400 h-[60px] bg-white">
           <BroadcastLoadingIndicator />
@@ -99,18 +96,17 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
 
             <div className="px-10">
               <CustomizeChannelDialog
-              initialValues={customization}
-              onSave={(newSettings) =>
-                setCustomization({
-                ...newSettings,
-                logo: newSettings.logo ?? '',
-                title: newSettings.title,
-                description: newSettings.description,
-                })
-              }
+                initialValues={customization}
+                onSave={(newSettings) =>
+                  setCustomization({
+                    ...newSettings,
+                    logo: newSettings.logo ?? '',
+                    title: newSettings.title,
+                    description: newSettings.description,
+                  })
+                }
               />
             </div>
-           
           </div>
           <div
             style={{
@@ -139,17 +135,26 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
         {/* Body */}
         <div className="w-full h-screen grid grid-cols-1 md:grid-cols-12 gap-x-2 pt-1 overflow-hidden">
           {/* Streaming Section */}
-          <section  style={{
-          backgroundColor: customization.bgColor,
-          color: customization.textColor,
-          fontSize: customization.fontSize + 'px',
-        }}
-         className={`col-span-12 md:col-span-8 overflow-y-auto ${styles.customScrollbar} mb-[63px]`}>
+          <section
+            style={{
+              backgroundColor: customization.bgColor,
+              color: customization.textColor,
+              fontSize: customization.fontSize + 'px',
+            }}
+            className={`col-span-12 md:col-span-8 overflow-y-auto ${styles.customScrollbar} mb-[63px]`}
+          >
             <div className={`w-full border-l border-border-gray ${customization.bgColor} h-full`}>
-            <div className='flex justify-center items-center w-full h-20 rounded-full '>
-              {/* <div></div> */}
-              <Image src={customization.logo} alt="logo" width={80} height={100} objectFit='cover' className='rounded-full p-2  ' />
-            </div>
+              <div className="flex justify-center items-center w-full h-20 rounded-full ">
+                {/* <div></div> */}
+                <Image
+                  src={customization.logo}
+                  alt="logo"
+                  width={80}
+                  height={100}
+                  objectFit="cover"
+                  className="rounded-full p-2  "
+                />
+              </div>
               <BroadcastContainer />
               <div className="w-full">
                 {/* Copy & Visit Link */}
@@ -189,7 +194,9 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   className="w-full border border-border-gray mt-2 rounded-t-md h-full"
                 >
                   <div className="flex items-center gap-x-3 px-4 p-2 rounded-md">
-                    <h1 className=" font-bold text-black-primary-text h-[33px] flex items-center select-none">Basics</h1>
+                    <h1 className=" font-bold text-black-primary-text h-[33px] flex items-center select-none">
+                      Basics
+                    </h1>
                     {/* <button className="flex rounded-md bg-background-gray  items-center px-4">
                       <span className=" text-black-secondary-text font-medium select-none">Edit</span>
                     </button> */}
@@ -240,25 +247,24 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
           </section>
           {/* Chat Section */}
           <section className={`col-span-12 md:col-span-4 mb-[63px] ${styles.customScrollbar}`}>
-          <div className="flex w-full h-full flex-col md:w-[400px] rounded-md border pb-8 border-gray-300 bg-white">
-          <h3 className=" bg-gray-200 p-3 text-lg font-semibold">Chat</h3>
-          <div className="flex flex-1 flex-col">
-            <div className="flex-1 overflow-y-auto p-4">
-              <p className="text-gray-500 text-center">Welcome to the chat!</p>
+            <div className="flex w-full h-full flex-col md:w-[400px] rounded-md border pb-2 border-gray-300 bg-white">
+              <h3 className=" bg-gray-200 p-3 text-lg font-semibold">Chat</h3>
+              <div className="flex flex-1 flex-col">
+                <div className="flex-1 overflow-y-auto p-4">
+                  <p className="text-gray-500 text-center">Welcome to the chat!</p>
+                </div>
+                <div className="flex items-center gap-2  p-2">
+                  <input
+                    type="text"
+                    placeholder="Say something..."
+                    className="flex-1 rounded-md border placeholder:text-[#838294] border-[#0E0E0F] px-3 py-3"
+                  />
+                </div>
+                <div className="flex w-full justify-end p-2">
+                  <button className="rounded-md bg-main-blue px-4 py-2 text-white hover:bg-blue-700">Send</button>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-2  p-2">
-              <input
-                type="text"
-                placeholder="Say something..."
-                className="flex-1 rounded-md border placeholder:text-[#838294] border-[#0E0E0F] px-3 py-3"
-              />
-            </div>
-            <div className="flex w-full justify-end p-2">
-          
-              <button className="rounded-md bg-main-blue px-4 py-2 text-white hover:bg-blue-700">Send</button>
-            </div>
-          </div>
-        </div>
           </section>
         </div>
       </div>
@@ -272,7 +278,7 @@ export const BroadcastContainer = () => {
       {/* <div>
         <BroadcastLoadingIndicator />
         </div> */}
-        
+
       <Broadcast.Video
         title="Live streaming"
         style={{
