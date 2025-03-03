@@ -11,7 +11,7 @@ const LoginPage = () => {
   const loginCalled = useRef(false);
 
   useEffect(() => {
-    if (!ready) return; 
+    if (!ready) return;
 
     if (authenticated) {
       router.push('/dashboard');

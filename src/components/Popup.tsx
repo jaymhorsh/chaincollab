@@ -64,40 +64,40 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const playbackUrl =
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
 
- 
-    const handleEditDetails = () => {
-      toast('Edit details clicked');
-      // TODO: Open edit modal or navigate to edit page.
-    };
-  
-    const handleCopyStreamLink = () => {
-      if (playbackUrl) {
-        navigator.clipboard
-          .writeText(playbackUrl)
-          .then(() => {
-            toast.success('Stream link copied!');
-          })
-          .catch(() => {
-            toast.error("Stream link isn't available.");
-          });
-      } else {
-        toast.error("Stream link isn't available.");
-    }};
-  
-    const handleScheduleStream = () => {
-      toast('Schedule stream clicked');
-      // TODO: Open schedule modal or navigate accordingly.
-    };
-  
-    const handleCustomizeChannel = () => {
-      toast('Customize channel clicked');
-      // TODO: Open customization modal or navigate accordingly.
-    };
-  
-    const handleDeleteChannel = () => {
-      // Simply open the alert dialog.
-      setAlertOpen(true);
-    };
+  const handleEditDetails = () => {
+    toast('Edit details clicked');
+    // TODO: Open edit modal or navigate to edit page.
+  };
+
+  const handleCopyStreamLink = () => {
+    if (playbackUrl) {
+      navigator.clipboard
+        .writeText(playbackUrl)
+        .then(() => {
+          toast.success('Stream link copied!');
+        })
+        .catch(() => {
+          toast.error("Stream link isn't available.");
+        });
+    } else {
+      toast.error("Stream link isn't available.");
+    }
+  };
+
+  const handleScheduleStream = () => {
+    toast('Schedule stream clicked');
+    // TODO: Open schedule modal or navigate accordingly.
+  };
+
+  const handleCustomizeChannel = () => {
+    toast('Customize channel clicked');
+    // TODO: Open customization modal or navigate accordingly.
+  };
+
+  const handleDeleteChannel = () => {
+    // Simply open the alert dialog.
+    setAlertOpen(true);
+  };
   const confirmDelete = async () => {
     setIsLoading(true);
     try {
@@ -107,9 +107,9 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         dispatch(resetStreamStatus());
       }
     } catch (err: any) {
-      if(error) {
-      toast.error(error);
-      toast.error(error || 'Failed to delete channel');
+      if (error) {
+        toast.error(error);
+        toast.error(error || 'Failed to delete channel');
       }
     }
     setIsLoading(false);
@@ -117,53 +117,37 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   };
 
   return (
-    <>   
-  
-    <DropdownMenu.Root>
+    <>
+      <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <button className="p-2">
-          <BsThreeDotsVertical className="text-lg cursor-pointer text-black-primary-text focus:bg-main-blue focus:ring-2 focus:ring-offset-2" />
+            <BsThreeDotsVertical className="text-lg cursor-pointer text-black-primary-text focus:bg-main-blue focus:ring-2 focus:ring-offset-2" />
           </button>
         </DropdownMenu.Trigger>
         <DropdownMenu.Content className="min-w-[200px] min-h-[200px] z-50 bg-white rounded shadow-md p-2">
-          <DropdownMenu.Item
-            onSelect={handleEditDetails}
-            className={listItemClassNames.option}
-          >
+          <DropdownMenu.Item onSelect={handleEditDetails} className={listItemClassNames.option}>
             <HiLink className={listItemClassNames.icon} />
             <p className="ml-2 text-sm text-black-primary-text font-medium">Edit details</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleCopyStreamLink}
-            className={listItemClassNames.option}
-          >
-           <AiOutlineEdit className={listItemClassNames.icon} />
-           <p className="ml-2 text-sm font-medium text-black-primary-text">Copy Stream Link</p>
+          <DropdownMenu.Item onSelect={handleCopyStreamLink} className={listItemClassNames.option}>
+            <AiOutlineEdit className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Copy Stream Link</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleScheduleStream}
-            className={listItemClassNames.option}
-          >
-           <PiCalendarCheckBold className={listItemClassNames.icon} />
-           <p className="ml-2 text-sm font-medium text-black-primary-text">Schedule stream</p>
+          <DropdownMenu.Item onSelect={handleScheduleStream} className={listItemClassNames.option}>
+            <PiCalendarCheckBold className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Schedule stream</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleCustomizeChannel}
-            className={listItemClassNames.option}
-          >
-               <BiNotepad className={listItemClassNames.icon} />
+          <DropdownMenu.Item onSelect={handleCustomizeChannel} className={listItemClassNames.option}>
+            <BiNotepad className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleDeleteChannel}
-            className={listItemClassNames.option}
-          >
-           <RiDeleteBin6Line className={listItemClassNames.icon} />
-           <p className="ml-2 text-sm font-medium text-black-primary-text">Delete channel</p>
+          <DropdownMenu.Item onSelect={handleDeleteChannel} className={listItemClassNames.option}>
+            <RiDeleteBin6Line className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Delete channel</p>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>
-        <AlertDialogs
+      <AlertDialogs
         open={alertOpen}
         setOpen={setAlertOpen}
         title="Delete Channel"
@@ -173,14 +157,12 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         onConfirm={confirmDelete}
         loading={isLoading}
       />
-       
     </>
+  );
+};
 
-  )
-}
-
-
-{/* <DropdownMenu.Root>
+{
+  /* <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <button className="p-2">
             <IoMdMore className="text-xl" />
@@ -218,4 +200,5 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
             Delete channel
           </DropdownMenu.Item>
         </DropdownMenu.Content>
-      </DropdownMenu.Root> */}
+      </DropdownMenu.Root> */
+}

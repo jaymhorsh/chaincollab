@@ -37,7 +37,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
     host && playbackId
-      ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}`
+      ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}?streamName=${encodeURIComponent(streamName)}`
       : null;
   const router = useRouter();
 
@@ -48,8 +48,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     textColor: '#000000',
     logo: '',
     title: streamName,
-    description: '',
-
+    description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   });
 
   useEffect(() => {
@@ -84,16 +83,12 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     >
       {/* Wrap the broadcast container with the custom styles */}
       <div
-        style={{
-          backgroundColor: customization.bgColor,
-          color: customization.textColor,
-          fontSize: customization.fontSize + 'px',
-        }}
+       
         className="h-screen w-full overflow-hidden"
       >
         {/* Header */}
         <div className="flex flex-col sm:flex-row justify-between items-center px-3 w-full border-b border-green-400 h-[60px] bg-white">
-        <BroadcastLoadingIndicator />
+          <BroadcastLoadingIndicator />
           <div className="flex items-center gap-x-3">
             <button
               className="rounded-md bg-background-gray px-4 py-2 hover:bg-gray-200 transition-colors"
@@ -101,21 +96,29 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
             >
               Change Channel
             </button>
-           
-            <div className='px-10'>
+
+            <div className="px-10">
               <CustomizeChannelDialog
-  initialValues={customization}
-  onSave={(newSettings) =>
-    setCustomization({ ...newSettings, logo: newSettings.logo ?? '' })
-  }
-/>
+              initialValues={customization}
+              onSave={(newSettings) =>
+                setCustomization({
+                ...newSettings,
+                logo: newSettings.logo ?? '',
+                title: newSettings.title,
+                description: newSettings.description,
+                })
+              }
+              />
             </div>
-            <div>
-              <Image src={customization.logo} alt='logo' width={80} height={80}/>
-            </div>
+           
           </div>
-          <div style={{
-          fontSize: customization.fontSize, color: customization.textColor}} className="flex items-center gap-x-3 mt-2 sm:mt-0">
+          <div
+            style={{
+              fontSize: customization.fontSize,
+              color: customization.textColor,
+            }}
+            className="flex items-center gap-x-3 mt-2 sm:mt-0"
+          >
             <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3 flex flex-col">
               <span className="font-medium">00:00:00</span>
               <span className="">Session</span>
@@ -136,20 +139,28 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
         {/* Body */}
         <div className="w-full h-screen grid grid-cols-1 md:grid-cols-12 gap-x-2 pt-1 overflow-hidden">
           {/* Streaming Section */}
-          <section className={`col-span-12 md:col-span-8 overflow-y-auto ${styles.customScrollbar} mb-[63px]`}>
-            <div className="w-full border-l border-border-gray bg-background-gray h-full">
+          <section  style={{
+          backgroundColor: customization.bgColor,
+          color: customization.textColor,
+          fontSize: customization.fontSize + 'px',
+        }}
+         className={`col-span-12 md:col-span-8 overflow-y-auto ${styles.customScrollbar} mb-[63px]`}>
+            <div className={`w-full border-l border-border-gray ${customization.bgColor} h-full`}>
+            <div className='flex justify-center items-center w-full h-20 rounded-full '>
+              {/* <div></div> */}
+              <Image src={customization.logo} alt="logo" width={80} height={100} objectFit='cover' className='rounded-full p-2  ' />
+            </div>
               <BroadcastContainer />
               <div className="w-full">
                 {/* Copy & Visit Link */}
-                <div style={
-                  {backgroundColor: customization.bgColor}  
-                } className="w-full p-3 border border-border-gray rounded-b-md " >
+                <div
+                  style={{ backgroundColor: customization.bgColor }}
+                  className="w-full p-3 border border-border-gray rounded-b-md "
+                >
                   <div className="flex w-full justify-between items-center gap-x-3">
                     <div className="flex items-center gap-x-3">
                       <button className="flex rounded-sm bg-background-gray h-[33px] items-center px-3">
-                        <span className=" text-black-primary-text font-medium select-none">
-                          Play Ads
-                        </span>
+                        <span className=" text-black-primary-text font-medium select-none">Play Ads</span>
                       </button>
                     </div>
                     <div className="flex items-center gap-x-3">
@@ -158,16 +169,12 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                         className="flex rounded-md bg-background-gray h-[33px] items-center px-3"
                         onClick={handleCopyLink}
                       >
-                        <span className=" text-black-secondary-text font-medium select-none">
-                          Copy Link
-                        </span>
+                        <span className=" text-black-secondary-text font-medium select-none">Copy Link</span>
                       </button>
                       {playbackUrl && (
                         <Link href={playbackUrl} target="_blank" rel="noopener noreferrer">
                           <button className="flex rounded-md bg-background-gray h-[33px] items-center px-3">
-                            <span className=" text-black-secondary-text font-medium select-none">
-                              Visit Link
-                            </span>
+                            <span className=" text-black-secondary-text font-medium select-none">Visit Link</span>
                           </button>
                         </Link>
                       )}
@@ -175,33 +182,31 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   </div>
                 </div>
                 {/* Basics Info */}
-                <div  style={{
-          backgroundColor: customization.bgColor}} className="w-full border border-border-gray mt-2 rounded-t-md h-full">
+                <div
+                  style={{
+                    backgroundColor: customization.bgColor,
+                  }}
+                  className="w-full border border-border-gray mt-2 rounded-t-md h-full"
+                >
                   <div className="flex items-center gap-x-3 px-4 p-2 rounded-md">
-                    <h1 className=" font-bold text-black-primary-text select-none">Basics</h1>
-                    <button className="flex rounded-md bg-background-gray h-[33px] items-center px-4">
-                      <span className=" text-black-secondary-text font-medium select-none">
-                        Edit
-                      </span>
-                    </button>
+                    <h1 className=" font-bold text-black-primary-text h-[33px] flex items-center select-none">Basics</h1>
+                    {/* <button className="flex rounded-md bg-background-gray  items-center px-4">
+                      <span className=" text-black-secondary-text font-medium select-none">Edit</span>
+                    </button> */}
                   </div>
                   <div className="w-full p-3 pl-4 rounded-b-md bg-white border-t text-justify">
                     <div className="flex flex-col mb-3 gap-y-2">
-                      <h1 className=" text-black-secondary-text font-medium select-none">
-                        Title
-                      </h1>
+                      <h1 className=" text-black-secondary-text font-medium select-none">Title</h1>
                       <input
-                        value={streamName}
+                        value={customization.title}
                         disabled
                         className="w-full text-sm outline-none border bg-transparent p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none"
                       />
                     </div>
                     <div className="flex flex-col gap-y-2">
-                      <h1 className=" text-black-secondary-text font-medium select-none">
-                        Description
-                      </h1>
+                      <h1 className=" text-black-secondary-text font-medium select-none">Description</h1>
                       <textarea
-                        value={''}
+                        value={customization.description}
                         disabled
                         rows={3}
                         className="w-full text-sm outline-none border bg-transparent line-clamp-4 p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none overflow-y-auto"
@@ -210,21 +215,19 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   </div>
                 </div>
                 {/* Ads Section */}
-                <div style={{
-          backgroundColor: customization.bgColor}}  className="w-full border border-border-gray rounded-t-md ">
+                <div
+                  style={{
+                    backgroundColor: customization.bgColor,
+                  }}
+                  className="w-full border border-border-gray rounded-t-md "
+                >
                   <div className="flex items-center gap-x-3 p-2 px-4 rounded-md">
-                    <h1 className=" text-black-primary-text font-bold select-none">
-                      Ads
-                    </h1>
-                    <button className="flex rounded-md bg-background-gray h-[33px] items-center px-4">
-                      <span className=" text-black-secondary-text font-medium select-none">
-                        Edit
-                      </span>
-                    </button>
+                    <h1 className=" text-black-primary-text font-bold select-none">Ads</h1>
+                    {/* <button className="flex rounded-md bg-background-gray h-[33px] items-center px-4">
+                      <span className=" text-black-secondary-text font-medium select-none">Edit</span>
+                    </button> */}
                     <button className="flex rounded-md bg-background-gray h-[33px] items-center ml-auto px-4">
-                      <span className="text-xs text-black-secondary-text font-medium select-none">
-                        Preset
-                      </span>
+                      <span className="text-xs text-black-secondary-text font-medium select-none">Preset</span>
                     </button>
                   </div>
                   <div className="w-full rounded-b-md p-4 bg-white border-t text-justify">
@@ -237,15 +240,25 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
           </section>
           {/* Chat Section */}
           <section className={`col-span-12 md:col-span-4 mb-[63px] ${styles.customScrollbar}`}>
-            <div className="w-full border-2 rounded-md bg-background-gray border-border-gray h-full flex flex-col">
-              <div style={{
-          backgroundColor: customization.bgColor}}  className="flex  items-center w-full">
-                <h1 className="text-base px-4 py-3 rounded-md text-black-primary-text font-medium select-none">
-                  Chat
-                </h1>
-              </div>
-              {/* Chat content */}
+          <div className="flex w-full h-full flex-col md:w-[400px] rounded-md border pb-8 border-gray-300 bg-white">
+          <h3 className=" bg-gray-200 p-3 text-lg font-semibold">Chat</h3>
+          <div className="flex flex-1 flex-col">
+            <div className="flex-1 overflow-y-auto p-4">
+              <p className="text-gray-500 text-center">Welcome to the chat!</p>
             </div>
+            <div className="flex items-center gap-2  p-2">
+              <input
+                type="text"
+                placeholder="Say something..."
+                className="flex-1 rounded-md border placeholder:text-[#838294] border-[#0E0E0F] px-3 py-3"
+              />
+            </div>
+            <div className="flex w-full justify-end p-2">
+          
+              <button className="rounded-md bg-main-blue px-4 py-2 text-white hover:bg-blue-700">Send</button>
+            </div>
+          </div>
+        </div>
           </section>
         </div>
       </div>
@@ -256,10 +269,10 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
 export const BroadcastContainer = () => {
   return (
     <Broadcast.Container className="flex relative">
-
       {/* <div>
         <BroadcastLoadingIndicator />
         </div> */}
+        
       <Broadcast.Video
         title="Live streaming"
         style={{
@@ -327,9 +340,7 @@ export const BroadcastTrigger = () => {
               className="flex items-center justify-center bg-red-500 h-[40px] w-full min-w-[150px] rounded-md text-black-primary-text px-4 cursor-pointer"
               matcher={true}
             >
-              <span className="text-base text-black  font-medium">
-                End Stream
-              </span>
+              <span className="text-base text-black  font-medium">End Stream</span>
             </Broadcast.EnabledIndicator>
           </DropdownMenu.Trigger>
           <DropdownMenu.Portal>

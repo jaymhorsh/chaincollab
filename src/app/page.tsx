@@ -1,4 +1,3 @@
-
 'use client';
 import { useEffect } from 'react';
 import { usePrivy } from '@privy-io/react-auth';
@@ -19,7 +18,5 @@ export default function Home() {
     }
   }, [ready, authenticated, router]);
 
-  return (
-    <Spinner/>
-  );
+  return <Spinner />;
 }

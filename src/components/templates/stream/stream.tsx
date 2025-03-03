@@ -13,7 +13,7 @@ import Cookies from 'js-cookie';
 const StreamPage = () => {
   const searchParams = useSearchParams();
   let id = searchParams ? searchParams.get('id') : '';
-  
+
   // If no query param is present, fall back to the cookie.
   if (!id) {
     id = Cookies.get('activeStreamId') || '';
