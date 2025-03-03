@@ -13,11 +13,11 @@ const Sidebar = () => {
   const links = [
     { href: '/dashboard', icon: TbHomeFilled, text: 'Home' },
     { href: '/dashboard/stream', icon: CiStreamOn, text: 'Stream' },
-    {
-      href: '/dashboard/customise-channel',
-      icon: RiEditFill,
-      text: 'Customize Channel',
-    },
+    // {
+    //   href: '/dashboard/customise-channel',
+    //   icon: RiEditFill,
+    //   text: 'Customize Channel',
+    // },
     {
       href: '/dashboard/analytics',
       icon: BsFillBarChartLineFill,

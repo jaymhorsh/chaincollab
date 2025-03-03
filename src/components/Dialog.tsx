@@ -52,7 +52,7 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
   const handleLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const fileUrl = URL.createObjectURL(e.target.files[0]);
-      setSettings(prev => ({ ...prev, logo: fileUrl }));
+      setSettings((prev) => ({ ...prev, logo: fileUrl }));
     }
   };
 
@@ -76,25 +76,21 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
             {/* Title and Description */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Channel Title
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Channel Title</label>
                 <input
                   type="text"
                   value={settings.title}
-                  onChange={(e) => setSettings(prev => ({ ...prev, title: e.target.value }))}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, title: e.target.value }))}
                   className="w-full p-2 border rounded-md"
                   placeholder="Enter channel title"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Channel Description
-                </label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Channel Description</label>
                 <input
                   type="text"
                   value={settings.description}
-                  onChange={(e) => setSettings(prev => ({ ...prev, description: e.target.value }))}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, description: e.target.value }))}
                   className="w-full p-2 border rounded-md"
                   placeholder="Enter description"
                 />
@@ -103,9 +99,7 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
 
             {/* Logo Section */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Brand Logo
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Brand Logo</label>
               <div className="w-full flex flex-col">
                 <div className="border-dashed border-2 border-gray-300 rounded-md py-4 w-full h-40 flex justify-center items-center mb-4">
                   {settings.logo ? (
@@ -119,13 +113,7 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
                   ) : (
                     <span className="text-gray-500">No logo uploaded</span>
                   )}
-                  <input
-                    type="file"
-                    id="logoUpload"
-                    accept="image/*"
-                    className="hidden"
-                    onChange={handleLogoUpload}
-                  />
+                  <input type="file" id="logoUpload" accept="image/*" className="hidden" onChange={handleLogoUpload} />
                 </div>
                 <div className="w-full text-right">
                   <button
@@ -140,15 +128,13 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
 
             {/* Background Color */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Background Color
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Background Color</label>
               <div className="flex items-center space-x-2">
                 {presetBgColors.map((color) => (
                   <button
                     key={color}
                     type="button"
-                    onClick={() => setSettings(prev => ({ ...prev, bgColor: color }))}
+                    onClick={() => setSettings((prev) => ({ ...prev, bgColor: color }))}
                     className={`w-8 h-8 rounded-full border ${
                       settings.bgColor === color ? 'ring-2 ring-main-blue' : 'ring-0'
                     }`}
@@ -158,7 +144,7 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
                 <input
                   type="color"
                   value={settings.bgColor}
-                  onChange={(e) => setSettings(prev => ({ ...prev, bgColor: e.target.value }))}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, bgColor: e.target.value }))}
                   className="w-8 h-8 p-0 border-0"
                 />
               </div>
@@ -166,16 +152,14 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
 
             {/* Font Size */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Font Size (px)
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Font Size (px)</label>
               <div className="flex items-center space-x-3">
                 <input
                   type="range"
                   min="12"
                   max="24"
                   value={settings.fontSize}
-                  onChange={(e) => setSettings(prev => ({ ...prev, fontSize: e.target.value }))}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, fontSize: e.target.value }))}
                   className="w-full"
                 />
                 <span className="w-10 text-center">{settings.fontSize}px</span>
@@ -184,15 +168,13 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
 
             {/* Text Color */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Text Color
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Text Color</label>
               <div className="flex items-center space-x-2">
                 {presetTextColors.map((color) => (
                   <button
                     key={color}
                     type="button"
-                    onClick={() => setSettings(prev => ({ ...prev, textColor: color }))}
+                    onClick={() => setSettings((prev) => ({ ...prev, textColor: color }))}
                     className={`w-8 h-8 rounded-full border ${
                       settings.textColor === color ? 'ring-2 ring-main-blue' : 'ring-0'
                     }`}
@@ -202,7 +184,7 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
                 <input
                   type="color"
                   value={settings.textColor}
-                  onChange={(e) => setSettings(prev => ({ ...prev, textColor: e.target.value }))}
+                  onChange={(e) => setSettings((prev) => ({ ...prev, textColor: e.target.value }))}
                   className="w-8 h-8 p-0 border-0"
                 />
               </div>
@@ -211,9 +193,7 @@ export function CustomizeChannelDialog({ initialValues, onSave }: CustomizeChann
 
           <div className="mt-6 flex justify-end space-x-4">
             <Dialog.Close asChild>
-              <button className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition-colors">
-                Cancel
-              </button>
+              <button className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400 transition-colors">Cancel</button>
             </Dialog.Close>
             <Dialog.Close asChild>
               <button

@@ -123,7 +123,7 @@ const CustomiseChannel = () => {
                 </div>
                 <div className="border-dashed border-2 border-gray-300 rounded-md py-4 w-full h-40 flex justify-center items-center mb-4">
                   {logo ? (
-                    <Image  src={logo} alt="Logo Preview" className="w-32 h-32 object-contain" />
+                    <Image src={logo} alt="Logo Preview" className="w-32 h-32 object-contain" />
                   ) : (
                     <span className="text-gray-500">No logo uploaded</span>
                   )}

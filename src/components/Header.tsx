@@ -20,7 +20,7 @@ import { useEthBalance } from '@/app/providers';
 
 const Header = () => {
   const navigate = useRouter();
-  const {  user, ready, } = usePrivy();
+  const { user, ready } = usePrivy();
   const { wallets } = useWallets();
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
@@ -42,7 +42,7 @@ const Header = () => {
       }
     }
   }, [ready, wallets]);
-  
+
   const { logout: handleLogout } = useLogout({
     onSuccess: () => {
       toast.success('Successfully logged out');
@@ -50,7 +50,7 @@ const Header = () => {
     },
   });
 
-const {chainName}= useEthBalance()
+  const { chainName } = useEthBalance();
 
   return (
     <header className="shadow-sm">
@@ -62,7 +62,6 @@ const {chainName}= useEthBalance()
         <div className=" flex items-center gap-2">
           <div className="text-sm  font-semibold">
             <span className="text-main-blue text-base">Wallet Address:</span> {user?.wallet?.address}
-           
           </div>
 
           <div className="flex items-center gap-4">
@@ -177,11 +176,9 @@ const {chainName}= useEthBalance()
                                 className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
                               >
                                 Copy
-                              </button> <br />
-                           
+                              </button>{' '}
+                              <br />
                             </div>
-
-                            
                           </div>
                         </div>
                       </div>
@@ -240,8 +237,6 @@ const {chainName}= useEthBalance()
                         <p className="text-sm break-all text-gray-600">{user?.twitter?.username || 'Not connected'}</p>
                       </div>
                     </div>
-
-                
                   </div>
                   <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
                     <IoClose className="text-xl" />

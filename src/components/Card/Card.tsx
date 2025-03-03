@@ -32,23 +32,12 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
   );
 };
 
-export const ChannelCard: React.FC<ChannelCardProps> = ({
-  title,
-  goLive,
-  streamId,
-  playbackId,
-  image,
-}) => {
+export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image }) => {
   return (
     <div className="w-full h-full relative">
       {/* Image */}
       <div className="w-full bg--gray rounded-md">
-        <Image
-          src={image}
-          alt="channel image"
-          className="rounded-md w-full"
-          style={{ objectFit: 'contain' }}
-        />
+        <Image src={image} alt="channel image" className="rounded-md w-full" style={{ objectFit: 'contain' }} />
       </div>
       {/* Title and Actions */}
       <div className="flex justify-between items-center">
@@ -56,9 +45,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
           <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2">{title}</h2>
         </div>
         <div className="ml-auto pt-2">
-          {streamId && playbackId && (
-            <Popup streamId={streamId} playbackId={playbackId} />
-          )}
+          {streamId && playbackId && <Popup streamId={streamId} playbackId={playbackId} />}
         </div>
       </div>
       <div className="flex justify-start">
