@@ -19,6 +19,7 @@ import { RootState, AppDispatch } from '@/store/store';
 import image1 from '../../../../public/assets/images/image1.png';
 import { Stream } from '@/interfaces';
 import Spinner from '@/components/Spinner';
+import UploadVideoAsset from '@/components/UploadVideoAsset';
 
 const Dashboard = () => {
   const { user, ready, authenticated } = usePrivy();
@@ -27,6 +28,7 @@ const Dashboard = () => {
   const { streams, loading, error } = useSelector((state: RootState) => state.streams);
   const [currentPage, setCurrentPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isDialogOpen2, setIsDialogOpen2] = useState(false);
   const itemsPerPage = 5;
   useEffect(() => {
     dispatch(getAllStreams());
@@ -183,6 +185,34 @@ const Dashboard = () => {
 
         <hr className="border-border-gray" />
         <SectionCard title="Your Videos">
+        <Dialog.Root open={isDialogOpen2} onOpenChange={setIsDialogOpen2}>
+            <Dialog.Trigger asChild>
+              <div className="flex w-full flex-col" onClick={() => setIsDialogOpen2(true)}>
+                <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
+                  <RiVideoAddLine className="text-main-blue w-24 h-24" />
+                </div>
+                <div className="text-black-primary-text text-xl font-bold pt-2">Upload Asset</div>
+              </div>
+            </Dialog.Trigger>
+            <Dialog.Portal>
+              <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+              <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                <Dialog.Title className="text-black-primary-text text-center my-4 text-base font-bold">
+                  Upload Asset
+                </Dialog.Title>
+                <UploadVideoAsset  />
+                <Dialog.Close asChild>
+                  <button
+                    className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                    aria-label="Close"
+                  >
+                    <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                  </button>
+                </Dialog.Close>
+              </Dialog.Content>
+            </Dialog.Portal>
+          </Dialog.Root>
+
           {loading ? (
             // Render skeletons while loading
             Array.from({ length: 5 }, (_, index) => (
@@ -196,22 +226,16 @@ const Dashboard = () => {
                 </div>
               </div>
             ))
-          ) : updatedStreams.length > 0 ? (
+          ) : updatedStreams.length > 20 ? (
             // Render the video cards when streams are available
-            updatedStreams.map((stream: Stream) => (
-              <div key={stream.id}>
-                <VideoCard
-                  title={stream.name}
-                  createdAt={stream.createdAt ? new Date(stream.createdAt) : undefined}
-                  onAction={() => initiateLiveVideo(stream.id)}
-                  imageUrl={image1}
-                />
-              </div>
-            ))
-          ) : (
+           
+            <div>
+
+            </div>)
+           : (
             // Show message if no videos are available
             <div className="flex justify-center items-center h-60">
-              <p className="text-black-primary-text">No videos available.</p>
+              <p className="text-black-primary-text">No Asset uploaded.</p>
             </div>
           )}
         </SectionCard>
