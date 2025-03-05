@@ -58,7 +58,6 @@ export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; tit
           <Player.Root autoPlay clipLength={30} src={src}>
             <Player.Container className="relative h-full w-full overflow-hidden rounded-md bg-gray-950 outline outline-1 outline-white/50 data-[playing=true]:outline-white/80 data-[playing=true]:outline-2 data-[fullscreen=true]:outline-none data-[fullscreen=true]:rounded-none transition-all">
               <Player.Video title="Live stream" className="h-[590px] w-full object-cover" />
-           
 
               {/* Loading Indicator */}
               <Player.LoadingIndicator className="absolute inset-0 bg-black/50 backdrop-blur data-[visible=true]:animate-in data-[visible=false]:animate-out data-[visible=false]:fade-out-0 data-[visible=true]:fade-in-0">
@@ -108,77 +107,72 @@ export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; tit
 
               {/* Player Controls */}
               <Player.Controls
-            autoHide={1000}
-            className="bg-gradient-to-b gap-1 px-3 md:px-3 py-2 flex-col-reverse flex from-black/20 via-80% via-black/30 duration-1000 to-black/60 data-[visible=true]:animate-in data-[visible=false]:animate-out data-[visible=false]:fade-out-0 data-[visible=true]:fade-in-0"
-          >
-            <div className="flex justify-between gap-4">
-              <div className="flex flex-1 items-center gap-3">
-                <Player.PlayPauseTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
-                  <Player.PlayingIndicator asChild matcher={false}>
-                    <PlayIcon className="w-full h-full" />
-                  </Player.PlayingIndicator>
-                  <Player.PlayingIndicator asChild>
-                    <PauseIcon className="w-full h-full text-white" />
-                  </Player.PlayingIndicator>
-                </Player.PlayPauseTrigger>
+                autoHide={1000}
+                className="bg-gradient-to-b gap-1 px-3 md:px-3 py-2 flex-col-reverse flex from-black/20 via-80% via-black/30 duration-1000 to-black/60 data-[visible=true]:animate-in data-[visible=false]:animate-out data-[visible=false]:fade-out-0 data-[visible=true]:fade-in-0"
+              >
+                <div className="flex justify-between gap-4">
+                  <div className="flex flex-1 items-center gap-3">
+                    <Player.PlayPauseTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
+                      <Player.PlayingIndicator asChild matcher={false}>
+                        <PlayIcon className="w-full h-full" />
+                      </Player.PlayingIndicator>
+                      <Player.PlayingIndicator asChild>
+                        <PauseIcon className="w-full h-full text-white" />
+                      </Player.PlayingIndicator>
+                    </Player.PlayPauseTrigger>
 
-                <Player.LiveIndicator className="gap-2  flex items-center">
-                  <div className="bg-red-600 h-1.5 w-1.5 rounded-full" />
-                  <span className="text-sm text-white select-none">LIVE</span>
-                </Player.LiveIndicator>
-                <Player.LiveIndicator
-                  matcher={false}
-                  className="flex gap-2 items-center"
-                >
-                  <Player.Time className="text-sm tabular-nums select-none text-white" />
-                </Player.LiveIndicator>
-                <Player.MuteTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
-                  <Player.VolumeIndicator asChild matcher={false}>
-                    <MuteIcon className="w-full text-white h-full" />
-                  </Player.VolumeIndicator>
-                  <Player.VolumeIndicator asChild matcher={true}>
-                    <UnmuteIcon className="w-full text-white h-full" />
-                  </Player.VolumeIndicator>
-                </Player.MuteTrigger>
-                <Player.Volume className="relative mr-1 flex-1 group flex cursor-pointer items-center select-none touch-none max-w-[120px] h-5">
+                    <Player.LiveIndicator className="gap-2  flex items-center">
+                      <div className="bg-red-600 h-1.5 w-1.5 rounded-full" />
+                      <span className="text-sm text-white select-none">LIVE</span>
+                    </Player.LiveIndicator>
+                    <Player.LiveIndicator matcher={false} className="flex gap-2 items-center">
+                      <Player.Time className="text-sm tabular-nums select-none text-white" />
+                    </Player.LiveIndicator>
+                    <Player.MuteTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
+                      <Player.VolumeIndicator asChild matcher={false}>
+                        <MuteIcon className="w-full text-white h-full" />
+                      </Player.VolumeIndicator>
+                      <Player.VolumeIndicator asChild matcher={true}>
+                        <UnmuteIcon className="w-full text-white h-full" />
+                      </Player.VolumeIndicator>
+                    </Player.MuteTrigger>
+                    <Player.Volume className="relative mr-1 flex-1 group flex cursor-pointer items-center select-none touch-none max-w-[120px] h-5">
+                      <Player.Track className="bg-white/30 relative grow rounded-full transition-all h-[2px] md:h-[3px] group-hover:h-[3px] group-hover:md:h-[4px]">
+                        <Player.Range className="absolute bg-white rounded-full h-full" />
+                      </Player.Track>
+                      <Player.Thumb className="block transition-all group-hover:scale-110 w-3 h-3 bg-white rounded-full" />
+                    </Player.Volume>
+                  </div>
+                  <div className="flex sm:flex-1 md:flex-[1.5] justify-end items-center gap-2.5">
+                    <Player.FullscreenIndicator matcher={false} asChild>
+                      <Settings className="w-6 h-6 transition-all text-white flex-shrink-0" />
+                    </Player.FullscreenIndicator>
+                    <Clip className="flex items-center text-white w-6 h-6 justify-center" />
+
+                    <Player.PictureInPictureTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
+                      <PictureInPictureIcon className="w-full h-full text-white" />
+                    </Player.PictureInPictureTrigger>
+
+                    <Player.FullscreenTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
+                      <Player.FullscreenIndicator asChild>
+                        <ExitFullscreenIcon className="w-full h-full text-white" />
+                      </Player.FullscreenIndicator>
+
+                      <Player.FullscreenIndicator matcher={false} asChild>
+                        <EnterFullscreenIcon className="w-full h-full text-white" />
+                      </Player.FullscreenIndicator>
+                    </Player.FullscreenTrigger>
+                  </div>
+                </div>
+                <Player.Seek className="relative group flex cursor-pointer items-center select-none touch-none w-full h-5">
                   <Player.Track className="bg-white/30 relative grow rounded-full transition-all h-[2px] md:h-[3px] group-hover:h-[3px] group-hover:md:h-[4px]">
+                    <Player.SeekBuffer className="absolute bg-black/30 transition-all duration-1000 rounded-full h-full" />
                     <Player.Range className="absolute bg-white rounded-full h-full" />
                   </Player.Track>
-                  <Player.Thumb className="block transition-all group-hover:scale-110 w-3 h-3 bg-white rounded-full" />
-                </Player.Volume>
-              </div>
-              <div className="flex sm:flex-1 md:flex-[1.5] justify-end items-center gap-2.5">
-                <Player.FullscreenIndicator matcher={false} asChild>
-                  <Settings className="w-6 h-6 transition-all text-white flex-shrink-0" />
-                </Player.FullscreenIndicator>
-                <Clip className="flex items-center text-white w-6 h-6 justify-center" />
-
-                <Player.PictureInPictureTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
-                  <PictureInPictureIcon className="w-full h-full text-white" />
-                </Player.PictureInPictureTrigger>
-
-                <Player.FullscreenTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
-                  <Player.FullscreenIndicator asChild>
-                    <ExitFullscreenIcon className="w-full h-full text-white" />
-                  </Player.FullscreenIndicator>
-
-                  <Player.FullscreenIndicator matcher={false} asChild>
-                    <EnterFullscreenIcon className="w-full h-full text-white" />
-                  </Player.FullscreenIndicator>
-                </Player.FullscreenTrigger>
-              </div>
-            </div>
-            <Player.Seek className="relative group flex cursor-pointer items-center select-none touch-none w-full h-5">
-              <Player.Track className="bg-white/30 relative grow rounded-full transition-all h-[2px] md:h-[3px] group-hover:h-[3px] group-hover:md:h-[4px]">
-                <Player.SeekBuffer className="absolute bg-black/30 transition-all duration-1000 rounded-full h-full" />
-                <Player.Range className="absolute bg-white rounded-full h-full" />
-              </Player.Track>
-              <Player.Thumb className="block group-hover:scale-110 w-3 h-3 bg-white transition-all rounded-full" />
-            </Player.Seek>
-          </Player.Controls>
-             
+                  <Player.Thumb className="block group-hover:scale-110 w-3 h-3 bg-white transition-all rounded-full" />
+                </Player.Seek>
+              </Player.Controls>
             </Player.Container>
-          
           </Player.Root>
 
           {/* Title and Viewer Count below the Player */}
@@ -266,5 +260,3 @@ export const PlayerLoading = ({ children }: { children?: React.ReactNode }) => (
     {children}
   </div>
 );
-
-

@@ -21,7 +21,7 @@ const Header = () => {
   const navigate = useRouter();
   const { user, ready } = usePrivy();
   const { wallets } = useWallets();
-  const {wallets: solana, createWallet} = useSolanaWallets();
+  const { wallets: solana, createWallet } = useSolanaWallets();
 
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
@@ -65,14 +65,14 @@ const Header = () => {
       }
     }
   }, [ready, solana]);
-  const [ loading, setLoading ] = useState(false);
+  const [loading, setLoading] = useState(false);
   // Handler for creating the Solana wallet.
   const handleCreateSolanaWallet = async () => {
     if (!user) {
       toast.error('Please login first');
       return;
     }
-    setLoading(true)
+    setLoading(true);
     try {
       const wallet = await createWallet();
       setSolanaWallet(wallet);
@@ -81,10 +81,9 @@ const Header = () => {
       });
     } catch (error) {
       toast.error('Failed to create Solana wallet');
-    }
-    finally {
+    } finally {
       setLoading(false);
-    } 
+    }
   };
   const { logout: handleLogout } = useLogout({
     onSuccess: () => {
@@ -92,7 +91,7 @@ const Header = () => {
       navigate.push('/');
     },
   });
-const [showWallets, setShowWallets] = useState(false);
+  const [showWallets, setShowWallets] = useState(false);
 
   return (
     <header className="shadow-sm">
@@ -102,8 +101,6 @@ const [showWallets, setShowWallets] = useState(false);
         </div>
         {/* Avatar */}
         <div className=" flex items-center gap-2">
-          
-
           <div className="flex items-center gap-4">
             <Dialog.Root>
               <Dialog.Trigger asChild>
@@ -190,78 +187,78 @@ const [showWallets, setShowWallets] = useState(false);
                     <Dialog.Title className="text-2xl font-semibold border-b pb-4">Profile Details</Dialog.Title>
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {/* Wallet Details Toggle */}
-                        <div className="col-span-3">
+                      {/* Wallet Details Toggle */}
+                      <div className="col-span-3">
                         <div className="flex justify-between items-center">
                           <div className="text-sm font-semibold">
-                          <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
-                          {walletBalance ? `${walletBalance} ETH` : 'N/A'}
+                            <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
+                            {walletBalance ? `${walletBalance} ETH` : 'N/A'}
                           </div>
                           <button
-                          onClick={() => setShowWallets((prev) => !prev)}
-                          className="px-3 py-1 border rounded text-sm"
+                            onClick={() => setShowWallets((prev) => !prev)}
+                            className="px-3 py-1 border rounded text-sm"
                           >
-                          {showWallets ? 'Hide Wallets' : 'Show Wallets'}
+                            {showWallets ? 'Hide Wallets' : 'Show Wallets'}
                           </button>
                         </div>
                         {showWallets && (
                           <div className="mt-4 space-y-4">
-                          {/* Ethereum Wallet */}
-                          <div className="flex flex-col">
-                            <span className="text-main-blue text-base">Ethereum Wallet Address:</span>
-                            <div className="flex items-center gap-2 mt-1">
-                            <input
-                              type="text"
-                              value={embeddedWallet?.address || ''}
-                              readOnly
-                              className="border rounded-lg px-4 py-2 w-full"
-                            />
-                            <button
-                              onClick={() => {
-                              navigator.clipboard.writeText(embeddedWallet?.address || '');
-                              toast.success('Copied to clipboard');
-                              }}
-                              className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
-                            >
-                              Copy
-                            </button>
+                            {/* Ethereum Wallet */}
+                            <div className="flex flex-col">
+                              <span className="text-main-blue text-base">Ethereum Wallet Address:</span>
+                              <div className="flex items-center gap-2 mt-1">
+                                <input
+                                  type="text"
+                                  value={embeddedWallet?.address || ''}
+                                  readOnly
+                                  className="border rounded-lg px-4 py-2 w-full"
+                                />
+                                <button
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(embeddedWallet?.address || '');
+                                    toast.success('Copied to clipboard');
+                                  }}
+                                  className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                >
+                                  Copy
+                                </button>
+                              </div>
+                            </div>
+                            {/* Solana Wallet or Create Button */}
+                            <div className="flex flex-col">
+                              {solanaWallet ? (
+                                <>
+                                  <span className="text-main-blue text-base">Solana Wallet Address:</span>
+                                  <div className="flex items-center gap-2 mt-1">
+                                    <input
+                                      type="text"
+                                      value={solanaWallet}
+                                      readOnly
+                                      className="border rounded-lg px-4 py-2 w-full"
+                                    />
+                                    <button
+                                      onClick={() => {
+                                        navigator.clipboard.writeText(solanaWallet || '');
+                                        toast.success('Copied to clipboard');
+                                      }}
+                                      className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
+                                    >
+                                      Copy
+                                    </button>
+                                  </div>
+                                </>
+                              ) : (
+                                <button
+                                  onClick={handleCreateSolanaWallet}
+                                  className="px-4 py-3 bg-green-500 hover:bg-green-600 text-white flex justify-center items-center rounded-lg transition-colors"
+                                >
+                                  {loading ? <FaSpinner /> : 'Create Solana Wallet'}
+                                </button>
+                              )}
                             </div>
                           </div>
-                          {/* Solana Wallet or Create Button */}
-                          <div className="flex flex-col">
-                            {solanaWallet ? (
-                            <>
-                              <span className="text-main-blue text-base">Solana Wallet Address:</span>
-                              <div className="flex items-center gap-2 mt-1">
-                              <input
-                                type="text"
-                                value={solanaWallet}
-                                readOnly
-                                className="border rounded-lg px-4 py-2 w-full"
-                              />
-                              <button
-                                onClick={() => {
-                                navigator.clipboard.writeText(solanaWallet || '');
-                                toast.success('Copied to clipboard');
-                                }}
-                                className="px-2 py-1 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
-                              >
-                                Copy
-                              </button>
-                              </div>
-                            </>
-                            ) : (
-                            <button
-                              onClick={handleCreateSolanaWallet}
-                              className="px-4 py-3 bg-green-500 hover:bg-green-600 text-white flex justify-center items-center rounded-lg transition-colors"
-                            >
-                             {loading ? <FaSpinner/> : 'Create Solana Wallet'}
-                            </button>
-                            )}
-                          </div>
-                          </div>
                         )}
-                        </div>
+                      </div>
                       {/* User ID Card */}
                       <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
                         <div className="flex items-center gap-3 mb-2">
@@ -338,4 +335,3 @@ const [showWallets, setShowWallets] = useState(false);
 };
 
 export default Header;
-

@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useState, useCallback } from 'react';
 import { clsx } from 'clsx';
@@ -43,15 +42,14 @@ export default function UploadVideoAsset() {
     setProgress(0);
 
     try {
-      const response = await api.post('/asset/request-upload',{
+      const response = await api.post('/asset/request-upload', {
         name: title,
         staticMP4: true,
         creatorId: {
           type: 'Unverified',
           value: user?.wallet?.address || '',
         },
-
-      })
+      });
 
       if (response.status !== 200) {
         throw new Error('Failed to request upload URL');
@@ -116,10 +114,10 @@ export default function UploadVideoAsset() {
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           className={clsx(
-            "border-dashed border-4 border-gray-300 rounded-md p-6 w-full h-full text-center cursor-pointer transition-colors relative",
+            'border-dashed border-4 border-gray-300 rounded-md p-6 w-full h-full text-center cursor-pointer transition-colors relative',
             {
-              "bg-gray-50 hover:bg-gray-100": !file,
-              "bg-gray-200": file,
+              'bg-gray-50 hover:bg-gray-100': !file,
+              'bg-gray-200': file,
             },
           )}
         >
@@ -129,11 +127,7 @@ export default function UploadVideoAsset() {
               <p className="text-gray-700 break-all">{file.name}</p>
               {file.type.startsWith('video') && (
                 <div className="mt-4 w-full overflow-hidden">
-                  <video
-                    src={URL.createObjectURL(file)}
-                    controls
-                    className="w-full h-40 object-contain"
-                  />
+                  <video src={URL.createObjectURL(file)} controls className="w-full h-40 object-contain" />
                 </div>
               )}
             </div>
@@ -189,26 +183,6 @@ export default function UploadVideoAsset() {
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // 'use client';
 // import React, { useState, useCallback } from 'react';

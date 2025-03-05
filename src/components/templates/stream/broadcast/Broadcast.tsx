@@ -240,7 +240,6 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   <div className="w-full rounded-b-md p-4 bg-white border-t text-justify">
                     <h1 className="text-black-secondary-text font-medium">Video</h1>
                     {/* Video Ads content */}
-                    
                   </div>
                 </div>
               </div>

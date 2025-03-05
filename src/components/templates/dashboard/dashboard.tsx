@@ -52,7 +52,6 @@
 //     (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
 //   );
 
-
 //   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
 //   const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -227,7 +226,7 @@
 //             ))
 //           ) : uploadedAssets ? (
 //             // Render the video cards when streams are available
-           
+
 //             <div>
 
 //             </div>)
@@ -479,7 +478,7 @@ const Dashboard = () => {
                   title={asset.name}
                   imageUrl={asset.thumbnail}
                   createdAt={asset.createdAt}
-                 
+
                   // Pass additional asset info as needed
                   // For example: thumbnail, playbackUrl, etc.
                 />

@@ -70,7 +70,7 @@ export const Settings = React.forwardRef(
                     className="inline-flex items-center text-white justify-between rounded-sm px-1 outline-1 outline-white/50 text-xs leading-none h-7 gap-1 outline-none"
                     aria-label="Playback quality"
                   >
-                    <Player.SelectValue placeholder="Select a quality..." className='text-white' />
+                    <Player.SelectValue placeholder="Select a quality..." className="text-white" />
                     <Player.SelectIcon>
                       <BiChevronDown className="h-4 w-4 text-white" />
                     </Player.SelectIcon>

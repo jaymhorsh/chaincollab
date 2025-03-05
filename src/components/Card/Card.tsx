@@ -68,7 +68,7 @@ export const VideoCard = ({ title, imageUrl, createdAt }: VideoCardProps) => {
         <Image src={imageUrl} objectFit="contain" className="rounded-md w-full" alt="channel image" />
         {/* Overlay Play Button */}
         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="text-white text-4xl" onClick={() => console.log('play')}>  
+          <button className="text-white text-4xl" onClick={() => console.log('play')}>
             <FaPlay />
           </button>
         </div>

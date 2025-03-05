@@ -16,6 +16,7 @@ interface UpdateLivestreamProps {
     creatorId?: string;
   };
 }
+
 export const createLivestream = createAsyncThunk(
   'streams/createLivestream',
   async ({ streamName, record, creatorId }: CreateLivestreamProps) => {
@@ -58,4 +59,3 @@ export const terminateStream = createAsyncThunk('streams/terminateStream', async
   await api.delete(`/stream/${id}/terminate`);
   return id;
 });
-
