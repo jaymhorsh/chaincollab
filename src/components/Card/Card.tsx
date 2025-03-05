@@ -60,7 +60,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
   );
 };
 
-export const VideoCard = ({ title, onAction, imageUrl, createdAt }: VideoCardProps) => {
+export const VideoCard = ({ title, imageUrl, createdAt }: VideoCardProps) => {
   return (
     <div className="w-full h-full relative group">
       {/* Image */}
@@ -68,7 +68,7 @@ export const VideoCard = ({ title, onAction, imageUrl, createdAt }: VideoCardPro
         <Image src={imageUrl} objectFit="contain" className="rounded-md w-full" alt="channel image" />
         {/* Overlay Play Button */}
         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="text-white text-4xl" onClick={onAction}>
+          <button className="text-white text-4xl" onClick={() => console.log('play')}>  
             <FaPlay />
           </button>
         </div>

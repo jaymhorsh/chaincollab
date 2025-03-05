@@ -22,7 +22,6 @@ export interface ChannelCardProps {
 }
 export interface VideoCardProps {
   title: string;
-  onAction: () => void;
   imageUrl: StaticImageData | string;
   createdAt?: Date;
 }
