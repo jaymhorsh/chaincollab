@@ -6,8 +6,10 @@ import { RiVideoAddLine } from 'react-icons/ri';
 import { RotatingLines } from 'react-loader-spinner';
 import tus from 'tus-js-client';
 import api from '@/utils/api';
+import { usePrivy } from '@privy-io/react-auth';
 
 export default function UploadVideoAsset() {
+  const { user } = usePrivy();
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [uploading, setUploading] = useState(false);
@@ -41,9 +43,15 @@ export default function UploadVideoAsset() {
     setProgress(0);
 
     try {
-      // 1. Request an upload URL from Livepeer
-      // const token = '03a07a54-0519-4c3b-871a-e659e3814e71';
-      const response = await api.post('/asset/request-upload')
+      const response = await api.post('/asset/request-upload',{
+        name: title,
+        staticMP4: true,
+        creatorId: {
+          type: 'Unverified',
+          value: user?.wallet?.address || '',
+        },
+
+      })
 
       if (response.status !== 200) {
         throw new Error('Failed to request upload URL');
