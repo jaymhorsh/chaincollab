@@ -73,7 +73,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
       {/* Thumbnail Image with hover overlay */}
       <div className="w-full bg-gray-200 rounded-md overflow-hidden relative">
         <Image
-          src={imageUrl}
+          src={imageUrl} 
           alt="channel image"
           className="rounded-md w-full object-contain"
           width={400}
