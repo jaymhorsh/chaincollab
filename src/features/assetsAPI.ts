@@ -25,3 +25,8 @@ export const getAssets = createAsyncThunk('assets/getAssets', async () => {
   const response = await api.get('/asset');
   return response.data;
 });
+
+export const deleteAsset = createAsyncThunk('assets/deleteAsset', async (assetId: string) => {
+  await api.delete(`/asset/${assetId}`);
+  return assetId;
+});

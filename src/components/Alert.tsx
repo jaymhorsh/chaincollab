@@ -50,7 +50,7 @@ export const AlertDialogs: React.FC<AlertDialogDemoProps> = ({
                   animationDuration="0.75"
                   strokeColor="red"
                   ariaLabel="rotating-lines-loading"
-                  width="14"
+                  width="17"
                 />
               ) : (
                 confirmLabel

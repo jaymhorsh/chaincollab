@@ -2,7 +2,7 @@ import React, { ReactNode } from 'react';
 
 const SectionCard = ({ children, title }: { children: React.ReactNode; title: string }) => {
   return (
-    <section className="px-6 py-4 pb-10 rounded-lg my-4 bg-white">
+    <section className="px-6 w-full py-4 pb-10 relative rounded-lg my-4 bg-white">
       <div className="w-full h-full">
         <div className="flex flex-col justify-center  gap-y-3">
           <div>

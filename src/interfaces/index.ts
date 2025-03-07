@@ -22,8 +22,10 @@ export interface ChannelCardProps {
 }
 export interface VideoCardProps {
   title: string;
+  assetData: Asset;
   imageUrl: StaticImageData | string;
   createdAt?: Date;
+  format?: string;
 }
 export interface Stream {
   id: string;
@@ -34,9 +36,28 @@ export interface Stream {
 }
 
 export interface PopupProps {
-  // showOptions: boolean;
-  // toggleOptions: () => void;
-  // optionsRef: React.RefObject<HTMLDivElement>;
   streamId: string;
   playbackId: string;
+}
+export interface AssetPopProps {
+  // assetId?: string;
+  // name?: string;
+  asset: any;
+}
+
+export interface Asset {
+  id: string;
+  name: string;
+  size: number;
+  source: { type: string };
+  status: { phase: string; updatedAt: number };
+  userId: string;
+  createdAt: number; // You can convert this to a Date in your UI
+  creatorId: { type: string; value: string };
+  projectId: string;
+  videoSpec: { format: string; bitrate: number; duration: number };
+  playbackId: string;
+  createdByTokenName: string;
+  downloadUrl: string;
+  playbackUrl: string;
 }

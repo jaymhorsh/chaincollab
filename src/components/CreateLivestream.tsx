@@ -7,7 +7,7 @@ import { RotatingLines } from 'react-loader-spinner';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/store/store';
 import { RootState } from '@/store/store';
-import { createLivestream } from '@/features/streamAPI'; // Assume you have a reset action
+import { createLivestream, getAllStreams } from '@/features/streamAPI'; // Assume you have a reset action
 
 import { toast } from 'sonner';
 import { usePrivy } from '@privy-io/react-auth';
@@ -29,29 +29,6 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, success } = useSelector((state: RootState) => state.streams);
 
-  useEffect(() => {
-    if (success) {
-      toast.success('Stream created successfully');
-      setTimeout(() => {
-        setFormData({
-          streamName: '',
-          record: false,
-          creatorId: user?.wallet?.address || '',
-        });
-        dispatch(resetStreamStatus());
-        close();
-      }, 1200);
-    }
-  }, [success, dispatch, close, user]);
-
-  // Effect to handle error feedback
-  useEffect(() => {
-    if (error) {
-      toast.error(error);
-      dispatch(resetStreamStatus());
-    }
-  }, [error, dispatch]);
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
@@ -66,13 +43,27 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
     }
 
     // Dispatch createLivestream action
-    dispatch(
-      createLivestream({
-        streamName: formData.streamName,
-        record: formData.record,
-        creatorId: formData.creatorId,
-      }),
-    );
+    try {
+      await dispatch(
+        createLivestream({
+          streamName: formData?.streamName,
+          record: formData?.record,
+          creatorId: formData?.creatorId,
+        }),
+      );
+      setFormData({
+        streamName: '',
+        record: false,
+        creatorId: user?.wallet?.address || '',
+      });
+      toast.success('Stream created successfully');
+      dispatch(getAllStreams());
+      dispatch(resetStreamStatus());
+      close();
+    } catch (err: any) {
+      toast.error(error || 'Failed to create stream');
+      dispatch(resetStreamStatus());
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

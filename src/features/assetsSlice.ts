@@ -1,29 +1,33 @@
 // assetsSlice.ts
 import { createSlice } from '@reduxjs/toolkit';
 import { getAssets, requestAssetUpload } from './assetsAPI';
-
-interface Asset {
-  id: string;
-  name: string;
-  // include additional fields as provided by Livepeer
-}
+import { deleteStream } from './streamAPI';
+import { Asset } from '@/interfaces/index';
 
 interface AssetsState {
   assets: Asset[];
   loading: boolean;
   error: string | null;
+  success: boolean;
 }
 
 const initialState: AssetsState = {
   assets: [],
   loading: false,
   error: null,
+  success: false,
 };
 
 const assetsSlice = createSlice({
   name: 'assets',
   initialState,
-  reducers: {},
+  reducers: {
+    resetAssetStatus: (state) => {
+      state.loading = false;
+      state.error = null;
+      state.success = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getAssets.pending, (state) => {
@@ -34,6 +38,19 @@ const assetsSlice = createSlice({
         state.error = null;
         state.assets = action.payload;
       })
+      .addCase(deleteStream.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(deleteStream.fulfilled, (state, action) => {
+        state.assets = state.assets.filter((asset) => asset.id !== action.payload);
+        state.loading = false;
+        state.success = true;
+        // Add logic to remove the asset from the state when a stream is deleted
+      })
+      .addCase(deleteStream.rejected, (state, action) => {
+        state.error = action.error.message || 'Failed to delete asset';
+      })
+
       .addCase(getAssets.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message || 'Failed to fetch assets';
@@ -51,5 +68,5 @@ const assetsSlice = createSlice({
       });
   },
 });
-
+export const { resetAssetStatus } = assetsSlice.actions;
 export default assetsSlice.reducer;

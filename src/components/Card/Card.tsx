@@ -2,9 +2,10 @@
 import React, { useRef, useState } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
-import { Popup } from '../Popup';
+import { AssetPopup, Popup } from '../Popup';
 import Image from 'next/image';
 import { FaPlay } from 'react-icons/fa';
+import { DemoPlay } from '../templates/dashboard/DemoPlay';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -42,7 +43,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
       {/* Title and Actions */}
       <div className="flex justify-between items-center">
         <div>
-          <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2">{title}</h2>
+          <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2 break-words">{title}</h2>
         </div>
         <div className="ml-auto pt-2">
           {streamId && playbackId && <Popup streamId={streamId} playbackId={playbackId} />}
@@ -60,32 +61,53 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
   );
 };
 
-export const VideoCard = ({ title, imageUrl, createdAt }: VideoCardProps) => {
+export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, assetData, format }) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  console.log(isDialogOpen);
+  const handlePlayClick = () => {
+    setIsDialogOpen(true);
+  };
+
   return (
     <div className="w-full h-full relative group">
-      {/* Image */}
+      {/* Thumbnail Image with hover overlay */}
       <div className="w-full bg-gray-200 rounded-md overflow-hidden relative">
-        <Image src={imageUrl} objectFit="contain" className="rounded-md w-full" alt="channel image" />
-        {/* Overlay Play Button */}
-        <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <button className="text-white text-4xl" onClick={() => console.log('play')}>
+        <Image
+          src={imageUrl}
+          alt="channel image"
+          className="rounded-md w-full object-contain"
+          width={400}
+          height={225}
+        />
+        {/* Overlay that appears on hover */}
+        <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition duration-300">
+          <button onClick={handlePlayClick} className="text-white text-4xl opacity-0 group-hover:opacity-100">
             <FaPlay />
           </button>
         </div>
       </div>
-      {/* Title */}
+      {/* Title and Popup */}
       <div className="flex justify-between items-center mt-2">
         <div>
-          <h2 className="font-bold text-black-primary-text text-lg capitalize">{title}</h2>
+          <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2 break-words">
+            {title}
+            {format ? `.${assetData.videoSpec.format}` : ''}
+          </h2>
         </div>
         <div className="ml-auto">
-          {/* Popup */}
-          <Popup streamId="1" playbackId="1" />
+          <AssetPopup asset={assetData} />
         </div>
       </div>
       <div className="flex justify-start">
         <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
       </div>
+      {/* Video Player Dialog */}
+      <DemoPlay
+        open={isDialogOpen}
+        onClose={() => setIsDialogOpen(false)}
+        playbackId={assetData.playbackId}
+        title={assetData.name}
+      />
     </div>
   );
 };
