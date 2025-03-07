@@ -14,7 +14,6 @@ export function usePlaybackInfo(playbackId: string | null) {
     const livepeer = new Livepeer({
       apiKey: process.env.NEXT_PUBLIC_STUDIO_API_KEY ?? '',
     });
-
     const fetchData = async () => {
       setLoading(true);
       try {
