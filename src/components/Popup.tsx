@@ -33,21 +33,23 @@ PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
 
 //
-import { useEffect, useState } from 'react';
-import { AiOutlineEdit } from 'react-icons/ai';
+import { useState } from 'react';
+import { AiOutlineCloudDownload, AiOutlineEdit } from 'react-icons/ai';
 import { BiNotepad } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { HiLink } from 'react-icons/hi';
 import { PiCalendarCheckBold } from 'react-icons/pi';
 import { RiDeleteBin6Line, RiTokenSwapFill } from 'react-icons/ri';
 import { AlertDialogs } from './Alert';
-import { PopupProps } from '@/interfaces/index';
+import { AssetPopProps, PopupProps } from '@/interfaces/index';
 import { toast } from 'sonner';
 import { useDispatch, useSelector } from 'react-redux';
-import { deleteStream } from '@/features/streamAPI';
+import { deleteStream, getAllStreams } from '@/features/streamAPI';
 import { AppDispatch, RootState } from '@/store/store';
 import { RotatingLines } from 'react-loader-spinner';
 import { resetStreamStatus } from '@/features/streamSlice';
+import { deleteAsset, getAssets } from '@/features/assetsAPI';
+import { resetAssetStatus } from '@/features/assetsSlice';
 
 const listItemClassNames = {
   option: 'flex items-center text-lg px-5 py-2 hover:bg-gray-100 cursor-pointer',
@@ -56,7 +58,7 @@ const listItemClassNames = {
 
 export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const dispatch = useDispatch<AppDispatch>();
-  const { error, success } = useSelector((state: RootState) => state.streams);
+  const { error } = useSelector((state: RootState) => state.streams);
   const [alertOpen, setAlertOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -102,18 +104,15 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
     setIsLoading(true);
     try {
       await dispatch(deleteStream(streamId)).unwrap();
-      if (success) {
-        toast.success('Channel deleted successfully');
-        dispatch(resetStreamStatus());
-      }
+
+      toast.success('Channel deleted successfully');
+      dispatch(resetStreamStatus());
+      dispatch(getAllStreams());
+      setAlertOpen(false);
     } catch (err: any) {
-      if (error) {
-        toast.error(error);
-        toast.error(error || 'Failed to delete channel');
-      }
+      toast.error(error || 'Failed to delete channel');
     }
     setIsLoading(false);
-    setAlertOpen(false);
   };
 
   return (
@@ -142,7 +141,7 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
             <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
           </DropdownMenu.Item>
           <DropdownMenu.Item onSelect={handleDeleteChannel} className={listItemClassNames.option}>
-            <RiDeleteBin6Line className={listItemClassNames.icon} />
+            <RiDeleteBin6Line className={`${listItemClassNames.icon} text-red-700`} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Delete channel</p>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
@@ -161,44 +160,86 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   );
 };
 
-{
-  /* <DropdownMenu.Root>
+export const AssetPopup = ({ asset }: AssetPopProps) => {
+  const dispatch = useDispatch<AppDispatch>();
+  const { error } = useSelector((state: RootState) => state.assets);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleDeleteAsset = () => {
+    // Simply open the alert dialog.
+    setAlertOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    setIsLoading(true);
+    try {
+      await dispatch(deleteAsset(asset.id)).unwrap();
+      toast.success('Asset deleted successfully');
+      dispatch(resetAssetStatus());
+      // Refresh assets list
+      dispatch(getAssets());
+      setAlertOpen(false); // close the dialog after successful delete
+    } catch (err: any) {
+      toast.error(error || 'Failed to delete asset');
+    }
+    setIsLoading(false);
+  };
+  const handleCopyAssetLink = () => {
+    // Copy the stream link to the clipboard.
+    if (asset.downloadUrl) {
+      navigator.clipboard
+        .writeText(asset.downloadUrl)
+        .then(() => {
+          toast.success('Download Link copied!');
+        })
+        .catch(() => {
+          toast.error("Download Link isn't available.");
+        });
+    }
+  };
+  const handleDownloadAds = () => {
+    if (asset.downloadUrl) {
+      window.open(asset.downloadUrl, '_blank', 'noopener,noreferrer');
+    } else {
+      toast.error('Download URL not available.');
+    }
+  };
+  return (
+    <>
+      <DropdownMenu.Root>
         <DropdownMenu.Trigger asChild>
           <button className="p-2">
-            <IoMdMore className="text-xl" />
+            <BsThreeDotsVertical className="text-lg cursor-pointer text-black-primary-text focus:bg-main-blue focus:ring-2 focus:ring-offset-2" />
           </button>
         </DropdownMenu.Trigger>
-        <DropdownMenu.Content className="min-w-[200px] bg-white rounded shadow-md p-2">
-          <DropdownMenu.Item
-            onSelect={handleEditDetails}
-            className="cursor-pointer p-2 hover:bg-gray-100"
-          >
-            Edit details
+        <DropdownMenu.Content className="min-w-[200px] min-h-[100px] z-50 bg-white rounded shadow-md p-2">
+          <DropdownMenu.Item onSelect={handleCopyAssetLink} className={listItemClassNames.option}>
+            <RiTokenSwapFill className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Copy Download URL</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleCopyStreamLink}
-            className="cursor-pointer p-2 hover:bg-gray-100"
-          >
-            Copy Stream Link
+
+          <DropdownMenu.Item onSelect={handleDownloadAds} className={listItemClassNames.option}>
+            <AiOutlineCloudDownload className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Download video</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleScheduleStream}
-            className="cursor-pointer p-2 hover:bg-gray-100"
-          >
-            Schedule stream
-          </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleCustomizeChannel}
-            className="cursor-pointer p-2 hover:bg-gray-100"
-          >
-            Customize channel
-          </DropdownMenu.Item>
-          <DropdownMenu.Item
-            onSelect={handleDeleteChannel}
-            className="cursor-pointer p-2 hover:bg-gray-100"
-          >
-            Delete channel
+
+          <DropdownMenu.Item onSelect={handleDeleteAsset} className={listItemClassNames.option}>
+            <RiDeleteBin6Line className={`${listItemClassNames.icon} text-red-700`} />
+            <p className="ml-2 text-sm font-medium text-black-primary-text">Delete video</p>
           </DropdownMenu.Item>
         </DropdownMenu.Content>
-      </DropdownMenu.Root> */
-}
+      </DropdownMenu.Root>
+      <AlertDialogs
+        open={alertOpen}
+        setOpen={setAlertOpen}
+        title="Delete Asset"
+        description="Are you sure you want to delete this Video? This action cannot be undone."
+        cancelLabel="Cancel"
+        confirmLabel="Yes, Delete Asset"
+        onConfirm={confirmDelete}
+        loading={isLoading}
+      />
+    </>
+  );
+};
