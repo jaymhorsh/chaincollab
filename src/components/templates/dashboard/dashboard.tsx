@@ -21,6 +21,7 @@ import image1 from '../../../../public/assets/images/image1.png';
 import Spinner from '@/components/Spinner';
 import UploadVideoAsset from '@/components/UploadVideoAsset';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
+import { Asset } from '@/interfaces';
 
 const Dashboard = () => {
   const { user, ready, authenticated } = usePrivy();
@@ -29,7 +30,6 @@ const Dashboard = () => {
   const { streams, loading: streamsLoading, error: streamsError } = useSelector((state: RootState) => state.streams);
   const { assets, loading: assetsLoading, error: assetsError } = useSelector((state: RootState) => state.assets);
   const [currentPage, setCurrentPage] = useState(1);
-  console.log(streams);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDialogOpen2, setIsDialogOpen2] = useState(false);
   const itemsPerPage = 5;
@@ -55,12 +55,13 @@ const Dashboard = () => {
     }
   }, [ready, authenticated, navigate]);
 
-  console.log(assets);
   // Filter streams based on user's wallet address
   const filteredStreams = streams.filter(
     (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
   );
-
+const filteredAssets = assets.filter(
+    (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
+  );
   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
   const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -231,12 +232,12 @@ const Dashboard = () => {
             ))
           ) : (
             <>
-              {assets.length === 0 ? (
+              {filteredAssets.length === 0 ? (
                 <div className="flex justify-center items-center h-60">
                   <p className="text-black-primary-text">No Asset uploaded.</p>
                 </div>
               ) : (
-                assets.map((asset) => (
+                filteredAssets.map((asset) => (
                   <div key={asset.id}>
                     <VideoCard
                       title={asset.name}
