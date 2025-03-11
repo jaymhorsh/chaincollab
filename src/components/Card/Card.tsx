@@ -35,18 +35,17 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
 };
 
 export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image }) => {
-  const { thumbnailUrl, loading , error} = useFetchPlaybackId(playbackId ?? null);
-  console.log('thurm', thumbnailUrl, error)
+  const { thumbnailUrl, error } = useFetchPlaybackId(playbackId ?? null);
+  // console.log('thurm', thumbnailUrl, error);
   return (
     <div className="w-full h-full relative">
       {/* Image */}
       <div className="w-full bg--gray rounded-md">
-        {/* <Image src={image} alt="channel image" className="rounded-md w-full" style={{ objectFit: 'contain' }} /> */}
         <Image
           src={thumbnailUrl || image}
           alt={title}
-          objectFit= 'inherit'
-         className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
+          objectFit="inherit"
+          className="rounded-md w-full max-sm:h-[220px] h-[200px]  object-cover"
           width={400}
           height={180}
         />
@@ -72,13 +71,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
   );
 };
 
-export const VideoCard: React.FC<VideoCardProps> = ({
-  title,
-  imageUrl,
-  createdAt,
-  assetData,
-  format,
-}) => {
+export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, assetData, format }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
 
@@ -94,25 +87,19 @@ export const VideoCard: React.FC<VideoCardProps> = ({
           <div className="flex items-center justify-center h-full">
             <p>Loading...</p>
           </div>
-        ) 
-         : (
-
+        ) : (
           <Image
-          src={thumbnailUrl || imageUrl}
-          alt={assetData.name}
-          objectFit= 'inherit'
-         className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
-          width={400}
-          height={180}
-        />
-        
+            src={thumbnailUrl || imageUrl}
+            alt={assetData.name}
+            objectFit="inherit"
+            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
+            width={400}
+            height={180}
+          />
         )}
         {/* Overlay that appears on hover */}
         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition duration-300">
-          <button
-            onClick={handlePlayClick}
-            className="text-white text-4xl opacity-0 group-hover:opacity-100"
-          >
+          <button onClick={handlePlayClick} className="text-white text-4xl opacity-0 group-hover:opacity-100">
             <FaPlay />
           </button>
         </div>
@@ -122,7 +109,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         <div>
           <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2 break-words">
             {title}
-            {format ? `.${assetData.videoSpec.format}` : ""}
+            {format ? `.${assetData.videoSpec.format}` : ''}
           </h2>
         </div>
         <div className="ml-auto">
@@ -130,9 +117,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
         </div>
       </div>
       <div className="flex justify-start">
-        <p className="text-sm text-gray-500">
-          {createdAt ? createdAt.toDateString() : ""}
-        </p>
+        <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
       </div>
       {/* Video Player Dialog */}
       <DemoPlay

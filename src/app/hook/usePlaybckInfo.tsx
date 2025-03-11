@@ -50,17 +50,16 @@ export function usePlaybackInfo(playbackId: string | null) {
 //   }, []);
 // };
 
-
 // Utility function to convert VTT URL to PNG thumbnail URL
 const getThumbnailUrl = (vttUrl: string) => {
-  return vttUrl.replace("thumbnails/thumbnails.vtt", "thumbnails/keyframes_0.png");
+  return vttUrl.replace('thumbnails/thumbnails.vtt', 'thumbnails/keyframes_0.png');
 };
 
 export const useFetchPlaybackId = (playbackId: string | null) => {
   const [playbackInfo, setPlaybackInfo] = useState<{} | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [thumbnailUrl, setThumbnailUrl] = useState<string>("");
+  const [thumbnailUrl, setThumbnailUrl] = useState<string>('');
 
   useEffect(() => {
     if (!playbackId) return;
@@ -70,9 +69,7 @@ export const useFetchPlaybackId = (playbackId: string | null) => {
         setLoading(true);
         const response = await api.get(`/playback/${playbackId}`);
         if (response?.data?.meta?.source) {
-          const thumbnailSource = response.data.meta.source.find(
-            (item: any) => item.hrn === "Thumbnails"
-          );
+          const thumbnailSource = response.data.meta.source.find((item: any) => item.hrn === 'Thumbnails');
           if (thumbnailSource) {
             const url = getThumbnailUrl(thumbnailSource.url);
             setThumbnailUrl(url);
@@ -80,7 +77,7 @@ export const useFetchPlaybackId = (playbackId: string | null) => {
         }
         setPlaybackInfo(response?.data || {});
       } catch (err: any) {
-        setError(err.message || "Failed to fetch playback data");
+        setError(err.message || 'Failed to fetch playback data');
       } finally {
         setLoading(false);
       }

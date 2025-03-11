@@ -29,6 +29,7 @@ const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading: streamsLoading, error: streamsError } = useSelector((state: RootState) => state.streams);
   const { assets, loading: assetsLoading, error: assetsError } = useSelector((state: RootState) => state.assets);
+
   const [currentPage, setCurrentPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDialogOpen2, setIsDialogOpen2] = useState(false);
@@ -59,6 +60,7 @@ const Dashboard = () => {
   const filteredStreams = streams.filter(
     (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
   );
+  console.log(filteredStreams)
   const filteredAssets = assets.filter(
     (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
   );
@@ -234,7 +236,7 @@ const Dashboard = () => {
             <>
               {filteredAssets.length === 0 ? (
                 <div className="flex justify-center items-center h-60">
-                  <p className="text-black-primary-text">No Asset uploaded.</p>
+                  <p className="text-black-primary-text">No Asset Available.</p>
                 </div>
               ) : (
                 filteredAssets.map((asset) => (
