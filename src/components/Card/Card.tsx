@@ -35,11 +35,21 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
 };
 
 export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image }) => {
+  const { thumbnailUrl, loading , error} = useFetchPlaybackId(playbackId ?? null);
+  console.log('thurm', thumbnailUrl, error)
   return (
     <div className="w-full h-full relative">
       {/* Image */}
       <div className="w-full bg--gray rounded-md">
-        <Image src={image} alt="channel image" className="rounded-md w-full" style={{ objectFit: 'contain' }} />
+        {/* <Image src={image} alt="channel image" className="rounded-md w-full" style={{ objectFit: 'contain' }} /> */}
+        <Image
+          src={thumbnailUrl || image}
+          alt={title}
+          objectFit= 'inherit'
+         className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
+          width={400}
+          height={180}
+        />
       </div>
       {/* Title and Actions */}
       <div className="flex justify-between items-center">
@@ -70,7 +80,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({
   format,
 }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const { thumbnailUrl, loading, error } = useFetchPlaybackId(assetData.playbackId);
+  const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
 
   const handlePlayClick = () => {
     setIsDialogOpen(true);

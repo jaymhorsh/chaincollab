@@ -3,10 +3,6 @@ import * as Dialog from '@radix-ui/react-dialog';
 import { cn } from '@/lib/utils';
 import { IoMdClose } from 'react-icons/io';
 import DemoClient from '@/components/DemoClient';
-import { useEffect, useState } from 'react';
-import { getPlaybackInfo } from '@/lib/livepeer';
-import { getSrc } from '@livepeer/react/external';
-import type { Src } from '@livepeer/react';
 import { PlayerLoading } from '../player/player/Player';
 import { usePlaybackInfo } from '@/app/hook/usePlaybckInfo';
 
@@ -19,7 +15,7 @@ interface VideoPlayerDialogProps {
 
 export const DemoPlay: React.FC<VideoPlayerDialogProps> = ({ open, onClose, playbackId, title }) => {
   const { src, loading, error } = usePlaybackInfo(playbackId);
-  console.log(src, loading, error);
+  // console.log(src, loading, error);
   if (loading) {
     return (
       <PlayerLoading>
