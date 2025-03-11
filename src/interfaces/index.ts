@@ -19,6 +19,7 @@ export interface ChannelCardProps {
   playbackId?: string;
   host?: string;
   image: StaticImageData;
+  playb?: any;
 }
 export interface VideoCardProps {
   title: string;

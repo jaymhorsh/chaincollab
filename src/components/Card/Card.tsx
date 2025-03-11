@@ -6,7 +6,7 @@ import { AssetPopup, Popup } from '../Popup';
 import Image from 'next/image';
 import { FaPlay } from 'react-icons/fa';
 import { DemoPlay } from '../templates/dashboard/DemoPlay';
-import { useFetchPlaybackId } from '@/app/hook/usePlaybckInfo';
+import { useFetchPlaybackId, useFetchStreamPlaybackId } from '@/app/hook/usePlaybckInfo';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -34,9 +34,10 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
   );
 };
 
-export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image }) => {
-  const { thumbnailUrl, error } = useFetchPlaybackId(playbackId ?? null);
-  // console.log('thurm', thumbnailUrl, error);
+export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image ,playb}) => {
+  const { thumbnailUrl , playbackInfo} = useFetchStreamPlaybackId(playb);
+
+  console.log(playbackInfo, thumbnailUrl, playb);
   return (
     <div className="w-full h-full relative">
       {/* Image */}

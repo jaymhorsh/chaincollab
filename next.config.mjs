@@ -9,7 +9,7 @@ const nextConfig = {
       process.env.NEXT_PUBLIC_PRIVY_ENVIRONMENT_ID,
   },
   images: {
-    domains: ["vod-cdn.lp-playback.studio"],
+    domains: ["vod-cdn.lp-playback.studio", 'recordings-cdn-s.lp-playback.studio'],
   },
 };
 

@@ -144,6 +144,7 @@ const Dashboard = () => {
                       goLive={() => initiateLiveVideo(stream.id)}
                       streamId={stream.id}
                       playbackId={stream.id}
+                      playb={stream.playbackId}
                     />
                   </div>
                 ))
