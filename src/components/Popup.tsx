@@ -32,7 +32,9 @@ PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
 
-//
+
+
+//Usage
 import { useState } from 'react';
 import { AiOutlineCloudDownload, AiOutlineEdit } from 'react-icons/ai';
 import { BiNotepad } from 'react-icons/bi';
@@ -50,6 +52,7 @@ import { RotatingLines } from 'react-loader-spinner';
 import { resetStreamStatus } from '@/features/streamSlice';
 import { deleteAsset, getAssets } from '@/features/assetsAPI';
 import { resetAssetStatus } from '@/features/assetsSlice';
+import { UpdateLivestream } from './UpdateLivestream';
 
 const listItemClassNames = {
   option: 'flex items-center text-lg px-5 py-2 hover:bg-gray-100 cursor-pointer',
@@ -61,14 +64,15 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const { error } = useSelector((state: RootState) => state.streams);
   const [alertOpen, setAlertOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
 
   const handleEditDetails = () => {
-    toast('Edit details clicked');
-    // TODO: Open edit modal or navigate to edit page.
+    setIsDialogOpen(true);
+    // return <UpdateLivestream  open={isDialogOpen} onClose={() => setIsDialogOpen(false)}  id= {streamId}/>
   };
 
   const handleCopyStreamLink = () => {
@@ -126,7 +130,7 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         <DropdownMenu.Content className="min-w-[200px] min-h-[200px] z-50 bg-white rounded shadow-md p-2">
           <DropdownMenu.Item onSelect={handleEditDetails} className={listItemClassNames.option}>
             <HiLink className={listItemClassNames.icon} />
-            <p className="ml-2 text-sm text-black-primary-text font-medium">Edit details</p>
+            <p className="ml-2 text-sm text-black-primary-text font-medium">Edit Livestream/Channel</p>
           </DropdownMenu.Item>
           <DropdownMenu.Item onSelect={handleCopyStreamLink} className={listItemClassNames.option}>
             <AiOutlineEdit className={listItemClassNames.icon} />
@@ -156,6 +160,13 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         onConfirm={confirmDelete}
         loading={isLoading}
       />
+       {isDialogOpen && (
+        <UpdateLivestream 
+          open={isDialogOpen} 
+          onClose={() => setIsDialogOpen(false)} 
+          id={streamId} 
+        />
+      )}
     </>
   );
 };
@@ -205,6 +216,19 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
       toast.error('Download URL not available.');
     }
   };
+  const handlePlaybackId = () => {
+    // Copy the stream link to the clipboard.
+    if (asset.playbackId) {
+      navigator.clipboard
+        .writeText(asset.playbackId)
+        .then(() => {
+          toast.success('Playback ID copied!');
+        })
+        .catch(() => {
+          toast.error("Playback ID isn't available.");
+        });
+    }
+  };
   return (
     <>
       <DropdownMenu.Root>
@@ -222,6 +246,10 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
           <DropdownMenu.Item onSelect={handleDownloadAds} className={listItemClassNames.option}>
             <AiOutlineCloudDownload className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Download video</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={handlePlaybackId} className={listItemClassNames.option}>
+            <HiLink className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm text-black-primary-text font-medium">Copy PlaybackId</p>
           </DropdownMenu.Item>
 
           <DropdownMenu.Item onSelect={handleDeleteAsset} className={listItemClassNames.option}>

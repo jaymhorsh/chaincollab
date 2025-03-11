@@ -1,11 +1,12 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
 import { AssetPopup, Popup } from '../Popup';
 import Image from 'next/image';
 import { FaPlay } from 'react-icons/fa';
 import { DemoPlay } from '../templates/dashboard/DemoPlay';
+import { useFetchPlaybackId } from '@/app/hook/usePlaybckInfo';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -34,11 +35,20 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
 };
 
 export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image }) => {
+  const { thumbnailUrl, error } = useFetchPlaybackId(playbackId ?? null);
+  // console.log('thurm', thumbnailUrl, error);
   return (
     <div className="w-full h-full relative">
       {/* Image */}
       <div className="w-full bg--gray rounded-md">
-        <Image src={image} alt="channel image" className="rounded-md w-full" style={{ objectFit: 'contain' }} />
+        <Image
+          src={thumbnailUrl || image}
+          alt={title}
+          objectFit="inherit"
+          className="rounded-md w-full max-sm:h-[220px] h-[200px]  object-cover"
+          width={400}
+          height={180}
+        />
       </div>
       {/* Title and Actions */}
       <div className="flex justify-between items-center">
@@ -63,7 +73,8 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
 
 export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, assetData, format }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log(isDialogOpen);
+  const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
+
   const handlePlayClick = () => {
     setIsDialogOpen(true);
   };
@@ -72,13 +83,20 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
     <div className="w-full h-full relative group">
       {/* Thumbnail Image with hover overlay */}
       <div className="w-full bg-gray-200 rounded-md overflow-hidden relative">
-        <Image
-          src={imageUrl} 
-          alt="channel image"
-          className="rounded-md w-full object-contain"
-          width={400}
-          height={225}
-        />
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <p>Loading...</p>
+          </div>
+        ) : (
+          <Image
+            src={thumbnailUrl || imageUrl}
+            alt={assetData.name}
+            objectFit="inherit"
+            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
+            width={400}
+            height={180}
+          />
+        )}
         {/* Overlay that appears on hover */}
         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition duration-300">
           <button onClick={handlePlayClick} className="text-white text-4xl opacity-0 group-hover:opacity-100">

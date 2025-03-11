@@ -10,11 +10,10 @@ interface CreateLivestreamProps {
 
 interface UpdateLivestreamProps {
   id: string;
-  data: {
-    streamName?: string;
-    record?: boolean;
-    creatorId?: string;
-  };
+  record?: boolean,
+  creatorId?: string,
+  name?:string
+  suspended? : boolean
 }
 
 export const createLivestream = createAsyncThunk(
@@ -49,8 +48,18 @@ export const getStreamById = createAsyncThunk('streams/getStreamById', async (id
 
 export const updateLivestream = createAsyncThunk(
   'streams/updateStream',
-  async ({ id, data }: UpdateLivestreamProps) => {
-    const response = await api.put(`/stream/${id}`, data);
+  async ({id, record, creatorId, name, suspended  }: UpdateLivestreamProps) => {
+    const data = {
+      record,
+      creatorId: {
+        type: InputCreatorIdType.Unverified,
+        value: creatorId,
+      },
+      name,
+      suspended
+    };
+  
+    const response = await api.patch(`/stream/${id}`, data);
     return response.data;
   },
 );
