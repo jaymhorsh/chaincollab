@@ -205,6 +205,19 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
       toast.error('Download URL not available.');
     }
   };
+  const handlePlaybackId = () => {
+    // Copy the stream link to the clipboard.
+    if (asset.playbackId) {
+      navigator.clipboard
+        .writeText(asset.playbackId)
+        .then(() => {
+          toast.success('Playback ID copied!');
+        })
+        .catch(() => {
+          toast.error("Playback ID isn't available.");
+        });
+    }
+  };
   return (
     <>
       <DropdownMenu.Root>
@@ -222,6 +235,10 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
           <DropdownMenu.Item onSelect={handleDownloadAds} className={listItemClassNames.option}>
             <AiOutlineCloudDownload className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Download video</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={handlePlaybackId} className={listItemClassNames.option}>
+            <HiLink className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm text-black-primary-text font-medium">Copy PlaybackId</p>
           </DropdownMenu.Item>
 
           <DropdownMenu.Item onSelect={handleDeleteAsset} className={listItemClassNames.option}>

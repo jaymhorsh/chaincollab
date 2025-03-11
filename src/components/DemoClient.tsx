@@ -16,7 +16,7 @@ const DemoClient = ({ src }: { src: Src[] }) => {
       {' '}
       <Player.Root autoPlay src={src}>
         <Player.Container className="relative h-full w-full overflow-hidden rounded-md bg-gray-950 outline outline-1 outline-white/50 data-[playing=true]:outline-white/80 data-[playing=true]:outline-2 data-[fullscreen=true]:outline-none data-[fullscreen=true]:rounded-none transition-all">
-          <Player.Video title="ads" className="h-full w-full object-cover" />
+          <Player.Video title="ads" className="h-full w-full object-fit" />
 
           {/* Loading Indicator */}
           <Player.LoadingIndicator className="absolute inset-0 bg-black/50 backdrop-blur data-[visible=true]:animate-in data-[visible=false]:animate-out data-[visible=false]:fade-out-0 data-[visible=true]:fade-in-0">

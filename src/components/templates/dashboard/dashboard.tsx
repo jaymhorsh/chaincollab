@@ -59,7 +59,7 @@ const Dashboard = () => {
   const filteredStreams = streams.filter(
     (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
   );
-const filteredAssets = assets.filter(
+  const filteredAssets = assets.filter(
     (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
   );
   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);

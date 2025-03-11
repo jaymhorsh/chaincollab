@@ -18,8 +18,8 @@ interface VideoPlayerDialogProps {
 }
 
 export const DemoPlay: React.FC<VideoPlayerDialogProps> = ({ open, onClose, playbackId, title }) => {
- const {src, loading, error} = usePlaybackInfo(playbackId);
-console.log(src, loading, error);
+  const { src, loading, error } = usePlaybackInfo(playbackId);
+  console.log(src, loading, error);
   if (loading) {
     return (
       <PlayerLoading>
@@ -47,7 +47,7 @@ console.log(src, loading, error);
         <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
         <Dialog.Content
           className={cn(
-            'fixed left-1/2 top-1/2 max-w-3xl w-full -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-lg'
+            'fixed left-1/2 top-1/2 max-w-3xl w-full -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-lg',
           )}
         >
           <div className="flex justify-between items-center mb-4">

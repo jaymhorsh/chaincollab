@@ -1,11 +1,12 @@
 'use client';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
 import { AssetPopup, Popup } from '../Popup';
 import Image from 'next/image';
 import { FaPlay } from 'react-icons/fa';
 import { DemoPlay } from '../templates/dashboard/DemoPlay';
+import { useFetchPlaybackId } from '@/app/hook/usePlaybckInfo';
 
 export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps) => {
   return (
@@ -61,9 +62,16 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
   );
 };
 
-export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, assetData, format }) => {
+export const VideoCard: React.FC<VideoCardProps> = ({
+  title,
+  imageUrl,
+  createdAt,
+  assetData,
+  format,
+}) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  console.log(isDialogOpen);
+  const { thumbnailUrl, loading, error } = useFetchPlaybackId(assetData.playbackId);
+
   const handlePlayClick = () => {
     setIsDialogOpen(true);
   };
@@ -72,16 +80,29 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
     <div className="w-full h-full relative group">
       {/* Thumbnail Image with hover overlay */}
       <div className="w-full bg-gray-200 rounded-md overflow-hidden relative">
-        <Image
-          src={imageUrl} 
-          alt="channel image"
-          className="rounded-md w-full object-contain"
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <p>Loading...</p>
+          </div>
+        ) 
+         : (
+
+          <Image
+          src={thumbnailUrl || imageUrl}
+          alt={assetData.name}
+          objectFit= 'inherit'
+         className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
           width={400}
-          height={225}
+          height={180}
         />
+        
+        )}
         {/* Overlay that appears on hover */}
         <div className="absolute inset-0 flex justify-center items-center bg-black bg-opacity-0 group-hover:bg-opacity-50 transition duration-300">
-          <button onClick={handlePlayClick} className="text-white text-4xl opacity-0 group-hover:opacity-100">
+          <button
+            onClick={handlePlayClick}
+            className="text-white text-4xl opacity-0 group-hover:opacity-100"
+          >
             <FaPlay />
           </button>
         </div>
@@ -91,7 +112,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
         <div>
           <h2 className="font-bold text-black-primary-text text-lg capitalize pt-2 break-words">
             {title}
-            {format ? `.${assetData.videoSpec.format}` : ''}
+            {format ? `.${assetData.videoSpec.format}` : ""}
           </h2>
         </div>
         <div className="ml-auto">
@@ -99,7 +120,9 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
         </div>
       </div>
       <div className="flex justify-start">
-        <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
+        <p className="text-sm text-gray-500">
+          {createdAt ? createdAt.toDateString() : ""}
+        </p>
       </div>
       {/* Video Player Dialog */}
       <DemoPlay
