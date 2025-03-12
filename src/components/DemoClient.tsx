@@ -4,9 +4,11 @@ import {
   EnterFullscreenIcon,
   ExitFullscreenIcon,
   LoadingIcon,
+  MuteIcon,
   PauseIcon,
   PictureInPictureIcon,
   PlayIcon,
+  UnmuteIcon,
 } from '@livepeer/react/assets';
 import type { Src } from '@livepeer/react';
 
@@ -16,7 +18,7 @@ const DemoClient = ({ src }: { src: Src[] }) => {
       {' '}
       <Player.Root autoPlay src={src}>
         <Player.Container className="relative h-full w-full overflow-hidden rounded-md bg-gray-950 outline outline-1 outline-white/50 data-[playing=true]:outline-white/80 data-[playing=true]:outline-2 data-[fullscreen=true]:outline-none data-[fullscreen=true]:rounded-none transition-all">
-          <Player.Video title="ads" className="h-full w-full object-fit" />
+          <Player.Video title="ads" className="h-full w-full object-fit capitalize" />
 
           {/* Loading Indicator */}
           <Player.LoadingIndicator className="absolute inset-0 bg-black/50 backdrop-blur data-[visible=true]:animate-in data-[visible=false]:animate-out data-[visible=false]:fade-out-0 data-[visible=true]:fade-in-0">
@@ -33,7 +35,7 @@ const DemoClient = ({ src }: { src: Src[] }) => {
             <div className="flex items-center justify-center">
               <LoadingIcon className="h-8 w-8 animate-spin text-white" />
             </div>
-            <p className="text-white">An error occurred</p>
+            {/* <p className="text-white">An error occurred</p> */}
           </Player.ErrorIndicator>
 
           {/* Player Controls */}
@@ -45,12 +47,21 @@ const DemoClient = ({ src }: { src: Src[] }) => {
               <div className="flex flex-1 items-center gap-3">
                 <Player.PlayPauseTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
                   <Player.PlayingIndicator asChild matcher={false}>
-                    <PlayIcon className="w-full h-full" />
+                    <PlayIcon className="w-full h-full text-white" />
                   </Player.PlayingIndicator>
                   <Player.PlayingIndicator asChild>
                     <PauseIcon className="w-full h-full text-white" />
                   </Player.PlayingIndicator>
                 </Player.PlayPauseTrigger>
+                <Player.MuteTrigger className="w-6 h-6 hover:scale-110 transition-all flex-shrink-0">
+                  <Player.VolumeIndicator asChild matcher={false}>
+                    <MuteIcon className="w-full text-white h-full" />
+                  </Player.VolumeIndicator>
+                  <Player.VolumeIndicator asChild matcher={true}>
+                    <UnmuteIcon className="w-full text-white h-full" />
+                  </Player.VolumeIndicator>
+                </Player.MuteTrigger>
+                <Player.Time className="text-white text-sm" />
 
                 <Player.Volume className="relative mr-1 flex-1 group flex cursor-pointer items-center select-none touch-none max-w-[120px] h-5">
                   <Player.Track className="bg-white/30 relative grow rounded-full transition-all h-[2px] md:h-[3px] group-hover:h-[3px] group-hover:md:h-[4px]">

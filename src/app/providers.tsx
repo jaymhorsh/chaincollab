@@ -53,18 +53,18 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const ethProvider = new ethers.providers.Web3Provider(provider);
         const balance = await ethProvider.getBalance(wallet.address);
         const formattedBalance = ethers.utils.formatEther(balance);
-        console.log('Balance:', formattedBalance);
+        // console.log('Balance:', formattedBalance);
         setEthBalance(formattedBalance);
         setEmbeddedWallet(wallet);
       } catch (error) {
-        console.error('Error refreshing balance:', error);
+        // console.error('Error refreshing balance:', error);
       }
     }
   }, [ready, wallets, chainName]);
 
   useEffect(() => {
     refreshBalance();
-  }, [ready, wallets, refreshBalance, chainName ]);
+  }, [ready, wallets, refreshBalance, chainName]);
 
   return (
     <EthBalanceContext.Provider value={{ ethBalance, embeddedWallet, refreshBalance, chainName }}>

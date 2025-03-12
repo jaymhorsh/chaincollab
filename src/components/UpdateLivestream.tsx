@@ -40,7 +40,7 @@ export function UpdateLivestream({
 
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.streams);
-  console.log(id)
+  // console.log(id)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
@@ -52,10 +52,8 @@ export function UpdateLivestream({
     }
 
     // Ensure that at least one field has changed relative to the initial values
-    const hasChanged =
-      formData.name !== name ||
-      formData.record !== initialRecord
-      // formData.suspended !== initialSuspended;
+    const hasChanged = formData.name !== name || formData.record !== initialRecord;
+    // formData.suspended !== initialSuspended;
 
     if (!hasChanged) {
       setErrors((prev) => ({
@@ -64,7 +62,6 @@ export function UpdateLivestream({
       }));
       return;
     }
-
     try {
       await dispatch(
         updateLivestream({
@@ -111,6 +108,7 @@ export function UpdateLivestream({
           )}
         >
           <div className="flex justify-between items-center mb-4">
+            <Dialog.Title className="text-lg font-semibold text-black-primary-text">Update Stream</Dialog.Title>
             <Dialog.Close asChild>
               <button onClick={onClose} className="text-2xl">
                 <IoMdClose />
