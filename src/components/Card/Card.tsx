@@ -49,7 +49,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
             src={thumbnailUrl || image}
             alt={title}
             // objectFit="inherit"
-            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-inherit"
+            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
             width={400}
             height={180}
           />
@@ -97,7 +97,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
             src={thumbnailUrl || imageUrl}
             alt={assetData.name}
             // objectFit="inherit"
-            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-inherit"
+            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
             width={400}
             height={180}
           />
