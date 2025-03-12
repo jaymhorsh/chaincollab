@@ -60,7 +60,6 @@ const Dashboard = () => {
   const filteredStreams = streams.filter(
     (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
   );
-  console.log(filteredStreams)
   const filteredAssets = assets.filter(
     (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
   );

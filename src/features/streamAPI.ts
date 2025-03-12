@@ -48,18 +48,16 @@ export const getStreamById = createAsyncThunk('streams/getStreamById', async (id
 
 export const updateLivestream = createAsyncThunk(
   'streams/updateStream',
-  async ({id, record, creatorId, name, suspended  }: UpdateLivestreamProps) => {
-    const data = {
-      record,
-      creatorId: {
-        type: InputCreatorIdType.Unverified,
-        value: creatorId,
-      },
-      name,
-      suspended
-    };
+  async ({id, record, creatorId, name  }: UpdateLivestreamProps) => {
   
-    const response = await api.patch(`/stream/${id}`, data);
+    const response = await api.patch(`/stream/${id}`, {
+      name: name,
+      record,
+      // creatorId: {
+      //   type: InputCreatorIdType.Unverified,
+      //   value: creatorId,
+      // },
+    });
     return response.data;
   },
 );

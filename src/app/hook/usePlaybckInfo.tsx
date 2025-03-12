@@ -91,8 +91,6 @@ export const useFetchStreamPlaybackId = (playbackId: string | null) => {
               const url = getThumbnailUrl(thumbnailSource.url);
               setThumbnailUrl(url);
             }
-            setThumbnailUrl(thumbnailSource);
-        
         }
         setPlaybackInfo(response?.data || {});
       } catch (err: any) {

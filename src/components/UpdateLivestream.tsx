@@ -40,7 +40,7 @@ export function UpdateLivestream({
 
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error } = useSelector((state: RootState) => state.streams);
-  console.log(id)
+  // console.log(id)
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setErrors({});
@@ -64,7 +64,6 @@ export function UpdateLivestream({
       }));
       return;
     }
-
     try {
       await dispatch(
         updateLivestream({
@@ -110,7 +109,11 @@ export function UpdateLivestream({
             'fixed left-1/2 top-1/2 max-w-xl w-full -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-lg',
           )}
         >
+       
           <div className="flex justify-between items-center mb-4">
+             <Dialog.Title className="text-lg font-semibold text-black-primary-text">
+            Update Stream
+          </Dialog.Title>
             <Dialog.Close asChild>
               <button onClick={onClose} className="text-2xl">
                 <IoMdClose />

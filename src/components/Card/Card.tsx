@@ -35,21 +35,25 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
 };
 
 export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image ,playb}) => {
-  const { thumbnailUrl , playbackInfo} = useFetchStreamPlaybackId(playb);
-
-  console.log(playbackInfo, thumbnailUrl, playb);
+  const { thumbnailUrl, loading} = useFetchStreamPlaybackId(playb);
   return (
     <div className="w-full h-full relative">
       {/* Image */}
-      <div className="w-full bg--gray rounded-md">
-        <Image
-          src={thumbnailUrl || image}
-          alt={title}
-          objectFit="inherit"
-          className="rounded-md w-full max-sm:h-[220px] h-[200px]  object-cover"
-          width={400}
-          height={180}
-        />
+      <div className="w-full bg--gray rounded-md overflow-hidden relative">
+      {loading ? (
+          <div className="flex items-center w-full max-sm:h-[220px] h-[300px] lg:h-[200px] justify-center">
+            <p>Loading</p>
+          </div>
+        ) : (
+          <Image
+            src={thumbnailUrl || image}
+            alt={title}
+            // objectFit="inherit"
+            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-inherit"
+            width={400}
+            height={180}
+          />
+        )}
       </div>
       {/* Title and Actions */}
       <div className="flex justify-between items-center">
@@ -92,8 +96,8 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
           <Image
             src={thumbnailUrl || imageUrl}
             alt={assetData.name}
-            objectFit="inherit"
-            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
+            // objectFit="inherit"
+            className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-inherit"
             width={400}
             height={180}
           />
