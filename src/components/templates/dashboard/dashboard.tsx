@@ -144,6 +144,8 @@ const Dashboard = () => {
                       streamId={stream.id}
                       playbackId={stream.id}
                       playb={stream.playbackId}
+                      lastSeen={new Date(stream.lastSeen)}
+               
                     />
                   </div>
                 ))

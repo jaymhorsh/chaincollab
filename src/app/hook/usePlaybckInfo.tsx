@@ -85,12 +85,12 @@ export const useFetchStreamPlaybackId = (playbackId: string | null) => {
         const response = await api.get(`/playback/${playbackId}`);
         if (response?.data?.meta?.source) {
           const thumbnailSource = response.data.meta.source.find((item: any) =>
-            item.hrn.toLowerCase().includes('thumbnail')
+            item.hrn.toLowerCase().includes('thumbnail'),
           );
-            if (thumbnailSource) {
-              const url = getThumbnailUrl(thumbnailSource.url);
-              setThumbnailUrl(url);
-            }
+          if (thumbnailSource) {
+            const url = getThumbnailUrl(thumbnailSource.url);
+            setThumbnailUrl(url);
+          }
         }
         setPlaybackInfo(response?.data || {});
       } catch (err: any) {

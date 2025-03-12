@@ -52,10 +52,8 @@ export function UpdateLivestream({
     }
 
     // Ensure that at least one field has changed relative to the initial values
-    const hasChanged =
-      formData.name !== name ||
-      formData.record !== initialRecord
-      // formData.suspended !== initialSuspended;
+    const hasChanged = formData.name !== name || formData.record !== initialRecord;
+    // formData.suspended !== initialSuspended;
 
     if (!hasChanged) {
       setErrors((prev) => ({
@@ -109,11 +107,8 @@ export function UpdateLivestream({
             'fixed left-1/2 top-1/2 max-w-xl w-full -translate-x-1/2 -translate-y-1/2 bg-white p-4 rounded-md shadow-lg',
           )}
         >
-       
           <div className="flex justify-between items-center mb-4">
-             <Dialog.Title className="text-lg font-semibold text-black-primary-text">
-            Update Stream
-          </Dialog.Title>
+            <Dialog.Title className="text-lg font-semibold text-black-primary-text">Update Stream</Dialog.Title>
             <Dialog.Close asChild>
               <button onClick={onClose} className="text-2xl">
                 <IoMdClose />

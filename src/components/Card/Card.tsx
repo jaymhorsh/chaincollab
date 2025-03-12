@@ -34,13 +34,13 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
   );
 };
 
-export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image ,playb}) => {
-  const { thumbnailUrl, loading} = useFetchStreamPlaybackId(playb);
+export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image, playb, lastSeen }) => {
+  const { thumbnailUrl, loading } = useFetchStreamPlaybackId(playb);
   return (
     <div className="w-full h-full relative">
       {/* Image */}
       <div className="w-full bg--gray rounded-md overflow-hidden relative">
-      {loading ? (
+        {loading ? (
           <div className="flex items-center w-full max-sm:h-[220px] h-[300px] lg:h-[200px] justify-center">
             <p>Loading</p>
           </div>
@@ -48,7 +48,6 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
           <Image
             src={thumbnailUrl || image}
             alt={title}
-            // objectFit="inherit"
             className="rounded-md w-full max-sm:h-[220px] h-[300px] lg:h-[200px]  object-cover"
             width={400}
             height={180}
@@ -63,6 +62,9 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
         <div className="ml-auto pt-2">
           {streamId && playbackId && <Popup streamId={streamId} playbackId={playbackId} />}
         </div>
+      </div>
+      <div>
+      <p className="text-xs text-gray-500 capitalize ">Last Active {lastSeen ? lastSeen.toDateString() : ''}</p>
       </div>
       <div className="flex justify-start">
         <button
@@ -89,8 +91,8 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
       {/* Thumbnail Image with hover overlay */}
       <div className="w-full bg-gray-200 rounded-md overflow-hidden relative">
         {loading ? (
-          <div className="flex items-center justify-center h-full">
-            <p>Loading...</p>
+          <div className="flex items-center w-full max-sm:h-[220px] h-[300px] lg:h-[200px] justify-center">
+            <p>Loading</p>
           </div>
         ) : (
           <Image

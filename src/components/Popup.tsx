@@ -32,8 +32,6 @@ PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
 
-
-
 //Usage
 import { useState } from 'react';
 import { AiOutlineCloudDownload, AiOutlineEdit } from 'react-icons/ai';
@@ -53,6 +51,7 @@ import { resetStreamStatus } from '@/features/streamSlice';
 import { deleteAsset, getAssets } from '@/features/assetsAPI';
 import { resetAssetStatus } from '@/features/assetsSlice';
 import { UpdateLivestream } from './UpdateLivestream';
+import { CustomizeChannelDialog } from './Dialog';
 
 const listItemClassNames = {
   option: 'flex items-center text-lg px-5 py-2 hover:bg-gray-100 cursor-pointer',
@@ -65,7 +64,7 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const [alertOpen, setAlertOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
+  const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
@@ -160,13 +159,8 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         onConfirm={confirmDelete}
         loading={isLoading}
       />
-       {isDialogOpen && (
-        <UpdateLivestream 
-          open={isDialogOpen} 
-          onClose={() => setIsDialogOpen(false)} 
-          id={streamId} 
-        />
-      )}
+      {isDialogOpen && <UpdateLivestream open={isDialogOpen} onClose={() => setIsDialogOpen(false)} id={streamId} />}
+      {/* {isCustomizeOpen && <CustomizeChannelDialog initialValues={}/>} */}
     </>
   );
 };

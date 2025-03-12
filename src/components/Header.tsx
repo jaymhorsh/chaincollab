@@ -14,8 +14,6 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
-import { useEthBalance } from '@/app/providers';
-import Spinner from './Spinner';
 
 const Header = () => {
   const navigate = useRouter();
@@ -181,19 +179,18 @@ const Header = () => {
               </Dialog.Trigger>
 
               <Dialog.Portal>
-                <Dialog.Overlay className="fixed inset-0 bg-black/80 animate-fade-in " />
-                <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 overflow-y-scroll max-h-[80vh] -translate-y-1/2 bg-white rounded-xl p-6 w-[90vw] max-w-[850px] shadow-lg animate-content-show">
-                  <div className="space-y-6  pb-6">
-                    <Dialog.Title className="text-2xl font-semibold border-b pb-4">Profile Details</Dialog.Title>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <Dialog.Overlay className="fixed inset-0 bg-black/80 animate-fade-in" />
+                <Dialog.Content className="fixed inset-0 flex items-center justify-center p-4">
+                  <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-[850px] max-h-[80vh] overflow-y-auto relative">
+                    <Dialog.Title className="text-2xl font-semibold border-b pb-4 mb-4">Profile Details</Dialog.Title>
+                    <div className="grid fex flex-col grid-cols-2  lg:grid-cols-3 gap-4">
                       {/* Wallet Details Toggle */}
-                      <div className="col-span-3">
+                      <div className="col-span-2 lg:col-span-3">
                         <div className="flex justify-between items-center">
-                          <div className="text-sm font-semibold">
+                          <span className="text-sm font-semibold">
                             <span className="text-main-blue text-base">Wallet Balance:</span>{' '}
                             {walletBalance ? `${walletBalance} ETH` : 'N/A'}
-                          </div>
+                          </span>
                           <button
                             onClick={() => setShowWallets((prev) => !prev)}
                             className="px-3 py-1 border rounded text-sm"
@@ -209,8 +206,8 @@ const Header = () => {
                               <div className="flex items-center gap-2 mt-1">
                                 <input
                                   type="text"
-                                  value={embeddedWallet?.address || ''}
                                   readOnly
+                                  value={embeddedWallet?.address || ''}
                                   className="border rounded-lg px-4 py-2 w-full"
                                 />
                                 <button
@@ -224,7 +221,7 @@ const Header = () => {
                                 </button>
                               </div>
                             </div>
-                            {/* Solana Wallet or Create Button */}
+                            {/* Solana Wallet / Create */}
                             <div className="flex flex-col">
                               {solanaWallet ? (
                                 <>
@@ -232,8 +229,8 @@ const Header = () => {
                                   <div className="flex items-center gap-2 mt-1">
                                     <input
                                       type="text"
-                                      value={solanaWallet}
                                       readOnly
+                                      value={solanaWallet}
                                       className="border rounded-lg px-4 py-2 w-full"
                                     />
                                     <button
@@ -260,68 +257,63 @@ const Header = () => {
                         )}
                       </div>
                       {/* User ID Card */}
-                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-shadow">
                         <div className="flex items-center gap-3 mb-2">
                           <FaRegUserCircle className="text-2xl text-main-blue" />
-                          <label className="font-medium text-gray-700">User ID</label>
+                          <span className="font-medium text-gray-700">User ID</span>
                         </div>
-                        <p className="text-sm break-all text-gray-600">{user?.id}</p>
+                        <p className="text-sm text-gray-600 break-words">{user?.id}</p>
                       </div>
-
                       {/* Wallet Card */}
-                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-shadow">
                         <div className="flex items-center gap-3 mb-2">
                           <FaWallet className="text-2xl text-main-blue" />
-                          <label className="font-medium text-gray-700">Wallet Address</label>
+                          <span className="font-medium text-gray-700">Wallet Address</span>
                         </div>
-                        <p className="text-sm break-all text-gray-600">{user?.wallet?.address || 'Not connected'}</p>
+                        <p className="text-sm text-gray-600 break-words">{user?.wallet?.address || 'Not connected'}</p>
                       </div>
-
                       {/* Email Card */}
-                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-shadow">
                         <div className="flex items-center gap-3 mb-2">
                           <MdEmail className="text-2xl text-main-blue" />
-                          <label className="font-medium text-gray-700">Email</label>
+                          <span className="font-medium text-gray-700">Email</span>
                         </div>
-                        <p className="text-sm break-all text-gray-600">{user?.email?.address || 'Not connected'}</p>
+                        <p className="text-sm text-gray-600 break-words">{user?.email?.address || 'Not connected'}</p>
                       </div>
-
                       {/* Google Card */}
-                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-shadow">
                         <div className="flex items-center gap-3 mb-2">
                           <FaGoogle className="text-2xl text-main-blue" />
-                          <label className="font-medium text-gray-700">Google</label>
+                          <span className="font-medium text-gray-700">Google</span>
                         </div>
-                        <p className="text-sm break-all text-gray-600">{user?.google?.email || 'Not connected'}</p>
+                        <p className="text-sm text-gray-600 break-words">{user?.google?.email || 'Not connected'}</p>
                       </div>
-
                       {/* Discord Card */}
-                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-shadow">
                         <div className="flex items-center gap-3 mb-2">
                           <FaDiscord className="text-2xl text-main-blue" />
-                          <label className="font-medium text-gray-700">Discord</label>
+                          <span className="font-medium text-gray-700">Discord</span>
                         </div>
-                        <p className="text-sm break-all text-gray-600">{user?.discord?.username || 'Not connected'}</p>
+                        <p className="text-sm text-gray-600 break-words">
+                          {user?.discord?.username || 'Not connected'}
+                        </p>
                       </div>
-                      {/* Send Transaction */}
-
                       {/* Twitter Card */}
-                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-all hover:shadow-md">
+                      <div className="p-4 rounded-lg border border-gray-200 hover:border-blue-500 transition-shadow">
                         <div className="flex items-center gap-3 mb-2">
                           <FaTwitter className="text-2xl text-main-blue" />
-                          <label className="font-medium text-gray-700">Twitter</label>
+                          <span className="font-medium text-gray-700">Twitter</span>
                         </div>
-                        <p className="text-sm break-all text-gray-600">{user?.twitter?.username || 'Not connected'}</p>
+                        <p className="text-sm text-gray-600 break-words">
+                          {user?.twitter?.username || 'Not connected'}
+                        </p>
                       </div>
                     </div>
+                    <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
+                      <IoClose className="text-xl" />
+                    </Dialog.Close>
                   </div>
-                  <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                    <IoClose className="text-xl" />
-                  </Dialog.Close>
                 </Dialog.Content>
-                <Dialog.Close className="absolute top-4 right-4 p-2 rounded-full hover:bg-gray-100 transition-colors">
-                  <IoClose className="text-xl" />
-                </Dialog.Close>
               </Dialog.Portal>
             </Dialog.Root>
           </div>

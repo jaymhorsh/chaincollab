@@ -18,6 +18,7 @@ interface Stream {
     type: string;
     value: string;
   };
+  lastSeen: number;
 }
 
 interface StreamsState {
