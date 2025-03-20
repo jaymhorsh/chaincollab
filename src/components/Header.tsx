@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Chainfren_Logo from '../../public/assets/images/chainfren_logo.svg';
 import { FaBars, FaSpinner } from 'react-icons/fa6';
-import * as Avatar from '@radix-ui/react-avatar';
+// import * as Avatar from '@radix-ui/react-avatar';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { MdOutlineLogout } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
@@ -14,16 +14,17 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
+import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 
 const Header = () => {
   const navigate = useRouter();
   const { user, ready } = usePrivy();
   const { wallets } = useWallets();
   const { wallets: solana, createWallet } = useSolanaWallets();
-
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
   const [solanaWallet, setSolanaWallet] = useState<any>(null);
+
   // const [solanaWalletBalance, setSolanaWalletBalance] = useState<string>('');
   useEffect(() => {
     if (!ready) {
@@ -105,7 +106,7 @@ const Header = () => {
                 <button className="flex items-center gap-2">
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger asChild>
-                      <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
+                      {/* <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
                         <Avatar.Image
                           className="size-full rounded-[inherit] object-cover"
                           src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=128&h=128&dpr=2&q=80"
@@ -149,7 +150,18 @@ const Header = () => {
                             </defs>
                           </svg>
                         </Avatar.Fallback>
-                      </Avatar.Root>
+                      </Avatar.Root> */}
+                      <Identity
+                        address={embeddedWallet?.address}
+                        hasCopyAddressOnClick={false}
+                        schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                      >
+                        <Avatar />
+                        <Name>
+                          <Badge />
+                        </Name>
+                        <Address />
+                      </Identity>
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                       <DropdownMenu.Content

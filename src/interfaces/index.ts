@@ -10,7 +10,6 @@ export type EthBalanceContextType = {
   ethBalance: string;
   embeddedWallet: any;
   refreshBalance: () => Promise<void>;
-  chainName: string;
 };
 export interface ChannelCardProps {
   title: string;

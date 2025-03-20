@@ -36,9 +36,11 @@ const Dashboard = () => {
   const itemsPerPage = 5;
 
   useEffect(() => {
-    dispatch(getAllStreams());
-    dispatch(getAssets());
-  }, [dispatch]);
+    if (ready && authenticated) {
+      dispatch(getAllStreams());
+      dispatch(getAssets());
+    }
+  }, [dispatch, ready, authenticated]);
 
   useEffect(() => {
     if (streamsError) {
@@ -57,8 +59,11 @@ const Dashboard = () => {
   }, [ready, authenticated, navigate]);
 
   // Filter streams based on user's wallet address
+  // const filteredStreams = streams.filter(
+  //   (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
+  // );
   const filteredStreams = streams.filter(
-    (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
+    (stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address,
   );
   const filteredAssets = assets.filter(
     (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
@@ -145,7 +150,6 @@ const Dashboard = () => {
                       playbackId={stream.id}
                       playb={stream.playbackId}
                       lastSeen={new Date(stream.lastSeen)}
-               
                     />
                   </div>
                 ))

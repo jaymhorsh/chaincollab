@@ -34,7 +34,15 @@ export const AnalyticCard = ({ title, views, change, value }: AnalyticCardProps)
   );
 };
 
-export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamId, playbackId, image, playb, lastSeen }) => {
+export const ChannelCard: React.FC<ChannelCardProps> = ({
+  title,
+  goLive,
+  streamId,
+  playbackId,
+  image,
+  playb,
+  lastSeen,
+}) => {
   const { thumbnailUrl, loading } = useFetchStreamPlaybackId(playb);
   return (
     <div className="w-full h-full relative">
@@ -64,7 +72,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({ title, goLive, streamI
         </div>
       </div>
       <div>
-      <p className="text-xs text-gray-500 capitalize ">Last Active {lastSeen ? lastSeen.toDateString() : ''}</p>
+        <p className="text-xs text-gray-500 capitalize ">Last Active {lastSeen ? lastSeen.toDateString() : ''}</p>
       </div>
       <div className="flex justify-start">
         <button
