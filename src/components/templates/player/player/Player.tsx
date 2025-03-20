@@ -16,6 +16,8 @@ import {
 } from '@livepeer/react/assets';
 import { Clip } from './Clip';
 import { Settings } from './Settings';
+import {useViewMetrics } from '@/app/hook/useViewerMetrics';
+import { Smile, Gift } from "lucide-react"
 
 export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; title: string; playbackId: string }) {
   const [customization, setCustomization] = useState({
@@ -23,7 +25,7 @@ export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; tit
     textColor: '#000000',
     fontSize: '16',
   });
-
+const {viewerMetrics:totalViewers} = useViewMetrics({ playbackId });
   useEffect(() => {
     const stored = localStorage.getItem('channelCustomization');
     if (stored) {
@@ -41,20 +43,22 @@ export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; tit
 
   return (
     <div
-      className="min-h-screen w-full flex flex-col"
+      className="min-h-screen w-full bg-white"
       style={{
         backgroundColor: customization.bgColor,
         color: customization.textColor,
         fontSize: `${customization.fontSize}px`,
       }}
     >
+      <div className="container mx-auto px-4 py-6 ">
       {/* Title */}
-      <div className="mt-6 text-center text-xl font-semibold">{title}</div>
+      <div className="mt-6 text-center text-xl font-semibold capitalize">{title}</div>
 
       {/* Main Content Area */}
-      <div className="flex-1 mt-6 flex flex-col md:flex-row gap-4 px-4 pb-6">
+      {/* <div className="w-full h-screen grid grid-cols-1 md:grid-cols-12 gap-2 pt-1 mt-6 overflow-hidden pb-6">   */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Player Section */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex md:col-span-8 flex-col">
           <Player.Root autoPlay clipLength={30} src={src}>
             <Player.Container className="relative h-full w-full overflow-hidden rounded-md bg-gray-950 outline outline-1 outline-white/50 data-[playing=true]:outline-white/80 data-[playing=true]:outline-2 data-[fullscreen=true]:outline-none data-[fullscreen=true]:rounded-none transition-all">
               <Player.Video title="Live stream" className="h-[590px] w-full object-cover" />
@@ -192,11 +196,14 @@ export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; tit
                   fill="black"
                 />
               </svg>
-              <span className="text-black">1 viewers</span>
+            
+                <span className="text-black">
+                {totalViewers?.viewCount} {totalViewers?.viewCount === 0 ? 'viewer' : 'viewers'}
+                </span>
             </div>
           </div>
           <div className="mt-3 space-y-3">
-            <p className="text-sm text-[#53525F]">{`Join ${title} > ${playbackUrl}`}</p>
+            <p className="text-sm text-[#53525F] capitalize">{`Join ${title} > ${playbackUrl}`}</p>
             <p className="text-sm text-[#53525F]">
               {title} is a thriving web3 community at the intersection of decentralization and innovation. We believe in
               the power of global collaboration to shape the future of blockchain. Whether you&apos;re a founder,
@@ -205,38 +212,53 @@ export function PlayerWithControls({ src, title, playbackId }: { src: Src[]; tit
             </p>
           </div>
         </div>
-
         {/* Chat Section */}
-        <div className="flex w-full flex-col md:w-[400px] rounded-md border pb-8 border-gray-300 bg-white">
-          <h3 className=" bg-gray-200 p-4 text-lg font-semibold">Chat</h3>
-          <div className="flex flex-1 flex-col">
-            <div className="flex-1 overflow-y-auto p-4">
-              <p className="text-gray-500 text-center">Welcome to the chat!</p>
-            </div>
-            <div className="flex items-center gap-2  p-2">
-              <input
-                type="text"
-                placeholder="Say something..."
-                className="flex-1 rounded-md border placeholder:text-[#838294] border-[#0E0E0F] px-3 py-3"
-              />
-            </div>
-            <div className="flex w-full justify-between p-2">
-              <button className="rounded-md bg-[#EEEFF1] px-4 py-2 flex items-center justify-center gap-2 text-black hover:bg-gray-200">
-                <span>
-                  <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path
-                      d="M10.0052 0.335205C11.478 0.335205 12.6719 1.52911 12.6719 3.00187C12.6719 3.48789 12.5418 3.94354 12.3147 4.33595L15.3386 4.3352V5.66853H14.0052V12.3352C14.0052 12.7034 13.7068 13.0019 13.3386 13.0019H2.67188C2.30369 13.0019 2.00521 12.7034 2.00521 12.3352V5.66853H0.671875V4.3352L3.69572 4.33595C3.46857 3.94354 3.33854 3.48789 3.33854 3.00187C3.33854 1.52911 4.53245 0.335205 6.00521 0.335205C6.80202 0.335205 7.51722 0.684678 8.00582 1.23871C8.49322 0.684678 9.20842 0.335205 10.0052 0.335205ZM8.67189 5.66853H7.33856V12.3352H8.67189V5.66853ZM6.00521 1.66854C5.26883 1.66854 4.67188 2.26549 4.67188 3.00187C4.67188 3.70478 5.2158 4.28065 5.9057 4.33155L6.00521 4.3352H7.33856V3.00187C7.33856 2.33411 6.84769 1.781 6.20706 1.68372L6.10472 1.67219L6.00521 1.66854ZM10.0052 1.66854C9.30229 1.66854 8.72642 2.21246 8.67556 2.90237L8.67189 3.00187V4.3352H10.0052C10.7081 4.3352 11.284 3.79129 11.3349 3.10138L11.3386 3.00187C11.3386 2.26549 10.7416 1.66854 10.0052 1.66854Z"
-                      fill="#53525F"
-                    />
-                  </svg>
-                </span>
-                <span> Gift</span>
-              </button>
-              <button className="rounded-md bg-main-blue px-4 py-2 text-white hover:bg-blue-700">Send</button>
-            </div>
-          </div>
-        </div>
+        <div className="lg:col-span-4">
+        <div className="border rounded-lg h-full flex flex-col">
+      <div className="p-4 border-b">
+        <h3 className="font-semibold text-lg">Chat</h3>
       </div>
+
+      {/* Chat messages area */}
+      <div className="flex-1 p-4 overflow-y-auto min-h-[300px] max-h-[500px] flex items-center justify-center text-gray-500">
+        <p>Welcome to the chat!</p>
+      </div>
+
+      {/* Message input */}
+      <div className="border-t p-3">
+        <form  className="flex flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Send message..."
+              className="flex-1 border rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            
+              // onChange={(e) => setMessage(e.target.value)}
+            />
+            <button type="button" className="text-gray-500 hover:text-gray-700">
+              <Smile size={18} />
+            </button>
+          </div>
+
+          <div className="flex items-center justify-between">
+            <button type="button" className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
+              <Gift size={18} />
+              <span>Gift</span>
+            </button>
+
+            <button
+              type="submit"
+              className="bg-blue-600 text-white px-4 py-1 rounded-md hover:bg-blue-700 transition-colors"
+            >
+              Chat
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+      </div>
+          </div>
+          </div> 
     </div>
   );
 }

@@ -15,8 +15,10 @@ import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
 import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
+import { Menu } from 'lucide-react';
+import clsx from 'clsx';
 
-const Header = () => {
+const Header = ({toggleMobileMenu,sidebarCollapsed }:any) => {
   const navigate = useRouter();
   const { user, ready } = usePrivy();
   const { wallets } = useWallets();
@@ -91,12 +93,26 @@ const Header = () => {
     },
   });
   const [showWallets, setShowWallets] = useState(false);
-
   return (
-    <header className="shadow-sm">
-      <div className="max-w-7xl mx-auto py-4 border border-[#DFE0E1] bg-white px-4 sm:px-6 lg:px-10 flex justify-between items-center">
-        <div className="text-lg font-black text-black-primary-text">
+    <header
+    className={clsx(
+      'flex-1  w-full z-10 top-0 right-0 transition-all shadow-md duration-300 ease-in-out',
+      {
+      'md:ml-[100px]': !sidebarCollapsed,
+      'md:ml-[70px]': sidebarCollapsed,
+      'pl-72': sidebarCollapsed,
+      'md:ml-0': !sidebarCollapsed,
+      }
+    )}
+    >
+      <div className="flex justify-between items-center p-5 bg-white border-b border-[#dfe0e1] sticky top-0 z-10">
+      <div className="flex items-center gap-3">
+      <button onClick={toggleMobileMenu} className="md:hidden">
+              <Menu className="h-5 w-5 text-[#53525f]" />
+            </button>
+            <div className="  px-3 py-1.5 rounded-md ">
           <Image src={Chainfren_Logo} alt={'header_Logo'} />
+          </div>
         </div>
         {/* Avatar */}
         <div className=" flex items-center gap-2">
@@ -151,17 +167,21 @@ const Header = () => {
                           </svg>
                         </Avatar.Fallback>
                       </Avatar.Root> */}
-                      <Identity
-                        address={embeddedWallet?.address}
-                        hasCopyAddressOnClick={false}
-                        schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-                      >
-                        <Avatar />
-                        <Name>
-                          <Badge />
-                        </Name>
-                        <Address />
-                      </Identity>
+                    {embeddedWallet?.address ? (
+  <Identity
+    address={embeddedWallet.address}
+    hasCopyAddressOnClick={false}
+    schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+  >
+    <Avatar />
+    <Name>
+      <Badge />
+    </Name>
+    <Address />
+  </Identity>
+) : (
+  <p className="text-gray-500">No wallet connected</p>
+)}
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                       <DropdownMenu.Content
@@ -330,9 +350,7 @@ const Header = () => {
             </Dialog.Root>
           </div>
         </div>
-        <button className="md:hidden">
-          <FaBars className="h-6 w-6" />
-        </button>
+       
       </div>
     </header>
   );
