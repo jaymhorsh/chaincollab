@@ -23,13 +23,26 @@ import UploadVideoAsset from '@/components/UploadVideoAsset';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { Asset } from '@/interfaces';
 
-const Dashboard = () => {
+const Dashboard = ({  
+  sidebarCollapsed,
+  mobileMenuOpen,
+  isMobile,
+  toggleSidebar,
+  toggleMobileMenu,
+  setMobileMenuOpen
+}: {
+  sidebarCollapsed: boolean;
+  mobileMenuOpen: boolean;
+  isMobile: boolean;
+  toggleSidebar: () => void;
+  toggleMobileMenu: () => void;
+  setMobileMenuOpen: (arg0: boolean) => void;
+}) => {
   const { user, ready, authenticated } = usePrivy();
   const navigate = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading: streamsLoading, error: streamsError } = useSelector((state: RootState) => state.streams);
   const { assets, loading: assetsLoading, error: assetsError } = useSelector((state: RootState) => state.assets);
-
   const [currentPage, setCurrentPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDialogOpen2, setIsDialogOpen2] = useState(false);
@@ -62,9 +75,11 @@ const Dashboard = () => {
   // const filteredStreams = streams.filter(
   //   (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
   // );
+
   const filteredStreams = streams.filter(
     (stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address,
   );
+  
   const filteredAssets = assets.filter(
     (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
   );
@@ -90,10 +105,14 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <Header />
+    <>
+
+    <div
+    className={`flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? "md:ml-[70px]" : "md:ml-0"}`}
+  >
+      <Header toggleMobileMenu={toggleMobileMenu} sidebarCollapsed={sidebarCollapsed} isMobile= {isMobile}  />
       <div className="m-2">
-        <Analytics />
+        <Analytics/>
         <SectionCard title="Your Channels">
           <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <Dialog.Trigger asChild>
@@ -251,6 +270,7 @@ const Dashboard = () => {
                       title={asset.name}
                       assetData={asset}
                       imageUrl={image1}
+                      playbackId= {asset.playbackId}
                       createdAt={new Date(asset.createdAt)}
                       format={(asset as any).videoSpec?.format}
                     />
@@ -262,6 +282,7 @@ const Dashboard = () => {
         </SectionCard>
       </div>
     </div>
+    </>
   );
 };
 

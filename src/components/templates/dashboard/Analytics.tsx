@@ -1,29 +1,29 @@
 'use client';
 import { AnalyticCard } from '@/components/Card/Card';
+import { usePrivy } from '@privy-io/react-auth';
 import clsx from 'clsx';
 import React, { useState } from 'react';
+import { useViewerMetrics } from '@/app/hook/useViewerMetrics';
 
 const Analytics = () => {
+  const { viewMetrics, loading, error } = useViewerMetrics({  });  
   const insightsData = [
     {
-      title: 'Views',
-      views: 7265,
+      title: 'Total Views',
+      views: viewMetrics?.viewCount || 0,
       value: -11.02,
-      change: '25 from last stream',
+      change: '30 from last stream',
     },
     {
-      title: 'New Users',
-      views: 420,
-      value: +11.02,
-      change: '25 from last stream',
-    },
-    {
-      title: 'Active Users',
-      views: 500,
-      value: -11.02,
-      change: '25 from last stream',
-    },
+      title: 'Total Watch time',
+      playtimeMins: viewMetrics?.playtimeMins
+        ? `${Math.floor(viewMetrics.playtimeMins / 60)}h:${(viewMetrics.playtimeMins % 60).toFixed(1)}m`
+        : '0h:0.0m',
+      value: 11.02,
+      change: '30 from last stream',
+    }
   ];
+
   const [filteredInsights, setFilteredInsights] = useState(insightsData);
   const [activeFilter, setActiveFilter] = useState('all');
   const handleFilterChange = (filterType: string) => {
@@ -32,9 +32,10 @@ const Analytics = () => {
   };
   return (
     <div className="grid bg-white grid-cols-2 gap-6 md:grid-cols-4 p-6 rounded-lg">
-      {filteredInsights.map((insight) => (
-        <AnalyticCard key={insight.title} {...insight} />
-      ))}
+    {insightsData.map((insightsData) => (
+        <AnalyticCard key={insightsData.title} {...insightsData} />))}
+       
+   
       <div className="w-full h-full">
         <ul className="flex flex-col gap-y-2 h-full">
           {['all', 'thisMonth', 'lastMonth'].map((filter) => (
