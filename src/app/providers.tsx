@@ -6,9 +6,10 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import { usePrivy, useWallets } from '@privy-io/react-auth';
 import { ethers } from 'ethers';
 import { EthBalanceContextType } from '@/interfaces';
-import { base, qMainnet, mainnet, metachain, Chain, baseSepolia } from 'viem/chains';
+import { qMainnet, mainnet, metachain, baseSepolia } from 'viem/chains';
 import { defineChain } from 'viem';
-
+import { OnchainKitProvider } from '@coinbase/onchainkit';
+import { base } from 'wagmi/chains';
 const EthBalanceContext = createContext<EthBalanceContextType | undefined>(undefined);
 
 export const useEthBalance = () => {
@@ -24,17 +25,6 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const { wallets } = useWallets();
   const [ethBalance, setEthBalance] = useState('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
-  const [chainName, setChainName] = useState('');
-
-  // Mapping of chain IDs (in decimal) to human-friendly names.
-  const chainNames: { [key: number]: string } = {
-    1: 'Ethereum Mainnet',
-    3: 'Ropsten',
-    4: 'Rinkeby',
-    5: 'Goerli',
-    42: 'Kovan',
-    11155111: 'Sepolia',
-  };
 
   const refreshBalance = useCallback(async () => {
     if (!ready) return;
@@ -43,13 +33,6 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       try {
         const provider = await wallet.getEthereumProvider();
         // Get the current chain id (in hex)
-        const currentChainId = await provider.request({ method: 'eth_chainId' });
-        // Convert hex chain id to decimal
-        const chainIdDecimal = parseInt(currentChainId, 16);
-        // Get the human-friendly chain name
-        const displayName = chainNames[chainIdDecimal] || `Chain ID: ${chainIdDecimal}`;
-        setChainName(displayName);
-        // Create an ethers.js provider and fetch the balance
         const ethProvider = new ethers.providers.Web3Provider(provider);
         const balance = await ethProvider.getBalance(wallet.address);
         const formattedBalance = ethers.utils.formatEther(balance);
@@ -60,14 +43,14 @@ const EthBalanceProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         // console.error('Error refreshing balance:', error);
       }
     }
-  }, [ready, wallets, chainName]);
+  }, [ready, wallets]);
 
   useEffect(() => {
     refreshBalance();
-  }, [ready, wallets, refreshBalance, chainName]);
+  }, [ready, wallets, refreshBalance]);
 
   return (
-    <EthBalanceContext.Provider value={{ ethBalance, embeddedWallet, refreshBalance, chainName }}>
+    <EthBalanceContext.Provider value={{ ethBalance, embeddedWallet, refreshBalance }}>
       {children}
     </EthBalanceContext.Provider>
   );
@@ -84,11 +67,7 @@ export const ethereumMainnet = defineChain({
   },
   rpcUrls: {
     default: {
-      // Cloudflare's free Ethereum mainnet endpoint.
-      // You can replace this with another provider (e.g., Infura or Alchemy) if desired.
       http: ['https://cloudflare-eth.com'],
-      // Optionally, if you have a WebSocket endpoint, include it here:
-      // webSocket: ['wss://mainnet.infura.io/ws/v3/YOUR-PROJECT-ID'],
     },
   },
   blockExplorers: {
@@ -119,7 +98,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       }}
     >
       <Provider store={store}>
-        <EthBalanceProvider>{children}</EthBalanceProvider>
+        <OnchainKitProvider
+          apiKey={process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY}
+          chain={base} // add baseSepolia for testing
+        >
+          <EthBalanceProvider>{children}</EthBalanceProvider>
+        </OnchainKitProvider>
       </Provider>
     </PrivyProvider>
   );

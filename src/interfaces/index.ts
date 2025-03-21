@@ -2,15 +2,16 @@ import { StaticImageData } from 'next/image';
 
 export interface AnalyticCardProps {
   title: string;
-  views: number;
+  views?: number | string;
   value: number;
   change: string;
+  playtimeMins?: string;
+  loading?: boolean;
 }
 export type EthBalanceContextType = {
   ethBalance: string;
   embeddedWallet: any;
   refreshBalance: () => Promise<void>;
-  chainName: string;
 };
 export interface ChannelCardProps {
   title: string;
@@ -28,6 +29,8 @@ export interface VideoCardProps {
   imageUrl: StaticImageData | string;
   createdAt?: Date;
   format?: string;
+  assetId?: string;
+  playbackId?: string;
 }
 export interface Stream {
   id: string;
@@ -62,4 +65,5 @@ export interface Asset {
   createdByTokenName: string;
   downloadUrl: string;
   playbackUrl: string;
+  assetId: string;
 }

@@ -84,7 +84,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
       {/* Wrap the broadcast container with the custom styles */}
       <div className="h-screen w-full overflow-hidden">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-center px-3 w-full border-b border-green-400 h-[60px] bg-white">
+        <div className="flex  justify-between items-center px-3 w-full border-b border-green-400 min-h-[70px] bg-white">
           <BroadcastLoadingIndicator />
           <div className="flex items-center gap-x-3">
             <button

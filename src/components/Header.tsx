@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Chainfren_Logo from '../../public/assets/images/chainfren_logo.svg';
 import { FaBars, FaSpinner } from 'react-icons/fa6';
-import * as Avatar from '@radix-ui/react-avatar';
+// import * as Avatar from '@radix-ui/react-avatar';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { MdOutlineLogout } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
@@ -14,16 +14,19 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
+import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
+import { Menu } from 'lucide-react';
+import clsx from 'clsx';
 
-const Header = () => {
+const Header = ({ toggleMobileMenu, sidebarCollapsed }: any) => {
   const navigate = useRouter();
   const { user, ready } = usePrivy();
   const { wallets } = useWallets();
   const { wallets: solana, createWallet } = useSolanaWallets();
-
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
   const [solanaWallet, setSolanaWallet] = useState<any>(null);
+
   // const [solanaWalletBalance, setSolanaWalletBalance] = useState<string>('');
   useEffect(() => {
     if (!ready) {
@@ -90,12 +93,23 @@ const Header = () => {
     },
   });
   const [showWallets, setShowWallets] = useState(false);
-
   return (
-    <header className="shadow-sm">
-      <div className="max-w-7xl mx-auto py-4 border border-[#DFE0E1] bg-white px-4 sm:px-6 lg:px-10 flex justify-between items-center">
-        <div className="text-lg font-black text-black-primary-text">
-          <Image src={Chainfren_Logo} alt={'header_Logo'} />
+    <header
+      className={clsx('flex-1  w-full z-10 top-0 right-0 transition-all shadow-md duration-300 ease-in-out', {
+        // 'md:pl-[100px]': !sidebarCollapsed,
+        'md:ml-[70px]': sidebarCollapsed,
+        'pl-72': sidebarCollapsed,
+        'md:ml-0': !sidebarCollapsed,
+      })}
+    >
+      <div className="flex justify-between items-center p-5 bg-white border-b border-[#dfe0e1] sticky top-0 z-10">
+        <div className="flex items-center gap-3">
+          <button onClick={toggleMobileMenu} className="md:hidden">
+            <Menu className="h-5 w-5 text-[#53525f]" />
+          </button>
+          <div className="  px-3 py-1.5 rounded-md ">
+            <Image src={Chainfren_Logo} alt={'header_Logo'} />
+          </div>
         </div>
         {/* Avatar */}
         <div className=" flex items-center gap-2">
@@ -105,7 +119,7 @@ const Header = () => {
                 <button className="flex items-center gap-2">
                   <DropdownMenu.Root>
                     <DropdownMenu.Trigger asChild>
-                      <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
+                      {/* <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
                         <Avatar.Image
                           className="size-full rounded-[inherit] object-cover"
                           src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=128&h=128&dpr=2&q=80"
@@ -149,7 +163,22 @@ const Header = () => {
                             </defs>
                           </svg>
                         </Avatar.Fallback>
-                      </Avatar.Root>
+                      </Avatar.Root> */}
+                      {embeddedWallet?.address ? (
+                        <Identity
+                          address={embeddedWallet.address}
+                          hasCopyAddressOnClick={false}
+                          schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                        >
+                          <Avatar />
+                          <Name>
+                            <Badge />
+                          </Name>
+                          <Address />
+                        </Identity>
+                      ) : (
+                        <p className="text-gray-500">No wallet connected</p>
+                      )}
                     </DropdownMenu.Trigger>
                     <DropdownMenu.Portal>
                       <DropdownMenu.Content
@@ -318,9 +347,6 @@ const Header = () => {
             </Dialog.Root>
           </div>
         </div>
-        <button className="md:hidden">
-          <FaBars className="h-6 w-6" />
-        </button>
       </div>
     </header>
   );

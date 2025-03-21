@@ -33,6 +33,7 @@ export const createLivestream = createAsyncThunk(
 
 export const getAllStreams = createAsyncThunk('streams/getAllStreams', async () => {
   const response = await api.get('/stream');
+  console.log('olanredefghj', response.data);
   return response.data;
 });
 
