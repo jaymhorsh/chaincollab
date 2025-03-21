@@ -17,12 +17,16 @@ const DashboardLayout = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  console.log('isMobile:', isMobile, 'mobileMenuOpen:', mobileMenuOpen, 'sidebarCollapsed:', sidebarCollapsed);
 
   // Check if we're on mobile screen
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+  
+      // Automatically collapse the sidebar on mobile
+      if (isMobileView) {
         setSidebarCollapsed(true);
       }
     };
@@ -38,11 +42,15 @@ const DashboardLayout = ({
   }, []);
 
   const toggleSidebar = () => {
-    setSidebarCollapsed(!sidebarCollapsed);
+    // Only toggle the sidebar if not in mobile view
+    if (!isMobile) {
+      setSidebarCollapsed((prev) => !prev);
+    }
   };
 
   const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
+    // Toggle the mobile menu
+    setMobileMenuOpen((prev) => !prev);
   };
 
   return (
@@ -53,11 +61,11 @@ const DashboardLayout = ({
         className={clsx(
           ' md:relative z-20 h-full md:block px-4 gap-y-4 transition-all duration-300 ease-in-out bg-white border-r border-[#dfe0e1] flex flex-col',
           {
-            'w-[100px]': sidebarCollapsed,
-            'w-72 p-4': !sidebarCollapsed,
-            hidden: isMobile && !mobileMenuOpen, // Hide sidebar on mobile when menu is closed
-            block: isMobile && mobileMenuOpen, // Show sidebar on mobile when menu is open
-          },
+            'w-[100px]': sidebarCollapsed && !isMobile, // Collapsed sidebar for desktop
+            'w-72 p-4': !sidebarCollapsed && !isMobile, // Expanded sidebar for desktop
+            hidden: isMobile && !mobileMenuOpen, 
+            block: isMobile && mobileMenuOpen, 
+          }
         )}
         // className={`${mobileMenuOpen ? "block" : "hidden"} md:block fixed md:relative z-20 h-full transition-all duration-300 ease-in-out ${sidebarCollapsed ? "w-[70px]" : "w-[200px]"} bg-white border-r border-[#dfe0e1] flex flex-col`}
       >
@@ -80,9 +88,7 @@ const DashboardLayout = ({
         <Sidebar sidebarCollapsed={sidebarCollapsed} />
       </aside>
       {/* Mobile menu overlay */}
-      {isMobile && mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/50 z-10 md:hidden" onClick={() => setMobileMenuOpen(false)} />
-      )}
+     
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Pass state values as props to children */}
