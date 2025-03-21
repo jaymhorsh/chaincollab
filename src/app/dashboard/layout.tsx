@@ -48,23 +48,25 @@ const DashboardLayout = ({
   return (
     <div className={`${inter.className} text-black-primary-text flex h-screen`}>
       {/* Sidebar for desktop */}
-      
+
       <aside
         className={clsx(
-          " md:relative z-20 h-full md:block px-4 gap-y-4 transition-all duration-300 ease-in-out bg-white border-r border-[#dfe0e1] flex flex-col",
+          ' md:relative z-20 h-full md:block px-4 gap-y-4 transition-all duration-300 ease-in-out bg-white border-r border-[#dfe0e1] flex flex-col',
           {
-            "w-[100px]": sidebarCollapsed,
-            "w-72 p-4": !sidebarCollapsed ,
-            "hidden": isMobile && !mobileMenuOpen, // Hide sidebar on mobile when menu is closed
-            "block": isMobile && mobileMenuOpen, // Show sidebar on mobile when menu is open
-          }
+            'w-[100px]': sidebarCollapsed,
+            'w-72 p-4': !sidebarCollapsed,
+            hidden: isMobile && !mobileMenuOpen, // Hide sidebar on mobile when menu is closed
+            block: isMobile && mobileMenuOpen, // Show sidebar on mobile when menu is open
+          },
         )}
         // className={`${mobileMenuOpen ? "block" : "hidden"} md:block fixed md:relative z-20 h-full transition-all duration-300 ease-in-out ${sidebarCollapsed ? "w-[70px]" : "w-[200px]"} bg-white border-r border-[#dfe0e1] flex flex-col`}
       >
         <div className="flex items-center justify-between py-4 border-b border-[#dfe0e1]">
-          {!sidebarCollapsed &&<div className=" transition-all ease-in-out duration-500 font-bold flex justify-center items-center uppercase text-black-primary-text">
-            <h1>Creator Dashboard</h1>
-          </div>}
+          {!sidebarCollapsed && (
+            <div className=" transition-all ease-in-out duration-500 font-bold flex justify-center items-center uppercase text-black-primary-text">
+              <h1>Creator Dashboard</h1>
+            </div>
+          )}
           <button onClick={isMobile ? toggleMobileMenu : toggleSidebar} className="ml-auto">
             {isMobile ? (
               <X className="h-5 w-5 text-[#53525f]" />
@@ -77,12 +79,9 @@ const DashboardLayout = ({
         </div>
         <Sidebar sidebarCollapsed={sidebarCollapsed} />
       </aside>
-    {/* Mobile menu overlay */}
-    {isMobile && mobileMenuOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-10 md:hidden"
-          onClick={() => setMobileMenuOpen(false)}
-        />
+      {/* Mobile menu overlay */}
+      {isMobile && mobileMenuOpen && (
+        <div className="fixed inset-0 bg-black/50 z-10 md:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">

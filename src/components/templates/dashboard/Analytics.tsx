@@ -1,16 +1,16 @@
 'use client';
 import { AnalyticCard } from '@/components/Card/Card';
-import { usePrivy } from '@privy-io/react-auth';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 import { useViewerMetrics } from '@/app/hook/useViewerMetrics';
 
 const Analytics = () => {
-  const { viewMetrics, loading, error } = useViewerMetrics({  });  
+  const [activeFilter, setActiveFilter] = useState<'all' | 'month' | 'year'>('all'); // Filter state
+  const { viewMetrics, loading, error } = useViewerMetrics({ filter: activeFilter }); // Fetch view metrics
   const insightsData = [
     {
       title: 'Total Views',
-      views: viewMetrics?.viewCount || 0,
+      views: viewMetrics?.viewCount ? viewMetrics?.viewCount : '---',
       value: -11.02,
       change: '30 from last stream',
     },
@@ -21,31 +21,28 @@ const Analytics = () => {
         : '0h:0.0m',
       value: 11.02,
       change: '30 from last stream',
-    }
+    },
   ];
 
-  const [filteredInsights, setFilteredInsights] = useState(insightsData);
-  const [activeFilter, setActiveFilter] = useState('all');
-  const handleFilterChange = (filterType: string) => {
+  const handleFilterChange = (filterType: 'all' | 'month' | 'year') => {
     setActiveFilter(filterType);
-    setFilteredInsights(insightsData); // Update filtering logic as needed
   };
   return (
     <div className="grid bg-white grid-cols-2 gap-6 md:grid-cols-4 p-6 rounded-lg">
-    {insightsData.map((insightsData) => (
-        <AnalyticCard key={insightsData.title} {...insightsData} />))}
-       
-   
+      {insightsData.map((insightsData) => (
+        <AnalyticCard key={insightsData.title} {...insightsData} loading={loading} />
+      ))}
+
       <div className="w-full h-full">
         <ul className="flex flex-col gap-y-2 h-full">
-          {['all', 'thisMonth', 'lastMonth'].map((filter) => (
+          {['all', 'LastMonth', 'Year'].map((filter) => (
             <li
               key={filter}
               className={clsx(
                 'text-sm pl-2 py-1 text-black-tertiary-text cursor-pointer font-semibold',
                 activeFilter === filter && 'border-l-4 text-black-primary-text border-main-blue',
               )}
-              onClick={() => handleFilterChange(filter)}
+              onClick={() => handleFilterChange(filter as 'all' | 'month' | 'year')}
             >
               {filter.charAt(0).toUpperCase() + filter.slice(1).replace(/([A-Z])/g, ' $1')}
             </li>

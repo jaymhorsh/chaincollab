@@ -23,13 +23,13 @@ import UploadVideoAsset from '@/components/UploadVideoAsset';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
 import { Asset } from '@/interfaces';
 
-const Dashboard = ({  
+const Dashboard = ({
   sidebarCollapsed,
   mobileMenuOpen,
   isMobile,
   toggleSidebar,
   toggleMobileMenu,
-  setMobileMenuOpen
+  setMobileMenuOpen,
 }: {
   sidebarCollapsed: boolean;
   mobileMenuOpen: boolean;
@@ -79,7 +79,7 @@ const Dashboard = ({
   const filteredStreams = streams.filter(
     (stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address,
   );
-  
+
   const filteredAssets = assets.filter(
     (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
   );
@@ -106,182 +106,181 @@ const Dashboard = ({
 
   return (
     <>
-
-    <div
-    className={`flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? "md:ml-[70px]" : "md:ml-0"}`}
-  >
-      <Header toggleMobileMenu={toggleMobileMenu} sidebarCollapsed={sidebarCollapsed} isMobile= {isMobile}  />
-      <div className="m-2">
-        <Analytics/>
-        <SectionCard title="Your Channels">
-          <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <Dialog.Trigger asChild>
-              <div className="flex w-full flex-col" onClick={() => setIsDialogOpen(true)}>
-                <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
-                  <RiVideoAddLine className="text-main-blue w-24 h-24" />
-                </div>
-                <div className="text-black-primary-text text-xl font-bold pt-2">Create new stream channel</div>
-              </div>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
-              <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
-                <Dialog.Title className="text-black-primary-text text-center my-4 text-base font-bold">
-                  Create New Channel
-                </Dialog.Title>
-                <CreateLivestream close={() => setIsDialogOpen(false)} />
-                <Dialog.Close asChild>
-                  <button
-                    className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
-                    aria-label="Close"
-                  >
-                    <IoMdClose className="text-black-primary-text font-medium text-4xl" />
-                  </button>
-                </Dialog.Close>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
-
-          {streamsLoading ? (
-            Array.from({ length: 5 }, (_, index) => (
-              <div key={index} className="flex flex-col space-y-3">
-                <Skeleton className="h-[180px] w-[318px] rounded-xl" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 md:w-[316px] rounded-md" />
-                  <Skeleton className="h-7 w-[44px] rounded-md" />
-                </div>
-              </div>
-            ))
-          ) : (
-            <>
-              {filteredStreams.length === 0 ? (
-                <div className="flex justify-center items-center h-60">
-                  <p className="text-black-primary-text">No streams available.</p>
-                </div>
-              ) : (
-                paginatedStreams.map((stream) => (
-                  <div key={stream.id}>
-                    <ChannelCard
-                      title={stream.name}
-                      image={image1}
-                      goLive={() => initiateLiveVideo(stream.id)}
-                      streamId={stream.id}
-                      playbackId={stream.id}
-                      playb={stream.playbackId}
-                      lastSeen={new Date(stream.lastSeen)}
-                    />
+      <div
+        className={`flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-[70px]' : 'md:ml-0'}`}
+      >
+        <Header toggleMobileMenu={toggleMobileMenu} sidebarCollapsed={sidebarCollapsed} isMobile={isMobile} />
+        <div className="m-2">
+          <Analytics />
+          <SectionCard title="Your Channels">
+            <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+              <Dialog.Trigger asChild>
+                <div className="flex w-full flex-col" onClick={() => setIsDialogOpen(true)}>
+                  <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
+                    <RiVideoAddLine className="text-main-blue w-24 h-24" />
                   </div>
-                ))
-              )}
-            </>
-          )}
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex  justify-end items-end col-span-1 lg:col-span-3 mt-6 space-x-4">
-              {/* Previous Button */}
-              <button
-                className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={currentPage === 1}
-              >
-                <IoChevronBack className="w-5 h-5 text-black" />
-              </button>
-
-              {/* Page Numbers */}
-              <div className="flex space-x-2">
-                {Array.from({ length: totalPages }, (_, index) => (
-                  <button
-                    key={index}
-                    className={clsx(
-                      'px-4 py-2 rounded-lg text-sm font-medium transition',
-                      currentPage === index + 1
-                        ? 'bg-main-blue text-white shadow-md'
-                        : 'bg-gray-100 text-black hover:bg-gray-200',
-                    )}
-                    onClick={() => handlePageChange(index + 1)}
-                  >
-                    {index + 1}
-                  </button>
-                ))}
-              </div>
-
-              {/* Next Button */}
-              <button
-                className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={currentPage === totalPages}
-              >
-                <IoChevronForward className="w-5 h-5 text-black" />
-              </button>
-            </div>
-          )}
-        </SectionCard>
-
-        <hr className="border-border-gray" />
-        <SectionCard title="Your Videos">
-          <Dialog.Root open={isDialogOpen2} onOpenChange={setIsDialogOpen2}>
-            <Dialog.Trigger asChild>
-              <div className="flex w-full flex-col" onClick={() => setIsDialogOpen2(true)}>
-                <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
-                  <RiVideoAddLine className="text-main-blue w-24 h-24" />
+                  <div className="text-black-primary-text text-xl font-bold pt-2">Create new stream channel</div>
                 </div>
-                <div className="text-black-primary-text text-2xl font-bold pt-2">Upload Asset</div>
-              </div>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
-              <Dialog.Content className="fixed left-1/2  top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
-                <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
-                  <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Asset
-                </Dialog.Title>
-                <UploadVideoAsset onClose={() => setIsDialogOpen2(false)} />
-                <Dialog.Close asChild>
-                  <button
-                    className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
-                    aria-label="Close"
-                  >
-                    <IoMdClose className="text-black-primary-text font-medium text-4xl" />
-                  </button>
-                </Dialog.Close>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+                <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                  <Dialog.Title className="text-black-primary-text text-center my-4 text-base font-bold">
+                    Create New Channel
+                  </Dialog.Title>
+                  <CreateLivestream close={() => setIsDialogOpen(false)} />
+                  <Dialog.Close asChild>
+                    <button
+                      className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                      aria-label="Close"
+                    >
+                      <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                    </button>
+                  </Dialog.Close>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
 
-          {assetsLoading ? (
-            Array.from({ length: 5 }, (_, index) => (
-              <div key={index} className="flex flex-col space-y-3 mb-4">
-                <Skeleton className="h-[180px] w-[318px] rounded-xl" />
-                <div className="space-y-2">
-                  <Skeleton className="h-4 w-[316px] rounded-md" />
-                  <Skeleton className="h-7 w-[44px] rounded-md" />
-                </div>
-              </div>
-            ))
-          ) : (
-            <>
-              {filteredAssets.length === 0 ? (
-                <div className="flex justify-center items-center h-60">
-                  <p className="text-black-primary-text">No Asset Available.</p>
-                </div>
-              ) : (
-                filteredAssets.map((asset) => (
-                  <div key={asset.id}>
-                    <VideoCard
-                      title={asset.name}
-                      assetData={asset}
-                      imageUrl={image1}
-                      playbackId= {asset.playbackId}
-                      createdAt={new Date(asset.createdAt)}
-                      format={(asset as any).videoSpec?.format}
-                    />
+            {streamsLoading ? (
+              Array.from({ length: 5 }, (_, index) => (
+                <div key={index} className="flex flex-col space-y-3">
+                  <Skeleton className="h-[180px] w-[318px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 md:w-[316px] rounded-md" />
+                    <Skeleton className="h-7 w-[44px] rounded-md" />
                   </div>
-                ))
-              )}
-            </>
-          )}
-        </SectionCard>
+                </div>
+              ))
+            ) : (
+              <>
+                {filteredStreams.length === 0 ? (
+                  <div className="flex justify-center items-center h-60">
+                    <p className="text-black-primary-text">No streams available.</p>
+                  </div>
+                ) : (
+                  paginatedStreams.map((stream) => (
+                    <div key={stream.id}>
+                      <ChannelCard
+                        title={stream.name}
+                        image={image1}
+                        goLive={() => initiateLiveVideo(stream.id)}
+                        streamId={stream.id}
+                        playbackId={stream.id}
+                        playb={stream.playbackId}
+                        lastSeen={new Date(stream.lastSeen)}
+                      />
+                    </div>
+                  ))
+                )}
+              </>
+            )}
+            {/* Pagination */}
+            {totalPages > 1 && (
+              <div className="flex  justify-end items-end col-span-1 lg:col-span-3 mt-6 space-x-4">
+                {/* Previous Button */}
+                <button
+                  className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <IoChevronBack className="w-5 h-5 text-black" />
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex space-x-2">
+                  {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                      key={index}
+                      className={clsx(
+                        'px-4 py-2 rounded-lg text-sm font-medium transition',
+                        currentPage === index + 1
+                          ? 'bg-main-blue text-white shadow-md'
+                          : 'bg-gray-100 text-black hover:bg-gray-200',
+                      )}
+                      onClick={() => handlePageChange(index + 1)}
+                    >
+                      {index + 1}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  <IoChevronForward className="w-5 h-5 text-black" />
+                </button>
+              </div>
+            )}
+          </SectionCard>
+
+          <hr className="border-border-gray" />
+          <SectionCard title="Your Videos">
+            <Dialog.Root open={isDialogOpen2} onOpenChange={setIsDialogOpen2}>
+              <Dialog.Trigger asChild>
+                <div className="flex w-full flex-col" onClick={() => setIsDialogOpen2(true)}>
+                  <div className="w-full justify-center flex items-center h-[180px] rounded-lg cursor-pointer bg-background-gray">
+                    <RiVideoAddLine className="text-main-blue w-24 h-24" />
+                  </div>
+                  <div className="text-black-primary-text text-2xl font-bold pt-2">Upload Asset</div>
+                </div>
+              </Dialog.Trigger>
+              <Dialog.Portal>
+                <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+                <Dialog.Content className="fixed left-1/2  top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                  <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
+                    <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Asset
+                  </Dialog.Title>
+                  <UploadVideoAsset onClose={() => setIsDialogOpen2(false)} />
+                  <Dialog.Close asChild>
+                    <button
+                      className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                      aria-label="Close"
+                    >
+                      <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                    </button>
+                  </Dialog.Close>
+                </Dialog.Content>
+              </Dialog.Portal>
+            </Dialog.Root>
+
+            {assetsLoading ? (
+              Array.from({ length: 5 }, (_, index) => (
+                <div key={index} className="flex flex-col space-y-3 mb-4">
+                  <Skeleton className="h-[180px] w-[318px] rounded-xl" />
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-[316px] rounded-md" />
+                    <Skeleton className="h-7 w-[44px] rounded-md" />
+                  </div>
+                </div>
+              ))
+            ) : (
+              <>
+                {filteredAssets.length === 0 ? (
+                  <div className="flex justify-center items-center h-60">
+                    <p className="text-black-primary-text">No Asset Available.</p>
+                  </div>
+                ) : (
+                  filteredAssets.map((asset) => (
+                    <div key={asset.id}>
+                      <VideoCard
+                        title={asset.name}
+                        assetData={asset}
+                        imageUrl={image1}
+                        playbackId={asset.playbackId}
+                        createdAt={new Date(asset.createdAt)}
+                        format={(asset as any).videoSpec?.format}
+                      />
+                    </div>
+                  ))
+                )}
+              </>
+            )}
+          </SectionCard>
+        </div>
       </div>
-    </div>
     </>
   );
 };

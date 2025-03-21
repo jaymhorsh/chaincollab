@@ -2,10 +2,11 @@ import { StaticImageData } from 'next/image';
 
 export interface AnalyticCardProps {
   title: string;
-  views?: number;
+  views?: number | string;
   value: number;
   change: string;
   playtimeMins?: string;
+  loading?: boolean;
 }
 export type EthBalanceContextType = {
   ethBalance: string;
@@ -29,7 +30,7 @@ export interface VideoCardProps {
   createdAt?: Date;
   format?: string;
   assetId?: string;
-  playbackId? : string
+  playbackId?: string;
 }
 export interface Stream {
   id: string;

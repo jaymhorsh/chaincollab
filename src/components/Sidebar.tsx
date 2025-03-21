@@ -44,10 +44,14 @@ const Sidebar = ({ sidebarCollapsed }: SidebarProps) => {
           return (
             <Link href={link.href} key={link.text}>
               <div
-                className={clsx('flex items-center rounded-md py-3 gap-3 px-4', isActive && 'bg-main-blue text-white', sidebarCollapsed && "justify-center")}
+                className={clsx(
+                  'flex items-center rounded-md py-3 gap-3 px-4',
+                  isActive && 'bg-main-blue text-white',
+                  sidebarCollapsed && 'justify-center',
+                )}
               >
                 <IconComponent className={'inline-block h-5 w-5 '} />
-              
+
                 {!sidebarCollapsed && <p className="font-bold">{link.text}</p>}
               </div>
             </Link>
@@ -59,8 +63,8 @@ const Sidebar = ({ sidebarCollapsed }: SidebarProps) => {
 };
 export default Sidebar;
 
-
-{/* <div className="flex flex-col p-2 gap-1">
+{
+  /* <div className="flex flex-col p-2 gap-1">
 <Link
   href="#"
   className={`flex items-center gap-3 p-3 rounded-md bg-[#3351ff] text-white font-medium ${sidebarCollapsed ? "justify-center" : ""}`}
@@ -117,4 +121,5 @@ export default Sidebar;
   <Settings className="h-5 w-5" />
   {!sidebarCollapsed && <span>Settings</span>}
 </Link>
-</div> */}
+</div> */
+}
