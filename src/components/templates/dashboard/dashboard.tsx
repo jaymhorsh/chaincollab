@@ -106,11 +106,14 @@ const Dashboard = ({
 
   return (
     <>
+      {/* Mobile menu overlay */}
+     
       <div
         className={`flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-[70px]' : 'md:ml-0'}`}
       >
-        <Header toggleMobileMenu={toggleMobileMenu} sidebarCollapsed={sidebarCollapsed} isMobile={isMobile} />
+        <Header toggleMobileMenu={()=>toggleMobileMenu} sidebarCollapsed={sidebarCollapsed} isMobile={isMobile} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={()=>setMobileMenuOpen} />
         <div className="m-2">
+     
           <Analytics />
           <SectionCard title="Your Channels">
             <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>

@@ -103,6 +103,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
 export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, playbackId, assetData, format }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { views: videocount, error } = usePlaybackMetrics(playbackId || '');
+  
   const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
   const handlePlayClick = () => {
     setIsDialogOpen(true);
