@@ -20,7 +20,21 @@ const StreamPage = () => {
   }
 
   const dispatch = useDispatch<AppDispatch>();
-  const { stream, loading, error } = useSelector((state: RootState) => state.streams);
+  const { stream, loading, error } = useSelector(
+    (state: RootState) =>
+      state.streams as {
+        stream: {
+          id: string;
+          streamKey: string;
+          playbackId: string;
+          name: string;
+          isActive: boolean;
+          createdAt: string;
+        };
+        loading: boolean;
+        error: string | null;
+      },
+  );
   const navigate = useRouter();
 
   useEffect(() => {
