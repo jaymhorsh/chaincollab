@@ -9,6 +9,7 @@ import { DemoPlay } from '../templates/dashboard/DemoPlay';
 import { useFetchPlaybackId, useFetchStreamPlaybackId } from '@/app/hook/usePlaybckInfo';
 import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
 import { Bars } from 'react-loader-spinner';
+import { useViewerMetrics, useViewMetrics } from '@/app/hook/useViewerMetrics';
 
 export const AnalyticCard = ({ title, views, change, value, playtimeMins, loading }: AnalyticCardProps) => {
   return (
@@ -18,27 +19,24 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
           <p className="text-2xl font-bold break-words">{title}</p>
           <p className="text-black-secondary-text  font-medium text-sm">{change}</p>
         </div>
-        {loading ? (
-          <Bars color="#3351FF" height={25} width={25} />
-        ) : (
-          <div>
-            {views ? (
-              <p className="text-4xl font-extrabold tracking-wide">{views}</p>
-            ) : (
-              <p className="text-2xl font-bold tracking-wide">{playtimeMins}</p>
-            )}
-            <p className="text-xs flex items-center gap-1">
-              <span className="text-black-secondary-text">{value}</span>
-              <span>
-                {value < 0 ? (
-                  <BiSolidDownArrow className="text-orange-drop text-xs" />
-                ) : (
-                  <BiSolidUpArrow className="text-green-drop text-xs" />
-                )}
-              </span>
-            </p>
-          </div>
-        )}
+
+        <div>
+          {views ? (
+            <p className="text-4xl font-extrabold tracking-wide">{views}</p>
+          ) : (
+            <p className="text-2xl font-bold tracking-wide">{playtimeMins}</p>
+          )}
+          <p className="text-xs flex items-center gap-1">
+            <span className="text-black-secondary-text">{value}</span>
+            <span>
+              {value < 0 ? (
+                <BiSolidDownArrow className="text-orange-drop text-xs" />
+              ) : (
+                <BiSolidUpArrow className="text-green-drop text-xs" />
+              )}
+            </span>
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -54,7 +52,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
   lastSeen,
 }) => {
   const { thumbnailUrl, loading } = useFetchStreamPlaybackId(playb);
-  const { views: viewstream, error } = usePlaybackMetrics(playb);
+  const { viewerMetrics: viewstream, error } = useViewMetrics({ playbackId: playb });
   console.log('viewMetricsstream:', viewstream);
   return (
     <div className="w-full h-full flex flex-col group">
@@ -103,7 +101,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
 export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, playbackId, assetData, format }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { views: videocount, error } = usePlaybackMetrics(playbackId || '');
-  
+
   const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
   const handlePlayClick = () => {
     setIsDialogOpen(true);

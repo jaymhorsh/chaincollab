@@ -7,7 +7,7 @@ import { RiVideoAddLine } from 'react-icons/ri';
 import * as Dialog from '@radix-ui/react-dialog';
 import { IoMdClose } from 'react-icons/io';
 import { CreateLivestream } from '@/components/CreateLivestream';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -16,28 +16,15 @@ import { usePrivy } from '@privy-io/react-auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllStreams } from '@/features/streamAPI';
 import { getAssets } from '@/features/assetsAPI';
-import { RootState, AppDispatch } from '@/store/store';
+import type { RootState, AppDispatch } from '@/store/store';
 import image1 from '../../../../public/assets/images/image1.png';
 import Spinner from '@/components/Spinner';
 import UploadVideoAsset from '@/components/UploadVideoAsset';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
-import { Asset } from '@/interfaces';
+import type { Asset } from '@/interfaces';
+import MobileSidebar from '@/components/MobileSidebar';
 
-const Dashboard = ({
-  sidebarCollapsed,
-  mobileMenuOpen,
-  isMobile,
-  toggleSidebar,
-  toggleMobileMenu,
-  setMobileMenuOpen,
-}: {
-  sidebarCollapsed: boolean;
-  mobileMenuOpen: boolean;
-  isMobile: boolean;
-  toggleSidebar: () => void;
-  toggleMobileMenu: () => void;
-  setMobileMenuOpen: (arg0: boolean) => void;
-}) => {
+const Dashboard = () => {
   const { user, ready, authenticated } = usePrivy();
   const navigate = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -46,6 +33,8 @@ const Dashboard = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDialogOpen2, setIsDialogOpen2] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const itemsPerPage = 5;
 
   useEffect(() => {
@@ -71,18 +60,13 @@ const Dashboard = ({
     }
   }, [ready, authenticated, navigate]);
 
-  // Filter streams based on user's wallet address
-  // const filteredStreams = streams.filter(
-  //   (stream: any) => !!stream.playbackId && stream.creatorId.value === user?.wallet?.address,
-  // );
+  const filteredStreams = useMemo(() => {
+    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
+  }, [streams, user?.wallet?.address]);
 
-  const filteredStreams = streams.filter(
-    (stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address,
-  );
-
-  const filteredAssets = assets.filter(
-    (asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address,
-  );
+  const filteredAssets = useMemo(() => {
+    return assets.filter((asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address);
+  }, [assets, user?.wallet?.address]);
   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
   const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
@@ -96,6 +80,14 @@ const Dashboard = ({
     setCurrentPage(pageNumber);
   };
 
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
   if (!ready || !authenticated) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -105,15 +97,22 @@ const Dashboard = ({
   }
 
   return (
-    <>
-      {/* Mobile menu overlay */}
-     
-      <div
-        className={`flex-1 transition-all duration-300 ease-in-out ${sidebarCollapsed ? 'md:ml-[70px]' : 'md:ml-0'}`}
-      >
-        <Header toggleMobileMenu={()=>toggleMobileMenu} sidebarCollapsed={sidebarCollapsed} isMobile={isMobile} mobileMenuOpen={mobileMenuOpen} setMobileMenuOpen={()=>setMobileMenuOpen} />
-        <div className="m-2">
-     
+    <div className="flex h-screen overflow-hidden">
+      {/* Mobile Sidebar */}
+      {mobileMenuOpen && (
+        <MobileSidebar
+          sidebarCollapsed={sidebarCollapsed}
+          toggleSidebar={toggleSidebar}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
+      )}
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col h-screen overflow-auto">
+        <Header toggleMenu={toggleMobileMenu} mobileOpen={mobileMenuOpen} />
+
+        <div className="m-2 pb-8">
           <Analytics />
           <SectionCard title="Your Channels">
             <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -179,7 +178,7 @@ const Dashboard = ({
             )}
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex  justify-end items-end col-span-1 lg:col-span-3 mt-6 space-x-4">
+              <div className="flex justify-end items-end col-span-1 lg:col-span-3 mt-6 space-x-4">
                 {/* Previous Button */}
                 <button
                   className="p-2 rounded-lg bg-gray-200 hover:bg-gray-300 transition disabled:opacity-50 disabled:cursor-not-allowed"
@@ -232,7 +231,7 @@ const Dashboard = ({
               </Dialog.Trigger>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
-                <Dialog.Content className="fixed left-1/2  top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
                   <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
                     <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Asset
                   </Dialog.Title>
@@ -284,7 +283,7 @@ const Dashboard = ({
           </SectionCard>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

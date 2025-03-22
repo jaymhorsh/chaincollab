@@ -17,14 +17,13 @@ const DashboardLayout = ({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
-  console.log('isMobile:', isMobile, 'mobileMenuOpen:', mobileMenuOpen, 'sidebarCollapsed:', sidebarCollapsed);
 
   // Check if we're on mobile screen
   useEffect(() => {
     const checkIfMobile = () => {
       const isMobileView = window.innerWidth < 768;
       setIsMobile(isMobileView);
-  
+
       // Automatically collapse the sidebar on mobile
       if (isMobileView) {
         setSidebarCollapsed(true);
@@ -63,9 +62,9 @@ const DashboardLayout = ({
           {
             'w-[100px]': sidebarCollapsed && !isMobile, // Collapsed sidebar for desktop
             'w-72 p-4': !sidebarCollapsed && !isMobile, // Expanded sidebar for desktop
-            hidden: isMobile && !mobileMenuOpen, 
-            block: isMobile && mobileMenuOpen, 
-          }
+            hidden: isMobile && !mobileMenuOpen,
+            block: isMobile && mobileMenuOpen,
+          },
         )}
         // className={`${mobileMenuOpen ? "block" : "hidden"} md:block fixed md:relative z-20 h-full transition-all duration-300 ease-in-out ${sidebarCollapsed ? "w-[70px]" : "w-[200px]"} bg-white border-r border-[#dfe0e1] flex flex-col`}
       >
@@ -75,10 +74,8 @@ const DashboardLayout = ({
               <h1>Creator Dashboard</h1>
             </div>
           )}
-          <button onClick={isMobile ? toggleMobileMenu : toggleSidebar} className="ml-auto">
-            {isMobile ? (
-              <X className="h-5 w-5 text-[#53525f]" />
-            ) : sidebarCollapsed ? (
+          <button onClick={toggleSidebar} className="ml-auto">
+            {sidebarCollapsed ? (
               <LuArrowRightFromLine className="h-5 w-5 text-[#53525f]" />
             ) : (
               <LuArrowLeftFromLine className="h-5 w-5 text-[#53525f]" />
@@ -88,21 +85,12 @@ const DashboardLayout = ({
         <Sidebar sidebarCollapsed={sidebarCollapsed} />
       </aside>
       {/* Mobile menu overlay */}
-     
+
       {/* Main content area */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Pass state values as props to children */}
         <main className="flex-1 text-orange overflow-x-hidden overflow-y-auto bg-gray-50">
-          <div className="container mx-auto px-1">
-            {React.cloneElement(children as React.ReactElement, {
-              sidebarCollapsed,
-              mobileMenuOpen,
-              isMobile,
-              toggleSidebar,
-              toggleMobileMenu,
-              setMobileMenuOpen,
-            })}
-          </div>
+          <div className="container mx-auto px-1 ">{children}</div>
         </main>
       </div>
     </div>
