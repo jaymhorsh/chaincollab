@@ -58,8 +58,11 @@ export const useViewerMetrics = ({
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
       if (response.status === 200) {
-        setViewMetrics(response.data[0]);
-        console.log(response);
+        if (Array.isArray(response.data) && response.data.length === 0) {
+          setViewMetrics({ viewCount: 0, errorRate: 0 });
+        } else {
+          setViewMetrics(response.data[0]);
+        }
       } else {
         setViewMetrics({
           viewCount: 0,
@@ -132,7 +135,11 @@ export const useViewMetrics = ({ playbackId, refreshInterval = 10000 }: ViewMetr
         throw new Error(`Error: ${response.status} - ${response.statusText}`);
       }
       if (response.status === 200) {
-        setViewerMetrics(response.data[0]);
+        if (Array.isArray(response.data) && response.data.length === 0) {
+          setViewerMetrics({ viewCount: 0, errorRate: 0 });
+        } else {
+          setViewerMetrics(response.data[0]);
+        }
       } else {
         setViewerMetrics({ viewCount: 0, errorRate: 0 });
       }

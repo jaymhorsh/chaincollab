@@ -8,7 +8,7 @@ import { FaPlay } from 'react-icons/fa';
 import { DemoPlay } from '../templates/dashboard/DemoPlay';
 import { useFetchPlaybackId, useFetchStreamPlaybackId } from '@/app/hook/usePlaybckInfo';
 import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
-// import { Bars } from 'react-loader-spinner';
+import { Bars } from 'react-loader-spinner';
 import { useViewMetrics } from '@/app/hook/useViewerMetrics';
 
 export const AnalyticCard = ({ title, views, change, value, playtimeMins, loading }: AnalyticCardProps) => {
@@ -17,12 +17,14 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
       <div className="border flex flex-col justify-between bg-background-gray border-border-gray rounded-lg p-4 gap-y-5 h-full">
         <div>
           <p className="text-2xl font-bold break-words">{title}</p>
-          <p className="text-black-secondary-text  font-medium text-sm">{change}</p>
+          {/* <p className="text-black-secondary-text  font-medium text-sm">{change}</p> */}
         </div>
+{
+  loading ? <Bars width={25} height={25}  color="#3351FF" /> : (
 
         <div>
           {views ? (
-            <p className="text-4xl font-extrabold tracking-wide">{views}</p>
+            <p className="text-4xl font-extrabold tracking-wide">{views} Views</p>
           ) : (
             <p className="text-2xl font-bold tracking-wide">{playtimeMins}</p>
           )}
@@ -37,7 +39,9 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
             </span>
           </p>
         </div>
+        )}
       </div>
+
     </div>
   );
 };
@@ -50,6 +54,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
   image,
   playb,
   lastSeen,
+  status,
 }) => {
   const { thumbnailUrl, loading } = useFetchStreamPlaybackId(playb);
   const { viewerMetrics: viewstream, error } = useViewMetrics({ playbackId: playb });
@@ -72,6 +77,19 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
         )}
         <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded">
           {viewstream?.viewCount} views
+        </div>
+        <div className="absolute top-2 right-2 bg-black/70 px-2 py-1 rounded flex items-center gap-1">
+          {status ? (
+            <>
+              <div className="bg-[#04EB2A] h-[6px] w-[6px] rounded-full" />
+              <span className="text-xs text-black-primary-text font-medium select-none">Live</span>
+            </>
+          ) : (
+            <>
+              <div className="bg-gray-200 h-[6px] w-[6px] rounded-full" />
+            <span className="text-xs text-gray-500 font-medium select-none">Idle</span>
+            </>
+          )}
         </div>
       </div>
 

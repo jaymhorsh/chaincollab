@@ -44,7 +44,7 @@ export default function MobileSidebar({
     <>
       {/* Overlay */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 bg-black/50 z-30 md:hidden" onClick={() => setMobileMenuOpen(false)} />
+        <div className="fixed left-0 inset-0 bg-black/50 z-30 md:hidden" onClick={() => setMobileMenuOpen(false)} />
       )}
 
       {/* Sidebar */}

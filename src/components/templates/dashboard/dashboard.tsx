@@ -170,7 +170,7 @@ const Dashboard = () => {
                         playbackId={stream.id}
                         playb={stream.playbackId}
                         lastSeen={new Date(stream.lastSeen)}
-                      />
+                        status={stream.isActive}                      />
                     </div>
                   ))
                 )}
