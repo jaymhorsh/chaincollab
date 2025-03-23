@@ -8,8 +8,8 @@ import { FaPlay } from 'react-icons/fa';
 import { DemoPlay } from '../templates/dashboard/DemoPlay';
 import { useFetchPlaybackId, useFetchStreamPlaybackId } from '@/app/hook/usePlaybckInfo';
 import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
-import { Bars } from 'react-loader-spinner';
-import { useViewerMetrics, useViewMetrics } from '@/app/hook/useViewerMetrics';
+// import { Bars } from 'react-loader-spinner';
+import { useViewMetrics } from '@/app/hook/useViewerMetrics';
 
 export const AnalyticCard = ({ title, views, change, value, playtimeMins, loading }: AnalyticCardProps) => {
   return (
