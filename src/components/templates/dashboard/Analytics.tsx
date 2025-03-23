@@ -6,7 +6,7 @@ import { useViewerMetrics } from '@/app/hook/useViewerMetrics';
 
 const Analytics = () => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'month' | 'year'>('all'); // Filter state
-  const [isLoading, setIsLoading] = useState(false); 
+  const [isLoading, setIsLoading] = useState(false);
   const { viewMetrics, loading, error, refetch } = useViewerMetrics({ filter: activeFilter }); // Fetch view metrics
 
   const insightsData = [

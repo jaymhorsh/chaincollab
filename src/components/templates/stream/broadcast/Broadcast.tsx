@@ -12,6 +12,7 @@ import {
   StartScreenshareIcon,
   StopScreenshareIcon,
 } from '@livepeer/react/assets';
+import * as Dialog from '@radix-ui/react-dialog';
 import * as Broadcast from '@livepeer/react/broadcast';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { getIngest } from '@livepeer/react/external';
@@ -27,6 +28,9 @@ import Image from 'next/image';
 import { Menu, SettingsIcon, X } from 'lucide-react';
 import MobileSidebar from '@/components/MobileSidebar';
 import { useViewMetrics } from '@/app/hook/useViewerMetrics';
+import { UploadAdsAsset } from '@/components/UploadVideoAsset';
+import { IoMdClose } from 'react-icons/io';
+import { start } from 'repl';
 
 interface Streams {
   streamKey: string;
@@ -54,6 +58,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   });
 
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [sessionTime, setSessionTime] = useState('00:00:00');
   const [showChat, setShowChat] = useState(true);
   const [showInfo, setShowInfo] = useState(false);
@@ -61,8 +66,8 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { user: 'Wagmidao', message: "Gm guys, Can you type where you're streaming from...WAGMI", highlight: true },
-    { user: 'DavidOx', message: 'Lagos, Nigeria 🇳🇬' },
+    { user: 'Creator', message: "Gm guys, Can you type where you're streaming from...WAGMI", highlight: true },
+    // { user: 'DavidOx', message: 'Lagos, Nigeria 🇳🇬' },
   ]);
   const [newMessage, setNewMessage] = useState('');
   const { viewerMetrics, loading, error } = useViewMetrics({
@@ -141,7 +146,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
   const handleSendMessage = (e: React.FormEvent) => {
     e.preventDefault();
     if (newMessage.trim()) {
-      setChatMessages([...chatMessages, { user: 'You', message: newMessage }]);
+      setChatMessages([...chatMessages, { user: 'You', message: newMessage, highlight: false }]);
       setNewMessage('');
     }
   };
@@ -172,7 +177,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
           {/* Header */}
           <div className="flex justify-between items-center px-3 w-full border-b border-green-400 h-[70px] bg-white">
             <button onClick={toggleMobileMenu} className="md:hidden">
-              {mobileMenuOpen ? <X className="h-8 w-8 text-[#000]" /> : <Menu className="h-8 w-8 text-[#000]" />}
+              {mobileMenuOpen ? <X className="h-7 w-7 text-[#000]" /> : <Menu className="h-7 w-7 text-[#000]" />}
             </button>
             <BroadcastLoadingIndicator />
             <button className="md:hidden flex gap-3  items-center px-4 py-2 bg-gray-100 rounded-md">
@@ -210,10 +215,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   }
                 />
               </div>
-              <button className="flex flex-col items-center px-4 py-2 bg-gray-100 rounded-md">
-                <span>{viewerCount}</span>
-                <span>Viewers</span>
-              </button>
+              
             </div>
 
             <div className="mt-2 sm:mt-0">
@@ -222,7 +224,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
           </div>
 
           {/* Main Content Area */}
-          <div className="w-full md:h-screen grid grid-cols-1 md:grid-cols-12 gap-x-2 pt-1 overflow-hidden">
+          <div className="w-full md:h-screen grid grid-cols-1 md:grid-cols-12 gap-x-2 pt-1 ">
             {/* Video Section */}
             <div
               style={{
@@ -253,21 +255,21 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   {/* Action Buttons */}
                   <div className="flex justify-between items-center px-4 py-3 border-t border-b">
                     <div className="flex items-center gap-x-3">
-                      <button className="flex rounded-sm bg-background-gray h-[33px] items-center px-3">
+                      <button className="flex rounded-sm bg-background-gray md:h-[33px] items-center px-3">
                         <span className="text-black-primary-text font-medium select-none">Play Ads</span>
                       </button>
                     </div>
                     <div className="flex items-center gap-x-3">
                       <Settings className="w-7 h-7 transition-all flex-shrink-0 text-black-primary-text hover:scale-110" />
                       <button
-                        className="flex rounded-md bg-background-gray h-[33px] items-center px-3"
+                        className="flex rounded-md bg-background-gray md:h-[33px]  items-center px-3"
                         onClick={handleCopyLink}
                       >
                         <span className="text-black-secondary-text font-medium select-none">Copy Link</span>
                       </button>
                       {playbackUrl && (
                         <Link href={playbackUrl} target="_blank" rel="noopener noreferrer">
-                          <button className="flex rounded-md bg-background-gray h-[33px] items-center px-3">
+                          <button className="flex rounded-md bg-background-gray md:h-[33px] items-center px-3">
                             <span className="text-black-secondary-text font-medium select-none">Visit Link</span>
                           </button>
                         </Link>
@@ -302,9 +304,9 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   {/* Mobile Content - Only visible on mobile */}
                   <div className=" md:hidden">
                     {showChat && (
-                      <div className="h-[calc(100vh-400px)] flex flex-col">
+                      <div className="min-h-96 h-[400px] flex flex-col">
                         <div className="flex-1 overflow-y-auto p-4">
-                          <p className="text-center text-gray-500 mb-4">Welcome to the chat!</p>
+                          <p className="text-center text-gray-500 mb-4">Welcome to {streamName} chat!</p>
                           <div className="space-y-3">
                             {chatMessages.map((msg, index) => (
                               <div key={index}>
@@ -325,9 +327,9 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                             />
                             <div className="flex justify-between items-center">
                               <button type="button" className="p-2">
-                                <SettingsIcon className="h-5 w-5 text-gray-500" />
+                                <SettingsIcon className="h-5 w-5 text-black" />
                               </button>
-                              <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
+                              <button type="submit" className="bg-main-blue text-white px-4  rounded-md">
                                 Chat
                               </button>
                             </div>
@@ -361,28 +363,38 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                     {showAds && (
                       <div className="h-[calc(100vh-400px)] overflow-y-auto p-4">
                         <h4 className="text-sm text-gray-500 mb-3">Video</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="border rounded-md p-2">
-                            <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
-                              +
+                        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <Dialog.Trigger asChild>
+                            <div className="border rounded-md p-2">
+                              <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
+                                +
+                              </div>
                             </div>
-                          </div>
-                        </div>
-
-                        <h4 className="text-sm text-gray-500 mb-3 mt-6">Picture-in-picture</h4>
-                        <div className="grid grid-cols-2 gap-4">
-                          <div className="border rounded-md p-2">
-                            <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
-                              +
-                            </div>
-                          </div>
-                        </div>
+                          </Dialog.Trigger>
+                          <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+                            <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                              <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
+                                <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Ads
+                              </Dialog.Title>
+                              <UploadAdsAsset onClose={() => setIsDialogOpen(false)} />
+                              <Dialog.Close asChild>
+                                <button
+                                  className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                                  aria-label="Close"
+                                >
+                                  <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                                </button>
+                              </Dialog.Close>
+                            </Dialog.Content>
+                          </Dialog.Portal>
+                        </Dialog.Root>
                       </div>
                     )}
                   </div>
 
                   {/* Desktop Info - Only visible on desktop */}
-                  <div className="hidden md:block">
+                  <div className="max-sm:hidden ">
                     <div className="w-full p-3 pl-4 rounded-b-md bg-white border-t">
                       <div className="flex flex-col mb-3 gap-y-2">
                         <h1 className="text-black-secondary-text font-medium select-none">Title</h1>
@@ -403,7 +415,8 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                       </div>
                     </div>
                   </div>
-                  <div className="hidden md:block border rounded-md m-4">
+                  {/* Ads */}
+                  <div className="max-sm:hidden border rounded-md m-4">
                     <div className="flex items-center justify-between p-3 bg-gray-50 border-b">
                       <h3 className="font-medium">Ads</h3>
                       <div className="flex items-center space-x-2">
@@ -412,47 +425,35 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                       </div>
                     </div>
                     <div className="p-4">
-                      <h4 className="text-sm text-gray-500 mb-3">Video</h4>
-                      <div className="grid grid-cols-4 gap-4">
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center">
-                            <span className="text-xs text-gray-500">Collab Ad.mp4</span>
-                          </div>
-                        </div>
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center">
-                            <span className="text-xs text-gray-500">Vid-01-10-23</span>
-                          </div>
-                        </div>
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center">
-                            <span className="text-xs text-gray-500">082BED72</span>
-                          </div>
-                        </div>
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
-                            +
-                          </div>
-                        </div>
-                      </div>
-
                       <h4 className="text-sm text-gray-500 mb-3 mt-6">Picture-in-picture</h4>
                       <div className="grid grid-cols-4 gap-4">
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center">
-                            <span className="text-xs text-gray-500">Sponsor Ad 01</span>
-                          </div>
-                        </div>
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center">
-                            <span className="text-xs text-gray-500">Sponsor Ad 02</span>
-                          </div>
-                        </div>
-                        <div className="border rounded-md p-2">
-                          <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
-                            +
-                          </div>
-                        </div>
+                        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <Dialog.Trigger asChild>
+                            <div className="border rounded-md p-2">
+                              <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
+                                +
+                              </div>
+                            </div>
+                          </Dialog.Trigger>
+                          <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+                            <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                              <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
+                                <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Ads
+                              </Dialog.Title>
+                              <UploadAdsAsset onClose={() => setIsDialogOpen(false)} />
+                              <Dialog.Close asChild>
+                                <button
+                                  className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                                  aria-label="Close"
+                                >
+                                  <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                                </button>
+                              </Dialog.Close>
+                            </Dialog.Content>
+                          </Dialog.Portal>
+                        </Dialog.Root>
+                        {/* Ads video list */}
                       </div>
                     </div>
                   </div>
@@ -461,12 +462,12 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
             </div>
 
             {/* Chat Section - Desktop */}
-            <div className="max-sm:hidden col-span-4 md:block overflow-y-auto h-full border-l">
+            <div className="max-sm:hidden rounded-lg col-span-4 md:block shadow-sm overflow-y-auto h-full border border-border-gray">
               <div className="flex flex-col h-full">
-                <div className="p-3 border-b bg-gray-50">
+                <div className="p-3 border-b bg-gray-100">
                   <h3 className="font-medium">Chat</h3>
                 </div>
-                <div className="flex-1 overflow-y-auto p-4">
+                <div className="flex-1 overflow-y-auto p-4 bg-white">
                   <p className="text-center text-gray-500 mb-4">Welcome to the chat!</p>
                   <div className="space-y-3">
                     {chatMessages.map((msg, index) => (
@@ -477,7 +478,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                     ))}
                   </div>
                 </div>
-                <div className="p-3 border-t">
+                <div className="p-3 border-t bg-white">
                   <form onSubmit={handleSendMessage} className="flex flex-col space-y-2">
                     <input
                       type="text"
@@ -486,11 +487,11 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                       placeholder="Send message..."
                       className="w-full border rounded-md py-2 px-3"
                     />
-                    <div className="flex justify-between items-center">
+                    <div className="flex justify-end gap-3">
                       <button type="button" className="p-2">
-                        <SettingsIcon className="h-5 w-5 text-gray-500" />
+                        <SettingsIcon className="h-6 w-6 text-black" />
                       </button>
-                      <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded-md">
+                      <button type="submit" className="bg-main-blue text-white px-3 rounded-md">
                         Chat
                       </button>
                     </div>
@@ -559,12 +560,21 @@ export const BroadcastLoading = () => (
 );
 
 export const BroadcastTrigger = () => {
+  const [timerStarted, setTimerStarted] = useState(false);
+
+  // const handleStartStream = () => {
+  //   setTimerStarted(true);
+  //   setTimeout(() => {
+  //     startTimer(); // Start the timer after 5 seconds
+  //   }, 5000);
+  // };
   return (
     <div className="flex items-center gap-2">
       <Broadcast.EnabledTrigger className="rounded-md">
         <Broadcast.EnabledIndicator
           className="flex items-center bg-main-blue h-[40px] min-w-[150px] rounded-md text-black-primary-text px-4 justify-center"
           matcher={false}
+          // onClick={handleStartStream}
         >
           <span className="text-base text-black font-medium">Start Stream</span>
         </Broadcast.EnabledIndicator>

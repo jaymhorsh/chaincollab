@@ -108,7 +108,7 @@ interface ViewerMetrics {
   errorRate: number;
 }
 
-export const useViewMetrics = ({ playbackId, refreshInterval = 10000 }: ViewMetricProps) => {
+export const useViewMetrics = ({ playbackId, refreshInterval = 5000 }: ViewMetricProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [viewerMetrics, setViewerMetrics] = useState<ViewerMetrics | null>(null);

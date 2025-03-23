@@ -1,4 +1,3 @@
-
 import { useCallback, useEffect, useState } from 'react';
 import api from '@/utils/api';
 
@@ -33,7 +32,6 @@ export const usePlaybackMetrics = (playbackId: string | null, refreshInterval: n
     } finally {
       setLoading(false);
     }
-    
   }, [playbackId]);
 
   // Initial fetch when component mounts or dependencies change

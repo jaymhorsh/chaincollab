@@ -19,29 +19,28 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
           <p className="text-2xl font-bold break-words">{title}</p>
           {/* <p className="text-black-secondary-text  font-medium text-sm">{change}</p> */}
         </div>
-{
-  loading ? <Bars width={25} height={25}  color="#3351FF" /> : (
-
-        <div>
-          {views ? (
-            <p className="text-4xl font-extrabold tracking-wide">{views} Views</p>
-          ) : (
-            <p className="text-2xl font-bold tracking-wide">{playtimeMins}</p>
-          )}
-          <p className="text-xs flex items-center gap-1">
-            <span className="text-black-secondary-text">{value}</span>
-            <span>
-              {value < 0 ? (
-                <BiSolidDownArrow className="text-orange-drop text-xs" />
-              ) : (
-                <BiSolidUpArrow className="text-green-drop text-xs" />
-              )}
-            </span>
-          </p>
-        </div>
+        {loading ? (
+          <Bars width={25} height={25} color="#3351FF" />
+        ) : (
+          <div>
+            {views ? (
+              <p className="text-4xl font-extrabold tracking-wide">{views} Views</p>
+            ) : (
+              <p className="text-2xl font-bold tracking-wide">{playtimeMins}</p>
+            )}
+            <p className="text-xs flex items-center gap-1">
+              <span className="text-black-secondary-text">{value}</span>
+              <span>
+                {value < 0 ? (
+                  <BiSolidDownArrow className="text-orange-drop text-xs" />
+                ) : (
+                  <BiSolidUpArrow className="text-green-drop text-xs" />
+                )}
+              </span>
+            </p>
+          </div>
         )}
       </div>
-
     </div>
   );
 };
@@ -87,7 +86,7 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
           ) : (
             <>
               <div className="bg-gray-200 h-[6px] w-[6px] rounded-full" />
-            <span className="text-xs text-gray-500 font-medium select-none">Idle</span>
+              <span className="text-xs text-gray-500 font-medium select-none">Idle</span>
             </>
           )}
         </div>

@@ -105,7 +105,7 @@ const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen
         <div className="flex justify-between items-center p-2 sm:p-5 bg-white border-b border-[#dfe0e1] sticky top-0 z-10">
           <div className="flex items-center w-full flex-1 gap-3">
             <button onClick={toggleMenu} className="md:hidden">
-              {mobileOpen ? <X className="h-8 w-8 text-[#000]" /> : <Menu className="h-8 w-8 text-[#000]" />}
+              {mobileOpen ? <X className="h-7 w-7 text-[#000]" /> : <Menu className="h-7 w-7 text-[#000]" />}
             </button>
             <div className="  px-3 py-1.5 rounded-md ">
               <Image src={Chainfren_Logo} alt={'header_Logo'} />
