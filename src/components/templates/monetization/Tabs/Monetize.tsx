@@ -10,7 +10,7 @@ import SendTransaction from '@/components/SendTransaction';
 import { usePrivy } from '@privy-io/react-auth';
 const Monetize = () => {
   const { sendTransaction: send } = usePrivy();
-  const { ethBalance, chainName } = useEthBalance();
+  const { ethBalance } = useEthBalance();
   const [showPayment, setShowPayment] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [withdrawalAddress, setWithdrawalAddress] = useState('');
@@ -27,8 +27,8 @@ const Monetize = () => {
 
   return (
     <div>
-      <div className="md:w-[85%] w-full mx-auo flex flex-col md:grid md:grid-cols-7  md:gap-x-5">
-        <div className="bg-white shadow-lg p-6 rounded-lg border border-[#DFE0E1] md:col-span-3 w-full">
+      <div className="md:w-[85%] w-full max-sm:flex flex-col md:grid md:grid-cols-7   md:gap-x-5">
+        <div className="bg-white shadow-lg md:p-6 p-4 rounded-lg border border-[#DFE0E1] md:col-span-3 w-full">
           <div className="bg-black flex flex-col text-white h-[160px] justify-around p-4 rounded-lg">
             <div className="flex justify-between items-center pb-4 pt-2 px-3">
               <p className="text-xl font-normal">Wallet Balance</p>

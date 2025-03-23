@@ -6,7 +6,9 @@ import { useViewerMetrics } from '@/app/hook/useViewerMetrics';
 
 const Analytics = () => {
   const [activeFilter, setActiveFilter] = useState<'all' | 'month' | 'year'>('all'); // Filter state
-  const { viewMetrics, loading, error } = useViewerMetrics({ filter: activeFilter }); // Fetch view metrics
+  const [isLoading, setIsLoading] = useState(false);
+  const { viewMetrics, loading, error, refetch } = useViewerMetrics({ filter: activeFilter }); // Fetch view metrics
+
   const insightsData = [
     {
       title: 'Total Views',
@@ -24,13 +26,17 @@ const Analytics = () => {
     },
   ];
 
-  const handleFilterChange = (filterType: 'all' | 'month' | 'year') => {
+  const handleFilterChange = async (filterType: 'all' | 'month' | 'year') => {
+    setIsLoading(true); // Set loading to true
     setActiveFilter(filterType);
+    await refetch(); // Refetch data
+    setIsLoading(false); // Set loading to false after refetch
   };
+
   return (
-    <div className="grid bg-white grid-cols-2 gap-6 md:grid-cols-4 p-6 rounded-lg">
+    <div className="grid bg-white grid-cols-2 gap-6 md:grid-cols-4 p-3 md:p-6 rounded-lg">
       {insightsData.map((insightsData) => (
-        <AnalyticCard key={insightsData.title} {...insightsData} loading={loading} />
+        <AnalyticCard key={insightsData.title} {...insightsData} loading={isLoading} />
       ))}
 
       <div className="w-full h-full">

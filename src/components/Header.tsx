@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Chainfren_Logo from '../../public/assets/images/chainfren_logo.svg';
 import { FaBars, FaSpinner } from 'react-icons/fa6';
-// import * as Avatar from '@radix-ui/react-avatar';
+import * as Avatar from '@radix-ui/react-avatar';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { MdOutlineLogout } from 'react-icons/md';
 import { useRouter } from 'next/navigation';
@@ -14,11 +14,11 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
-import { Avatar, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
-import { Menu } from 'lucide-react';
+import { Avatar as Avater, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
+import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
 
-const Header = ({ toggleMobileMenu, sidebarCollapsed, mobileMenuOpen, setMobileMenuOpen}: any) => {
+const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen: boolean }) => {
   const navigate = useRouter();
   const { user, ready } = usePrivy();
   const { wallets } = useWallets();
@@ -26,6 +26,7 @@ const Header = ({ toggleMobileMenu, sidebarCollapsed, mobileMenuOpen, setMobileM
   const [walletBalance, setWalletBalance] = useState<string>('');
   const [embeddedWallet, setEmbeddedWallet] = useState<any>(null);
   const [solanaWallet, setSolanaWallet] = useState<any>(null);
+  const [showDialog, setShowDialog] = useState(false);
 
   // const [solanaWalletBalance, setSolanaWalletBalance] = useState<string>('');
   useEffect(() => {
@@ -93,134 +94,82 @@ const Header = ({ toggleMobileMenu, sidebarCollapsed, mobileMenuOpen, setMobileM
     },
   });
   const [showWallets, setShowWallets] = useState(false);
-  const handleclick = ()=>{
-    toggleMobileMenu()
-    // alert('clicked')
-  }
+  // const handleclick = ()=>{
+  //       // alert('clicked')
+  // }
   return (
     <>
-     {mobileMenuOpen && (
-        <div className="fixed bg-red-800 inset-0 bg-black/50 z-50 md:hidden" onClick={() => setMobileMenuOpen(false)} />
-      )}
-    <header
-      className={clsx('flex-1   w-full z-10 top-0 right-0 transition-all shadow-md duration-300 ease-in-out', {
-        // 'md:pl-[100px]': !sidebarCollapsed,
-        'md:ml-[70px]': sidebarCollapsed,
-        'pl-72': sidebarCollapsed,
-        'md:ml-0': !sidebarCollapsed,
-      })}
-    >
-      
-      <div className="flex justify-between items-center p-5 bg-white border-b border-[#dfe0e1] sticky top-0 z-10">
-        <div className="flex items-center gap-3">
-        <button onClick={handleclick} className="md:hidden">
-  <Menu className="h-5 w-5 text-[#53525f]" />
-</button>
-          <div className="  px-3 py-1.5 rounded-md ">
-            <Image src={Chainfren_Logo} alt={'header_Logo'} />
+      <header
+        className={clsx('flex-1   w-full z-10 top-0 right-0 transition-all shadow-md duration-300 ease-in-out', {})}
+      >
+        <div className="flex justify-between items-center p-2 sm:p-5 bg-white border-b border-[#dfe0e1] sticky top-0 z-10">
+          <div className="flex items-center w-full flex-1 gap-3">
+            <button onClick={toggleMenu} className="md:hidden">
+              {mobileOpen ? <X className="h-7 w-7 text-[#000]" /> : <Menu className="h-7 w-7 text-[#000]" />}
+            </button>
+            <div className="  px-3 py-1.5 rounded-md ">
+              <Image src={Chainfren_Logo} alt={'header_Logo'} />
+            </div>
           </div>
-        </div>
-        {/* Avatar */}
-        <div className=" flex items-center gap-2">
-          <div className="flex items-center gap-4">
-            <Dialog.Root>
-              <Dialog.Trigger asChild>
+          {/* Avatar */}
+
+          <div className="flex items-center flex-1 justify-end gap-4">
+            <DropdownMenu.Root>
+              <DropdownMenu.Trigger asChild>
                 <button className="flex items-center gap-2">
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger asChild>
-                      {/* <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
-                        <Avatar.Image
-                          className="size-full rounded-[inherit] object-cover"
-                          src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=128&h=128&dpr=2&q=80"
-                          alt="Moshood"
-                        />
-                        <Avatar.Fallback
-                          className="leading-1 flex size-full rounded-full items-center justify-center bg-white text-[15px] font-medium text-violet11"
-                          delayMs={600}
-                        >
-                          <svg
-                            width="40"
-                            height="40"
-                            viewBox="0 0 35 35"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_85_301)">
-                              <circle cx="17.5" cy="17.5" r="15.5" fill="#3351FF" />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M31 33.4445C31 26.817 25.6274 21.4445 19 21.4445C12.3726 21.4445 7 26.817 7 33.4445H31Z"
-                                fill="white"
-                              />
-
-                              <rect
-                                x="9.55884"
-                                y="9.68384"
-                                width="14"
-                                height="10"
-                                rx="1.6"
-                                transform="rotate(-5.42238 9.55884 9.68384)"
-                                fill="white"
-                              />
-                            </g>
-                            <rect x="1" y="1" width="33" height="33" rx="16.5" stroke="black" strokeWidth="2" />
-                            <defs>
-                              <clipPath id="clip0_85_301">
-                                <rect x="2" y="2" width="31" height="31" rx="15.5" fill="white" />
-                              </clipPath>
-                            </defs>
-                          </svg>
-                        </Avatar.Fallback>
-                      </Avatar.Root> */}
-                      {embeddedWallet?.address ? (
-                        <Identity
-                          address={embeddedWallet.address}
-                          hasCopyAddressOnClick={false}
-                          schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
-                        >
-                          <Avatar />
-                          <Name>
-                            <Badge />
-                          </Name>
-                          <Address />
-                        </Identity>
-                      ) : (
-                        <p className="text-gray-500">No wallet connected</p>
-                      )}
-                    </DropdownMenu.Trigger>
-                    <DropdownMenu.Portal>
-                      <DropdownMenu.Content
-                        className="min-w-[264px] rounded-md mr-2 z-10 bg-white p-4 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade"
-                        sideOffset={5}
-                      >
-                        <DropdownMenu.Item
-                          className="group cursor-pointer px-3 relative flex gap-4 py-3 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
-                          // onClick={() => navigate.replace('#')}
-                        >
-                          <FaRegUserCircle className="text-lg text-black-primary-text" />
-                          <p className="text-black-primary-text font-medium text-sm">Profile</p>
-                        </DropdownMenu.Item>
-
-                        <hr className="my-3 border-[1px] border-border-color " />
-                        <DropdownMenu.Item
-                          className="group cursor-pointer px-3 relative flex gap-4 py-2 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
-                          onClick={handleLogout}
-                        >
-                          <MdOutlineLogout className="text-xl text-red-600" />
-                          <p className="text-red-600 font-medium ">Logout</p>
-                        </DropdownMenu.Item>
-                      </DropdownMenu.Content>
-                    </DropdownMenu.Portal>
-                  </DropdownMenu.Root>
+                  {ready && embeddedWallet?.address ? (
+                    <Identity
+                      address={embeddedWallet.address}
+                      hasCopyAddressOnClick={false}
+                      schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
+                    >
+                      <Avater />
+                      <Name>
+                        <Badge />
+                      </Name>
+                      <Address />
+                    </Identity>
+                  ) : (
+                    <p className="text-gray-500">No wallet connected</p>
+                  )}
                 </button>
-              </Dialog.Trigger>
+              </DropdownMenu.Trigger>
+              <DropdownMenu.Portal>
+                <DropdownMenu.Content
+                  className="min-w-[264px] rounded-md mr-2 z-10 bg-white p-4 shadow-[0px_10px_38px_-10px_rgba(22,_23,_24,_0.35),_0px_10px_20px_-15px_rgba(22,_23,_24,_0.2)] will-change-[opacity,transform] data-[side=bottom]:animate-slideUpAndFade data-[side=left]:animate-slideRightAndFade data-[side=right]:animate-slideLeftAndFade data-[side=top]:animate-slideDownAndFade"
+                  sideOffset={5}
+                >
+                  {/* Profile Option */}
+                  <DropdownMenu.Item
+                    className="group cursor-pointer px-3 relative flex gap-4 py-3 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+                    onClick={() => setShowDialog(true)} // Open the dialog when "Profile" is clicked
+                  >
+                    <FaRegUserCircle className="text-lg text-black-primary-text" />
+                    <p className="text-black-primary-text font-medium text-sm">Profile</p>
+                  </DropdownMenu.Item>
 
+                  <hr className="my-3 border-[1px] border-border-color " />
+
+                  {/* Logout Option */}
+                  <DropdownMenu.Item
+                    className="group cursor-pointer px-3 relative flex gap-4 py-2 select-none items-center rounded-[3px] text-[13px] leading-none text-violet11 outline-none data-[disabled]:pointer-events-none data-[highlighted]:bg-violet9 data-[disabled]:text-mauve8 data-[highlighted]:text-violet1"
+                    onClick={handleLogout}
+                  >
+                    <MdOutlineLogout className="text-xl text-red-600" />
+                    <p className="text-red-600 font-medium ">Logout</p>
+                  </DropdownMenu.Item>
+                </DropdownMenu.Content>
+              </DropdownMenu.Portal>
+            </DropdownMenu.Root>
+
+            {/* Dialog for Profile Details */}
+            <Dialog.Root open={showDialog} onOpenChange={setShowDialog}>
               <Dialog.Portal>
                 <Dialog.Overlay className="fixed inset-0 bg-black/80 animate-fade-in" />
                 <Dialog.Content className="fixed inset-0 flex items-center justify-center p-4">
-                  <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-[850px] max-h-[80vh] overflow-y-auto relative">
+                  <div className="bg-white rounded-xl mt-28 sm:ml-28 shadow-lg p-6 w-full max-w-[850px] max-h-[80vh] overflow-y-auto relative">
                     <Dialog.Title className="text-2xl font-semibold border-b pb-4 mb-4">Profile Details</Dialog.Title>
+                    {/* Profile Details Content */}
                     <div className="grid fex flex-col grid-cols-2  lg:grid-cols-3 gap-4">
                       {/* Wallet Details Toggle */}
                       <div className="col-span-2 lg:col-span-3">
@@ -356,8 +305,7 @@ const Header = ({ toggleMobileMenu, sidebarCollapsed, mobileMenuOpen, setMobileM
             </Dialog.Root>
           </div>
         </div>
-      </div>
-    </header>
+      </header>
     </>
   );
 };

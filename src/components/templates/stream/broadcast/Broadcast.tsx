@@ -12,6 +12,7 @@ import {
   StartScreenshareIcon,
   StopScreenshareIcon,
 } from '@livepeer/react/assets';
+import * as Dialog from '@radix-ui/react-dialog';
 import * as Broadcast from '@livepeer/react/broadcast';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { getIngest } from '@livepeer/react/external';
@@ -24,6 +25,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { CustomizeChannelDialog } from '@/components/Dialog'; // our customized dialog
 import Image from 'next/image';
+import { Menu, SettingsIcon, X } from 'lucide-react';
+import MobileSidebar from '@/components/MobileSidebar';
+import { useViewMetrics } from '@/app/hook/useViewerMetrics';
+import { UploadAdsAsset } from '@/components/UploadVideoAsset';
+import { IoMdClose } from 'react-icons/io';
+import { start } from 'repl';
 
 interface Streams {
   streamKey: string;
@@ -47,9 +54,48 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     fontSize: '16',
     textColor: '#000000',
     logo: '',
-    title: streamName,
+    title: streamName || 'WAGMI DAO Web3 Annual Conference | Live 2024',
     description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
   });
+
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [sessionTime, setSessionTime] = useState('00:00:00');
+  const [showChat, setShowChat] = useState(true);
+  const [showInfo, setShowInfo] = useState(false);
+  const [showAds, setShowAds] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { user: 'Creator', message: "Gm guys, Can you type where you're streaming from...WAGMI", highlight: true },
+    // { user: 'DavidOx', message: 'Lagos, Nigeria 🇳🇬' },
+  ]);
+  const [newMessage, setNewMessage] = useState('');
+  const { viewerMetrics, loading, error } = useViewMetrics({
+    playbackId,
+    refreshInterval: 10000,
+  });
+
+  // Use the viewer count from metrics if available
+  const viewerCount = viewerMetrics?.viewCount || 0;
+  // Timer for session
+  const startTimer = () => {
+    const startTime = Date.now();
+    const interval = setInterval(() => {
+      const elapsedTime = Date.now() - startTime;
+      const hours = Math.floor(elapsedTime / (1000 * 60 * 60))
+        .toString()
+        .padStart(2, '0');
+      const minutes = Math.floor((elapsedTime % (1000 * 60 * 60)) / (1000 * 60))
+        .toString()
+        .padStart(2, '0');
+      const seconds = Math.floor((elapsedTime % (1000 * 60)) / 1000)
+        .toString()
+        .padStart(2, '0');
+      setSessionTime(`${hours}:${minutes}:${seconds}`);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  };
 
   useEffect(() => {
     const stored = localStorage.getItem('channelCustomization');
@@ -71,6 +117,40 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
     }
   };
 
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
+
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const toggleChat = () => {
+    setShowChat(true);
+    setShowInfo(false);
+    setShowAds(false);
+  };
+
+  const toggleInfo = () => {
+    setShowInfo(true);
+    setShowChat(false);
+    setShowAds(false);
+  };
+
+  const toggleAds = () => {
+    setShowAds(true);
+    setShowChat(false);
+    setShowInfo(false);
+  };
+
+  const handleSendMessage = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newMessage.trim()) {
+      setChatMessages([...chatMessages, { user: 'You', message: newMessage, highlight: false }]);
+      setNewMessage('');
+    }
+  };
+
   return (
     <Broadcast.Root
       onError={(error) =>
@@ -81,191 +161,345 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
       aspectRatio={16 / 9}
       ingestUrl={getIngest(streamKey)}
     >
-      {/* Wrap the broadcast container with the custom styles */}
-      <div className="h-screen w-full overflow-hidden">
-        {/* Header */}
-        <div className="flex  justify-between items-center px-3 w-full border-b border-green-400 min-h-[70px] bg-white">
-          <BroadcastLoadingIndicator />
-          <div className="flex items-center gap-x-3">
-            <button
-              className="rounded-md bg-background-gray px-4 py-2 hover:bg-gray-200 transition-colors"
-              onClick={() => router.push('/dashboard')}
-            >
-              Change Channel
-            </button>
+      <div className="flex flex-1 h-screen w-full overflow-hidden">
+        {/* Mobile Sidebar */}
+        {mobileMenuOpen && (
+          <MobileSidebar
+            sidebarCollapsed={sidebarCollapsed}
+            toggleSidebar={toggleSidebar}
+            mobileMenuOpen={mobileMenuOpen}
+            setMobileMenuOpen={setMobileMenuOpen}
+          />
+        )}
 
-            <div className="px-10">
-              <CustomizeChannelDialog
-                initialValues={customization}
-                onSave={(newSettings) =>
-                  setCustomization({
-                    ...newSettings,
-                    logo: newSettings.logo ?? '',
-                    title: newSettings.title,
-                    description: newSettings.description,
-                  })
-                }
-              />
-            </div>
-          </div>
-          <div
-            style={{
-              fontSize: customization.fontSize,
-              color: customization.textColor,
-            }}
-            className="flex items-center gap-x-3 mt-2 sm:mt-0"
-          >
-            <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3 flex flex-col">
-              <span className="font-medium">00:00:00</span>
-              <span className="">Session</span>
+        {/* Main Content */}
+        <div className="flex flex-col w-full h-full overflow-hidden">
+          {/* Header */}
+          <div className="flex justify-between items-center px-3 w-full border-b border-green-400 h-[70px] bg-white">
+            <button onClick={toggleMobileMenu} className="md:hidden">
+              {mobileMenuOpen ? <X className="h-7 w-7 text-[#000]" /> : <Menu className="h-7 w-7 text-[#000]" />}
             </button>
-            <button className={`rounded-md bg-background-gray py-1 min-w-[100px] pl-3 flex flex-col`}>
-              <span className=" font-medium">0</span>
-              <span className="">Followers</span>
+            <BroadcastLoadingIndicator />
+            <button className="md:hidden flex gap-3  items-center px-4 py-2 bg-gray-100 rounded-md">
+              <span className="text-sm font-medium">{viewerCount}</span>
+              <span className="text-sm">Viewers</span>
             </button>
-            <button className="rounded-md bg-background-gray py-1 min-w-[100px] pl-3 flex flex-col">
-              <span className="font-medium">0</span>
-              <span className="">Viewers</span>
-            </button>
-          </div>
-          <div className="mt-2 sm:mt-0">
-            <BroadcastTrigger />
-          </div>
-        </div>
-        {/* Body */}
-        <div className="w-full h-screen grid grid-cols-1 md:grid-cols-12 gap-x-2 pt-1 overflow-hidden">
-          {/* Streaming Section */}
-          <section
-            style={{
-              backgroundColor: customization.bgColor,
-              color: customization.textColor,
-              fontSize: customization.fontSize + 'px',
-            }}
-            className={`col-span-12 md:col-span-8 overflow-y-auto ${styles.customScrollbar} mb-[63px]`}
-          >
-            <div className={`w-full border-l border-border-gray ${customization.bgColor} h-full`}>
-              <div className="flex justify-center items-center w-full h-20 rounded-full ">
-                {/* <div></div> */}
-                <Image
-                  src={customization.logo}
-                  alt="logo"
-                  width={80}
-                  height={100}
-                  objectFit="cover"
-                  className="rounded-full p-2  "
+            {/* Desktop Stats - Hidden on mobile */}
+            <div
+              className="max-sm:hidden md:flex items-center space-x-4"
+              style={{
+                fontSize: customization.fontSize,
+                color: customization.textColor,
+              }}
+            >
+              <div className="flex flex-col items-center px-4 py-2 bg-gray-100 rounded-md">
+                <span className="font-medium">{sessionTime}</span>
+                <span>Session</span>
+              </div>
+              <button
+                className="flex flex-col items-center px-4 py-2 bg-gray-100 rounded-md"
+                onClick={() => router.push('/dashboard')}
+              >
+                Change Channel
+              </button>
+              <div className="px-10">
+                <CustomizeChannelDialog
+                  initialValues={customization}
+                  onSave={(newSettings) =>
+                    setCustomization({
+                      ...newSettings,
+                      logo: newSettings.logo ?? '',
+                      title: newSettings.title,
+                      description: newSettings.description,
+                    })
+                  }
                 />
               </div>
-              <BroadcastContainer />
-              <div className="w-full">
-                {/* Copy & Visit Link */}
-                <div
-                  style={{ backgroundColor: customization.bgColor }}
-                  className="w-full p-3 border border-border-gray rounded-b-md "
-                >
-                  <div className="flex w-full justify-between items-center gap-x-3">
+              
+            </div>
+
+            <div className="mt-2 sm:mt-0">
+              <BroadcastTrigger />
+            </div>
+          </div>
+
+          {/* Main Content Area */}
+          <div className="w-full md:h-screen grid grid-cols-1 md:grid-cols-12 gap-x-2 pt-1 ">
+            {/* Video Section */}
+            <div
+              style={{
+                backgroundColor: customization.bgColor,
+                color: customization.textColor,
+                fontSize: customization.fontSize + 'px',
+              }}
+              className=" w-full col-span-8 h-full flex flex-col overflow-y-auto"
+            >
+              <div className={`w-full border-l border-border-gray ${customization.bgColor} h-full`}>
+                <div className="flex justify-center items-center w-full h-20 rounded-full ">
+                  {/* <div></div> */}
+                  <Image
+                    src={customization.logo}
+                    alt="logo"
+                    width={80}
+                    height={100}
+                    objectFit="cover"
+                    className="rounded-full p-2  "
+                  />
+                </div>
+                <div className="relative flex-grow">
+                  <BroadcastContainer />
+                </div>
+
+                {/* Controls and Info */}
+                <div className="bg-white">
+                  {/* Action Buttons */}
+                  <div className="flex justify-between items-center px-4 py-3 border-t border-b">
                     <div className="flex items-center gap-x-3">
-                      <button className="flex rounded-sm bg-background-gray h-[33px] items-center px-3">
-                        <span className=" text-black-primary-text font-medium select-none">Play Ads</span>
+                      <button className="flex rounded-sm bg-background-gray md:h-[33px] items-center px-3">
+                        <span className="text-black-primary-text font-medium select-none">Play Ads</span>
                       </button>
                     </div>
                     <div className="flex items-center gap-x-3">
                       <Settings className="w-7 h-7 transition-all flex-shrink-0 text-black-primary-text hover:scale-110" />
                       <button
-                        className="flex rounded-md bg-background-gray h-[33px] items-center px-3"
+                        className="flex rounded-md bg-background-gray md:h-[33px]  items-center px-3"
                         onClick={handleCopyLink}
                       >
-                        <span className=" text-black-secondary-text font-medium select-none">Copy Link</span>
+                        <span className="text-black-secondary-text font-medium select-none">Copy Link</span>
                       </button>
                       {playbackUrl && (
                         <Link href={playbackUrl} target="_blank" rel="noopener noreferrer">
-                          <button className="flex rounded-md bg-background-gray h-[33px] items-center px-3">
-                            <span className=" text-black-secondary-text font-medium select-none">Visit Link</span>
+                          <button className="flex rounded-md bg-background-gray md:h-[33px] items-center px-3">
+                            <span className="text-black-secondary-text font-medium select-none">Visit Link</span>
                           </button>
                         </Link>
                       )}
                     </div>
                   </div>
-                </div>
-                {/* Basics Info */}
-                <div
-                  style={{
-                    backgroundColor: customization.bgColor,
-                  }}
-                  className="w-full border border-border-gray mt-2 rounded-t-md h-full"
-                >
-                  <div className="flex items-center gap-x-3 px-4 p-2 rounded-md">
-                    <h1 className=" font-bold text-black-primary-text h-[33px] flex items-center select-none">
-                      Basics
-                    </h1>
-                    {/* <button className="flex rounded-md bg-background-gray  items-center px-4">
-                      <span className=" text-black-secondary-text font-medium select-none">Edit</span>
-                    </button> */}
-                  </div>
-                  <div className="w-full p-3 pl-4 rounded-b-md bg-white border-t text-justify">
-                    <div className="flex flex-col mb-3 gap-y-2">
-                      <h1 className=" text-black-secondary-text font-medium select-none">Title</h1>
-                      <input
-                        value={customization.title}
-                        disabled
-                        className="w-full text-sm outline-none border bg-transparent p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none"
-                      />
-                    </div>
-                    <div className="flex flex-col gap-y-2">
-                      <h1 className=" text-black-secondary-text font-medium select-none">Description</h1>
-                      <textarea
-                        value={customization.description}
-                        disabled
-                        rows={3}
-                        className="w-full text-sm outline-none border bg-transparent line-clamp-4 p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none overflow-y-auto"
-                      />
+
+                  {/* Mobile Tabs - Only visible on mobile */}
+                  <div className=" border-b md:hidden">
+                    <div className="flex">
+                      <button
+                        className={`flex-1 py-3 text-center font-medium ${showChat ? 'border-b-2 border-black' : ''}`}
+                        onClick={toggleChat}
+                      >
+                        Chat
+                      </button>
+                      <button
+                        className={`flex-1 py-3 text-center font-medium ${showInfo ? 'border-b-2 border-black' : ''}`}
+                        onClick={toggleInfo}
+                      >
+                        Basic Info
+                      </button>
+                      <button
+                        className={`flex-1 py-3 text-center font-medium ${showAds ? 'border-b-2 border-black' : ''}`}
+                        onClick={toggleAds}
+                      >
+                        Ads
+                      </button>
                     </div>
                   </div>
-                </div>
-                {/* Ads Section */}
-                <div
-                  style={{
-                    backgroundColor: customization.bgColor,
-                  }}
-                  className="w-full border border-border-gray rounded-t-md "
-                >
-                  <div className="flex items-center gap-x-3 p-2 px-4 rounded-md">
-                    <h1 className=" text-black-primary-text font-bold select-none">Ads</h1>
-                    {/* <button className="flex rounded-md bg-background-gray h-[33px] items-center px-4">
-                      <span className=" text-black-secondary-text font-medium select-none">Edit</span>
-                    </button> */}
-                    <button className="flex rounded-md bg-background-gray h-[33px] items-center ml-auto px-4">
-                      <span className="text-xs text-black-secondary-text font-medium select-none">Preset</span>
-                    </button>
+
+                  {/* Mobile Content - Only visible on mobile */}
+                  <div className=" md:hidden">
+                    {showChat && (
+                      <div className="min-h-96 h-[400px] flex flex-col">
+                        <div className="flex-1 overflow-y-auto p-4">
+                          <p className="text-center text-gray-500 mb-4">Welcome to {streamName} chat!</p>
+                          <div className="space-y-3">
+                            {chatMessages.map((msg, index) => (
+                              <div key={index}>
+                                <span className={`font-bold ${msg.highlight ? 'text-blue-600' : ''}`}>{msg.user}:</span>{' '}
+                                {msg.message}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="p-3 border-t">
+                          <form onSubmit={handleSendMessage} className="flex flex-col space-y-2">
+                            <input
+                              type="text"
+                              value={newMessage}
+                              onChange={(e) => setNewMessage(e.target.value)}
+                              placeholder="Send message..."
+                              className="w-full border rounded-md py-2 px-3"
+                            />
+                            <div className="flex justify-between items-center">
+                              <button type="button" className="p-2">
+                                <SettingsIcon className="h-5 w-5 text-black" />
+                              </button>
+                              <button type="submit" className="bg-main-blue text-white px-4  rounded-md">
+                                Chat
+                              </button>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    )}
+
+                    {showInfo && (
+                      <div className="h-[calc(100vh-400px)] overflow-y-auto p-4">
+                        <div className="flex flex-col mb-3 gap-y-2">
+                          <h1 className="text-black-secondary-text font-medium select-none">Title</h1>
+                          <input
+                            value={customization.title}
+                            disabled
+                            className="w-full text-sm outline-none border bg-transparent p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none"
+                          />
+                        </div>
+                        <div className="flex flex-col gap-y-2">
+                          <h1 className="text-black-secondary-text font-medium select-none">Description</h1>
+                          <textarea
+                            value={customization.description}
+                            disabled
+                            rows={2}
+                            className="w-full text-sm outline-none border bg-transparent line-clamp-4 p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none overflow-y-auto"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {showAds && (
+                      <div className="h-[calc(100vh-400px)] overflow-y-auto p-4">
+                        <h4 className="text-sm text-gray-500 mb-3">Video</h4>
+                        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <Dialog.Trigger asChild>
+                            <div className="border rounded-md p-2">
+                              <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
+                                +
+                              </div>
+                            </div>
+                          </Dialog.Trigger>
+                          <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+                            <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                              <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
+                                <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Ads
+                              </Dialog.Title>
+                              <UploadAdsAsset onClose={() => setIsDialogOpen(false)} />
+                              <Dialog.Close asChild>
+                                <button
+                                  className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                                  aria-label="Close"
+                                >
+                                  <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                                </button>
+                              </Dialog.Close>
+                            </Dialog.Content>
+                          </Dialog.Portal>
+                        </Dialog.Root>
+                      </div>
+                    )}
                   </div>
-                  <div className="w-full rounded-b-md p-4 bg-white border-t text-justify">
-                    <h1 className="text-black-secondary-text font-medium">Video</h1>
-                    {/* Video Ads content */}
+
+                  {/* Desktop Info - Only visible on desktop */}
+                  <div className="max-sm:hidden ">
+                    <div className="w-full p-3 pl-4 rounded-b-md bg-white border-t">
+                      <div className="flex flex-col mb-3 gap-y-2">
+                        <h1 className="text-black-secondary-text font-medium select-none">Title</h1>
+                        <input
+                          value={customization.title}
+                          disabled
+                          className="w-full text-sm outline-none border bg-transparent p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none"
+                        />
+                      </div>
+                      <div className="flex flex-col gap-y-2">
+                        <h1 className="text-black-secondary-text font-medium select-none">Description</h1>
+                        <textarea
+                          value={customization.description}
+                          disabled
+                          rows={2}
+                          className="w-full text-sm outline-none border bg-transparent line-clamp-4 p-3 text-black-secondary-text border-[#c2c2c2] rounded-md font-medium select-none overflow-y-auto"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  {/* Ads */}
+                  <div className="max-sm:hidden border rounded-md m-4">
+                    <div className="flex items-center justify-between p-3 bg-gray-50 border-b">
+                      <h3 className="font-medium">Ads</h3>
+                      <div className="flex items-center space-x-2">
+                        <button className="text-sm bg-gray-200 px-3 py-1 rounded-md">Edit</button>
+                        <button className="text-sm bg-gray-200 px-3 py-1 rounded-md">Preset</button>
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h4 className="text-sm text-gray-500 mb-3 mt-6">Picture-in-picture</h4>
+                      <div className="grid grid-cols-4 gap-4">
+                        <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                          <Dialog.Trigger asChild>
+                            <div className="border rounded-md p-2">
+                              <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
+                                +
+                              </div>
+                            </div>
+                          </Dialog.Trigger>
+                          <Dialog.Portal>
+                            <Dialog.Overlay className="fixed inset-0 bg-black opacity-70" />
+                            <Dialog.Content className="fixed left-1/2 top-1/2 max-h-[85vh] w-[90vw] flex mt-4 flex-col justify-center items-center max-w-[34rem] -translate-x-1/2 -translate-y-1/2 rounded-xl bg-white px-10 max-sm:px-6 py-6 shadow-lg">
+                              <Dialog.Title className="text-black-primary-text text-center flex items-center gap-2 my-4 text-xl font-bold">
+                                <RiVideoAddLine className="text-main-blue text-l" /> Upload Video Ads
+                              </Dialog.Title>
+                              <UploadAdsAsset onClose={() => setIsDialogOpen(false)} />
+                              <Dialog.Close asChild>
+                                <button
+                                  className="absolute right-2.5 top-2.5 inline-flex size-[25px] appearance-none items-center justify-center rounded-full text-violet11 hover:bg-violet4 focus:shadow-[0_0_0_2px] focus:shadow-violet7 focus:outline-none"
+                                  aria-label="Close"
+                                >
+                                  <IoMdClose className="text-black-primary-text font-medium text-4xl" />
+                                </button>
+                              </Dialog.Close>
+                            </Dialog.Content>
+                          </Dialog.Portal>
+                        </Dialog.Root>
+                        {/* Ads video list */}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-          {/* Chat Section */}
-          <section className={`col-span-12 md:col-span-4 mb-[63px] ${styles.customScrollbar}`}>
-            <div className="flex w-full h-full flex-col md:w-[400px] rounded-md border pb-2 border-gray-300 bg-white">
-              <h3 className=" bg-gray-200 p-3 text-lg font-semibold">Chat</h3>
-              <div className="flex flex-1 flex-col">
-                <div className="flex-1 overflow-y-auto p-4">
-                  <p className="text-gray-500 text-center">Welcome to the chat!</p>
+
+            {/* Chat Section - Desktop */}
+            <div className="max-sm:hidden rounded-lg col-span-4 md:block shadow-sm overflow-y-auto h-full border border-border-gray">
+              <div className="flex flex-col h-full">
+                <div className="p-3 border-b bg-gray-100">
+                  <h3 className="font-medium">Chat</h3>
                 </div>
-                <div className="flex items-center gap-2  p-2">
-                  <input
-                    type="text"
-                    placeholder="Say something..."
-                    className="flex-1 rounded-md border placeholder:text-[#838294] border-[#0E0E0F] px-3 py-3"
-                  />
+                <div className="flex-1 overflow-y-auto p-4 bg-white">
+                  <p className="text-center text-gray-500 mb-4">Welcome to the chat!</p>
+                  <div className="space-y-3">
+                    {chatMessages.map((msg, index) => (
+                      <div key={index}>
+                        <span className={`font-bold ${msg.highlight ? 'text-blue-600' : ''}`}>{msg.user}:</span>{' '}
+                        {msg.message}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex w-full justify-end p-2">
-                  <button className="rounded-md bg-main-blue px-4 py-2 text-white hover:bg-blue-700">Send</button>
+                <div className="p-3 border-t bg-white">
+                  <form onSubmit={handleSendMessage} className="flex flex-col space-y-2">
+                    <input
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder="Send message..."
+                      className="w-full border rounded-md py-2 px-3"
+                    />
+                    <div className="flex justify-end gap-3">
+                      <button type="button" className="p-2">
+                        <SettingsIcon className="h-6 w-6 text-black" />
+                      </button>
+                      <button type="submit" className="bg-main-blue text-white px-3 rounded-md">
+                        Chat
+                      </button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         </div>
       </div>
     </Broadcast.Root>
@@ -274,11 +508,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
 
 export const BroadcastContainer = () => {
   return (
-    <Broadcast.Container className="flex relative">
-      {/* <div>
-        <BroadcastLoadingIndicator />
-        </div> */}
-
+    <Broadcast.Container className="flex relative h-full">
       <Broadcast.Video
         title="Live streaming"
         style={{
@@ -330,12 +560,21 @@ export const BroadcastLoading = () => (
 );
 
 export const BroadcastTrigger = () => {
+  const [timerStarted, setTimerStarted] = useState(false);
+
+  // const handleStartStream = () => {
+  //   setTimerStarted(true);
+  //   setTimeout(() => {
+  //     startTimer(); // Start the timer after 5 seconds
+  //   }, 5000);
+  // };
   return (
     <div className="flex items-center gap-2">
       <Broadcast.EnabledTrigger className="rounded-md">
         <Broadcast.EnabledIndicator
           className="flex items-center bg-main-blue h-[40px] min-w-[150px] rounded-md text-black-primary-text px-4 justify-center"
           matcher={false}
+          // onClick={handleStartStream}
         >
           <span className="text-base text-black font-medium">Start Stream</span>
         </Broadcast.EnabledIndicator>
@@ -379,9 +618,9 @@ export const BroadcastTrigger = () => {
 export const BroadcastLoadingIndicator = () => {
   return (
     <Broadcast.LoadingIndicator asChild matcher={false}>
-      <div className="overflow-hidden h-[34px] rounded-md  top-1 left-1 bg-gray-200 flex items-center backdrop-blur">
+      <div className="overflow-hidden h-[34px] rounded-md top-1 left-1 flex items-center backdrop-blur">
         <Broadcast.StatusIndicator matcher="live" className="flex p-2 gap-2 items-center">
-          <div className="bg-[#04EB2A] h-3 w-3 rounded-full" />
+          <div className="bg-[#04EB2A] h-2 w-2 rounded-full" />
           <span className="text-sm text-black-primary-text font-medium select-none">Live</span>
         </Broadcast.StatusIndicator>
         <Broadcast.StatusIndicator className="flex p-2 gap-2 items-center" matcher="pending">

@@ -22,6 +22,7 @@ export interface ChannelCardProps {
   image: StaticImageData;
   playb: string;
   lastSeen: Date;
+  status: boolean;
 }
 export interface VideoCardProps {
   title: string;

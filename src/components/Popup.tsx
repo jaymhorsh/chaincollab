@@ -139,10 +139,10 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
             <PiCalendarCheckBold className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Schedule stream</p>
           </DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={handleCustomizeChannel} className={listItemClassNames.option}>
+          {/* <DropdownMenu.Item onSelect={handleCustomizeChannel} className={listItemClassNames.option}>
             <BiNotepad className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
-          </DropdownMenu.Item>
+          </DropdownMenu.Item> */}
           <DropdownMenu.Item onSelect={handleDeleteChannel} className={listItemClassNames.option}>
             <RiDeleteBin6Line className={`${listItemClassNames.icon} text-red-700`} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Delete channel</p>
