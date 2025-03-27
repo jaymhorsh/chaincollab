@@ -22,6 +22,7 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
         {loading ? (
           <Bars width={25} height={25} color="#3351FF" />
         ) : (
+            
           <div>
             {views ? (
               <p className="text-4xl font-extrabold tracking-wide">{views} Views</p>
