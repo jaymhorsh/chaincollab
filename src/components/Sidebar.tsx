@@ -9,7 +9,7 @@ import { RiEditFill } from 'react-icons/ri';
 import { TbHomeFilled } from 'react-icons/tb';
 
 interface SidebarProps {
-  sidebarCollapsed: boolean;
+  sidebarCollapsed?: boolean;
 }
 
 const Sidebar = ({ sidebarCollapsed }: SidebarProps) => {
