@@ -8,7 +8,7 @@ export const login = async (email: string, password: string) => {
   try {
     const response = await privy.login(email, password);
     return response;
-  } catch (error) {
+  } catch (error:any) {
     throw new Error('Login failed: ' + error.message);
   }
 };
@@ -16,7 +16,7 @@ export const login = async (email: string, password: string) => {
 export const logout = async () => {
   try {
     await privy.logout();
-  } catch (error) {
+  } catch (error:any) {
     throw new Error('Logout failed: ' + error.message);
   }
 };

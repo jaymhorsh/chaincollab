@@ -17,11 +17,11 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
       <div className="border flex flex-col justify-between bg-background-gray border-border-gray rounded-lg p-4 gap-y-5 h-full">
         <div>
           <p className="text-2xl font-bold break-words">{title}</p>
-          {/* <p className="text-black-secondary-text  font-medium text-sm">{change}</p> */}
         </div>
         {loading ? (
           <Bars width={25} height={25} color="#3351FF" />
         ) : (
+            
           <div>
             {views ? (
               <p className="text-4xl font-extrabold tracking-wide">{views} Views</p>
