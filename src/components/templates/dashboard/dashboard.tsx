@@ -21,11 +21,12 @@ import image1 from '../../../../public/assets/images/image1.png';
 import Spinner from '@/components/Spinner';
 import UploadVideoAsset from '@/components/UploadVideoAsset';
 import { IoChevronBack, IoChevronForward } from 'react-icons/io5';
-import type { Asset } from '@/interfaces';
+import type { Asset, Stream } from '@/interfaces';
 import MobileSidebar from '@/components/MobileSidebar';
 
 const Dashboard = () => {
   const { user, ready, authenticated } = usePrivy();
+  console.log(user);
   const navigate = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading: streamsLoading, error: streamsError } = useSelector((state: RootState) => state.streams);
@@ -61,11 +62,11 @@ const Dashboard = () => {
   }, [ready, authenticated, navigate]);
 
   const filteredStreams = useMemo(() => {
-    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
+    return streams.filter((stream: Stream) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
   }, [streams, user?.wallet?.address]);
 
   const filteredAssets = useMemo(() => {
-    return assets.filter((asset: Asset) => !!asset.playbackId && asset.creatorId.value === user?.wallet?.address);
+    return assets.filter((asset: Asset) => !!asset.playbackId && asset.creatorId?.value === user?.wallet?.address);
   }, [assets, user?.wallet?.address]);
   const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
   const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);

@@ -120,17 +120,17 @@ const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen
                   {ready && embeddedWallet?.address ? (
                     <Identity
                       address={embeddedWallet.address}
-                      hasCopyAddressOnClick={false}
+                      hasCopyAddressOnClick={true}
                       schemaId="0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9"
                     >
                       <Avater />
+                      <Address />
                       <Name>
                         <Badge />
                       </Name>
-                      <Address />
                     </Identity>
                   ) : (
-                    <p className="text-gray-500">No wallet connected</p>
+                    <p className="text-gray-500">{ready && !embeddedWallet && 'No wallet connected'}</p>
                   )}
                 </button>
               </DropdownMenu.Trigger>

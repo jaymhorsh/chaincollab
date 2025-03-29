@@ -1,106 +1,188 @@
-import { Tabs, TabsTrigger, TabsList, TabsContent } from '@/components/ui/Tabs';
-import { FiArrowDownRight, FiArrowUpRight } from 'react-icons/fi';
-import React, { useState, useEffect } from 'react';
+'use client';
+import { useState, useEffect } from 'react';
+import { ArrowDownRight, ArrowUpRight, Calendar } from 'lucide-react';
 
-// Dummy data
+// Dummy data with more realistic transaction details
 const transactions = [
-  { id: 1, type: 'Donations', user: 'User123', amount: 50, date: 'today 2:20pm' },
-  { id: 2, type: 'Withdrawals', user: 'User456', amount: 100, date: 'yesterday 1:15pm' },
-  { id: 3, type: 'Subscriptions', user: 'User789', amount: 20, date: 'today 3:45pm' },
-  { id: 4, type: 'Store', user: 'User321', amount: 150, date: 'last week 4:30pm' },
-  { id: 5, type: 'Donations', user: 'User654', amount: 75, date: 'today 5:00pm' },
-  { id: 6, type: 'Withdrawals', user: 'User987', amount: 200, date: 'yesterday 11:00am' },
-  { id: 7, type: 'Subscriptions', user: 'User321', amount: 30, date: 'today 6:30pm' },
-  { id: 8, type: 'Store', user: 'User654', amount: 250, date: 'last month 2:00pm' },
+  {
+    id: 1,
+    type: 'Donation',
+    user: '@User123',
+    amount: 10.0,
+    date: 'Today, 2:20 PM',
+    timestamp: new Date('2023-12-13T14:20:00'),
+  },
+  {
+    id: 2,
+    type: 'Donation',
+    user: '@mikeviewer',
+    amount: 5.0,
+    date: 'Today, 2:20 PM',
+    timestamp: new Date('2023-12-13T14:20:00'),
+  },
+  {
+    id: 3,
+    type: 'Withdrawal',
+    description: 'via wallet address',
+    amount: 1200.0,
+    date: 'Yesterday, 4:32 PM',
+    timestamp: new Date('2023-12-12T16:32:00'),
+  },
+  {
+    id: 4,
+    type: 'Donation',
+    user: '@0xcrypt',
+    amount: 5.0,
+    date: '12-12-24, 11:20 AM',
+    timestamp: new Date('2023-12-12T11:20:00'),
+  },
+  {
+    id: 5,
+    type: 'Store',
+    description: 'Purchase - Limited Edition Hoodie',
+    amount: 100.0,
+    date: '11-12-24, 1:32 AM',
+    timestamp: new Date('2023-12-11T01:32:00'),
+  },
+  {
+    id: 6,
+    type: 'Withdrawal',
+    description: 'via Stripe',
+    amount: 500.0,
+    date: '11-12-24, 1:32 AM',
+    timestamp: new Date('2023-12-11T01:32:00'),
+  },
+  {
+    id: 7,
+    type: 'Store',
+    description: 'Purchase - Custom T (SE)',
+    amount: 200.0,
+    date: '11-12-24, 1:32 AM',
+    timestamp: new Date('2023-12-11T01:32:00'),
+  },
+  {
+    id: 8,
+    type: 'Withdrawal',
+    description: 'via Ramp',
+    amount: 600.0,
+    date: '10-12-24, 1:32 AM',
+    timestamp: new Date('2023-12-10T01:32:00'),
+  },
 ];
 
 const History = () => {
+  const [activeFilter, setActiveFilter] = useState('All');
   const [filteredTransactions, setFilteredTransactions] = useState(transactions);
-  const [activeTab, setActiveTab] = useState('All');
 
   useEffect(() => {
-    if (activeTab === 'All') {
+    if (activeFilter === 'All') {
       setFilteredTransactions(transactions);
-    } else {
-      setFilteredTransactions(transactions.filter((transaction) => transaction.type === activeTab));
+    } else if (activeFilter === 'Subscription') {
+      setFilteredTransactions(transactions.filter((t) => t.type === 'Subscription'));
+    } else if (activeFilter === 'Withdrawals') {
+      setFilteredTransactions(transactions.filter((t) => t.type === 'Withdrawal'));
+    } else if (activeFilter === 'Donations') {
+      setFilteredTransactions(transactions.filter((t) => t.type === 'Donation'));
+    } else if (activeFilter === 'Store Sales') {
+      setFilteredTransactions(transactions.filter((t) => t.type === 'Store'));
     }
-  }, [activeTab]);
+  }, [activeFilter]);
 
   return (
-    <div className="">
-      <h1 className="text-2xl py-3 font-bold">Transaction History</h1>
-      <div>
-        <Tabs defaultValue="All" className="w-full mx-auto" onValueChange={setActiveTab}>
-          <TabsList className="gap-2 p-5 md:w-[45%] w-full">
-            <TabsTrigger value="All">All</TabsTrigger>
-            <TabsTrigger value="Withdrawals">Withdrawals</TabsTrigger>
-            <TabsTrigger value="Subscriptions">Subscriptions</TabsTrigger>
-            <TabsTrigger value="Donations">Donations</TabsTrigger>
-            <TabsTrigger value="Store">Store Sales</TabsTrigger>
-          </TabsList>
-          <TabsContent value="All">
-            <TransactionList transactions={filteredTransactions} />
-          </TabsContent>
-          <TabsContent value="Withdrawals">
-            <TransactionList transactions={filteredTransactions} />
-          </TabsContent>
-          <TabsContent value="Subscriptions">
-            <TransactionList transactions={filteredTransactions} />
-          </TabsContent>
-          <TabsContent value="Donations">
-            <TransactionList transactions={filteredTransactions} />
-          </TabsContent>
-          <TabsContent value="Store">
-            <TransactionList transactions={filteredTransactions} />
-          </TabsContent>
-        </Tabs>
+    <div className="w-full max-w-[1200px] mx-auto px-4 sm:px-6">
+      <h1 className="text-2xl font-bold mb-6">Transaction History</h1>
+
+      {/* Filter Buttons */}
+      <div className="flex justify-beween mb-6 space-x-3">
+        <div className="md:flex  space-x-2 overflow-x-auto pb-2">
+          <FilterButton label="All" active={activeFilter === 'All'} onClick={() => setActiveFilter('All')} />
+          <FilterButton
+            label="Withdrawals"
+            active={activeFilter === 'Withdrawals'}
+            onClick={() => setActiveFilter('Withdrawals')}
+          />
+          <FilterButton
+            label="Subscription"
+            active={activeFilter === 'Subscription'}
+            onClick={() => setActiveFilter('Subscription')}
+          />
+          <FilterButton
+            label="Donations"
+            active={activeFilter === 'Donations'}
+            onClick={() => setActiveFilter('Donations')}
+          />
+          <FilterButton
+            label="Store Sales"
+            active={activeFilter === 'Store Sales'}
+            onClick={() => setActiveFilter('Store Sales')}
+          />
+        </div>
+      </div>
+
+      {/* Transaction List */}
+      <div className="space-y-4 mb-8">
+        {filteredTransactions.map((transaction) => (
+          <div key={transaction.id} className="border rounded-lg p-4 flex justify-between items-center">
+            <div className="flex items-center">
+              <div
+                className={`w-12 h-12 rounded-full flex items-center justify-center mr-4 ${
+                  transaction.type === 'Withdrawal' ? 'bg-red-100' : 'bg-green-100'
+                }`}
+              >
+                {transaction.type === 'Withdrawal' ? (
+                  <ArrowUpRight className="text-red-500 w-6 h-6" />
+                ) : (
+                  <ArrowDownRight className="text-green-500 w-6 h-6" />
+                )}
+              </div>
+              <div>
+                <p className="font-medium text-lg">
+                  {transaction.type === 'Donation' && `Donation from ${transaction.user}`}
+                  {transaction.type === 'Withdrawal' && `Withdrawal ${transaction.description}`}
+                  {transaction.type === 'Store' && `Store ${transaction.description}`}
+                  {transaction.type === 'Subscription' && `Subscription from ${transaction.user}`}
+                </p>
+                <p className="text-gray-500 text-sm">{transaction.date}</p>
+              </div>
+            </div>
+            <div>
+              <p
+                className={`text-xl font-semibold ${
+                  transaction.type === 'Withdrawal' ? 'text-red-500' : 'text-green-500'
+                }`}
+              >
+                {transaction.type === 'Withdrawal' ? '-' : '+'}${transaction.amount.toFixed(2)}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-interface Transaction {
-  id: number;
-  type: string;
-  user: string;
-  amount: number;
-  date: string;
-}
-
-const TransactionList: React.FC<{ transactions: Transaction[] }> = ({ transactions }) => {
+const TabButton = ({ label, active }: { label: string; active: boolean }) => {
   return (
-    <div className="md:w-[50%] w-full">
-      {transactions.map((transaction) => (
-        <div key={transaction.id} className="border rounded-lg border-gray-200 mb-2">
-          <div className="flex justify-between p-4 font-inter border-gray-100">
-            <div className="flex gap-5">
-              <div
-                className={`flex items-center rounded-full p-3 ${transaction.type === 'Withdrawals' ? 'bg-[#FF00001A]' : 'bg-[#04EB2A1A]'}`}
-              >
-                {transaction.type === 'Withdrawals' ? (
-                  <FiArrowUpRight className="text-2xl text-[#FE5C2B]" />
-                ) : (
-                  <FiArrowDownRight className="text-2xl text-[#04EB2A]" />
-                )}
-              </div>
-              <div className="flex-col">
-                <p className="text-lg font-semibold">
-                  {transaction.type} from {transaction.user}
-                </p>
-                <p className="text-sm text-[#838294]">{transaction.date}</p>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <p className="text-lg font-inter font-semibold">
-                {transaction.type === 'Withdrawals'
-                  ? `- $${transaction.amount.toFixed(2)}`
-                  : `+$${transaction.amount.toFixed(2)}`}
-              </p>
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
+    <button
+      className={`px-4 py-3 font-medium whitespace-nowrap ${
+        active ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-600 hover:text-gray-900'
+      }`}
+    >
+      {label}
+    </button>
+  );
+};
+
+const FilterButton = ({ label, active, onClick }: { label: string; active: boolean; onClick: () => void }) => {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap ${
+        active ? 'bg-white border border-gray-200' : 'text-gray-600 hover:bg-gray-50'
+      }`}
+    >
+      {label}
+    </button>
   );
 };
 

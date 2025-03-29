@@ -21,7 +21,6 @@ export const AnalyticCard = ({ title, views, change, value, playtimeMins, loadin
         {loading ? (
           <Bars width={25} height={25} color="#3351FF" />
         ) : (
-            
           <div>
             {views ? (
               <p className="text-4xl font-extrabold tracking-wide">{views} Views</p>
@@ -57,7 +56,6 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
 }) => {
   const { thumbnailUrl, loading } = useFetchStreamPlaybackId(playb);
   const { viewerMetrics: viewstream, error } = useViewMetrics({ playbackId: playb });
-  console.log('viewMetricsstream:', viewstream);
   return (
     <div className="w-full h-full flex flex-col group">
       <div className="w-full bg-gray rounded-md overflow-hidden relative">
@@ -118,7 +116,6 @@ export const ChannelCard: React.FC<ChannelCardProps> = ({
 export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, playbackId, assetData, format }) => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const { views: videocount, error } = usePlaybackMetrics(playbackId || '');
-
   const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
   const handlePlayClick = () => {
     setIsDialogOpen(true);

@@ -17,9 +17,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           zIndex: -1,
         }}
       />
-      <main className="flex flex-col items-center justify-center drop-shadow-lg rounded-xl py-10">
-        {children}
-      </main>
+      <main className="flex flex-col items-center justify-center drop-shadow-lg rounded-xl py-10">{children}</main>
     </div>
   );
 };

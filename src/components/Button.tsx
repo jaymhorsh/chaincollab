@@ -1,9 +1,8 @@
 import { CoinbasePaySvg } from './CoinbaePayvg';
 
-
 export type MockCheckoutButtonReact = {
-    onClick: () => void;
-  };
+  onClick: () => void;
+};
 export function MockCheckoutButton({ onClick }: MockCheckoutButtonReact) {
   return (
     <div className="w-64">
@@ -18,9 +17,7 @@ export function MockCheckoutButton({ onClick }: MockCheckoutButtonReact) {
               <CoinbasePaySvg />
             </div>
           </div>
-          <span className="ock-font-family font-semibold text-gray-50 leading-normal">
-            Pay with Crypto
-          </span>
+          <span className="ock-font-family font-semibold text-gray-50 leading-normal">Pay with Crypto</span>
         </button>
       </div>
     </div>
