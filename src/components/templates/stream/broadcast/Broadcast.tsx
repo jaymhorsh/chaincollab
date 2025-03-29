@@ -215,7 +215,6 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                   }
                 />
               </div>
-              
             </div>
 
             <div className="mt-2 sm:mt-0">

@@ -39,6 +39,7 @@ export interface Stream {
   playbackId: string;
   streamKey: string;
   createdAt?: Date;
+  creatorId?: { type: string; value: string };
 }
 
 export interface PopupProps {
@@ -67,4 +68,12 @@ export interface Asset {
   downloadUrl: string;
   playbackUrl: string;
   assetId: string;
+}
+export interface Product {
+  id: string;
+  name: string;
+  price: number;
+  image: any;
+  currency?: string;
+  quantity?: number;
 }

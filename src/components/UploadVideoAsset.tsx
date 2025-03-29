@@ -44,7 +44,7 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
       setError('Please add file name.');
       return;
     }
-    if(error){
+    if (error) {
       toast.error(error);
       return;
     }
@@ -204,7 +204,7 @@ export function UploadAdsAsset({ onClose }: { onClose: () => void }) {
     // Validate file size (max 4MB)
     if (file.size > 4 * 1024 * 1024) {
       setError('File size must not exceed 4MB.');
-      return 
+      return;
     }
 
     // Validate video length (max 30 seconds)
@@ -261,10 +261,10 @@ export function UploadAdsAsset({ onClose }: { onClose: () => void }) {
       setError('Please add file name.');
       return;
     }
-    if(error){
+    if (error) {
       toast.error(error);
       return;
-    }      
+    }
     setError(null);
     setUploading(true);
     setProgress(0);
