@@ -51,13 +51,7 @@ const Donations = () => {
           <div className="flex items-center border rounded-lg overflow-hidden flex-grow max-w-md">
             <div className="flex items-center px-3 py-2 w-full">
               <div className=" bg-gray-200 rounded overflow-hidden mr-2 flex-shrink-0">
-                <Image
-                  src={image}
-                  alt="Channel icon"
-                  width={60}
-                  height={40}
-                  className="object-cover w-full h-full"
-                />
+                <Image src={image} alt="Channel icon" width={60} height={40} className="object-cover w-full h-full" />
               </div>
               <select
                 className="bg-transparent border-none focus:outline-none w-full"
