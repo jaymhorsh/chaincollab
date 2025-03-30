@@ -1,6 +1,7 @@
 'use client';
+
 import axios from 'axios';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type React from 'react';
 import { usePrivy } from '@privy-io/react-auth';
 import Image from 'next/image';
@@ -9,13 +10,14 @@ import { X, Upload } from 'lucide-react';
 import type { Product } from '@/interfaces/index';
 import { toast } from 'sonner';
 
-interface AddProductDialogProps {
+interface UpdateProductDialogProps {
   isOpen: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddProduct: (product: Omit<Product, 'id'>) => void;
+  onUpdateProduct: () => void;
+  product: Product | null;
 }
 
-export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProductDialogProps) => {
+export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, product }: UpdateProductDialogProps) => {
   const { user } = usePrivy();
   const [productName, setProductName] = useState('');
   const [productImage, setProductImage] = useState<File | null>(null);
@@ -27,6 +29,17 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Populate form with product data when product changes
+  useEffect(() => {
+    if (product) {
+      setProductName(product.name || '');
+      setProductImagePreview(product.imageUrl || null);
+      setDescription(product.description || '');
+      setPrice(product.price?.toString() || '');
+      setQuantity(product.quantity?.toString() || '');
+    }
+  }, [product]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -53,7 +66,6 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
         const reader = new FileReader();
         reader.onload = () => {
           setProductImagePreview(reader.result as string);
-          console.log('Image preview (data URL):', reader.result);
         };
 
         reader.readAsDataURL(file);
@@ -82,13 +94,14 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
 
   const handleSubmit = async () => {
     // Validate form
-    if (!productName || !price || !productImage) {
+    if (!productName || !price || !product?.id) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    // Create new product object
-    const newProduct: Omit<Product, 'id'> = {
+    // Create updated product object
+    const updatedProduct = {
+      id: product.id,
       user_id: user?.wallet?.address || '',
       name: productName,
       price: Number.parseFloat(price),
@@ -98,45 +111,30 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
       quantity: Number.parseInt(quantity) || 0,
     };
 
-    if (!newProduct || !user?.wallet?.address) {
+    if (!updatedProduct || !user?.wallet?.address) {
       return;
     }
 
     try {
       setIsSubmitting(true);
-      // Add wallet address to the request
-      const productWithWallet = {
-        ...newProduct,
-      };
 
-      const response = await axios.post('https://chaintv.onrender.com/api/post/products', productWithWallet);
-      console.log('Product added successfully:', response.data);
+      // Update product via API
+      const response = await axios.put(`https://chaintv.onrender.com/api/products/${product.id}`, updatedProduct);
 
-      toast.success(response.data.message || 'Product added successfully');
+      console.log('Product updated successfully:', response.data);
+      toast.success(response.data.message || 'Product updated successfully');
 
-      // Call the callback to update parent component
-      onAddProduct(newProduct);
+      // Call the callback to refresh products in parent component
+      onUpdateProduct();
 
-      // Reset form and close dialog
-      resetForm();
+      // Close dialog
       onOpenChange(false);
     } catch (error) {
-      console.error('Failed to add product:', error);
-      toast.error('Failed to add product. Please try again.');
+      console.error('Failed to update product:', error);
+      toast.error('Failed to update product. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const resetForm = () => {
-    setProductName('');
-    setProductImage(null);
-    setProductImagePreview(null);
-    setDescription('');
-    setPrice('');
-    setQuantity('');
-    setUploadProgress(0);
-    setIsUploading(false);
   };
 
   return (
@@ -145,7 +143,7 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
         <Dialog.Content className="fixed left-1/2 top-1/2 mt-6 w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 shadow-lg overflow-auto max-h-[80vh]">
           <div className="flex justify-between items-center mb-4">
-            <Dialog.Title className="text-xl font-bold">Add New Product</Dialog.Title>
+            <Dialog.Title className="text-xl font-bold">Update Product</Dialog.Title>
             <Dialog.Close asChild>
               <button className="rounded-full p-1 hover:bg-gray-100">
                 <X className="h-5 w-5" />
@@ -282,10 +280,7 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
               <button
                 type="button"
                 className="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
-                onClick={() => {
-                  resetForm();
-                  onOpenChange(false);
-                }}
+                onClick={() => onOpenChange(false)}
                 disabled={isSubmitting}
               >
                 Cancel
@@ -296,7 +291,7 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Adding...' : 'Add Product'}
+                {isSubmitting ? 'Updating...' : 'Update Product'}
               </button>
             </div>
           </div>

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import stream from '../../../../assets/image1.png';
-import image from '@/assets/image1.png';  
+import image from '@/assets/image1.png';
 import { getAllStreams } from '@/features/streamAPI';
 import { usePrivy } from '@privy-io/react-auth';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,25 +8,25 @@ import { AppDispatch, RootState } from '@/store/store';
 import Image from 'next/image';
 const Subscription = () => {
   const { user } = usePrivy();
-    const dispatch = useDispatch<AppDispatch>();
-    const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
-    const [selectedStream, setSelectedStream] = useState<string>('');
+  const dispatch = useDispatch<AppDispatch>();
+  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
+  const [selectedStream, setSelectedStream] = useState<string>('');
   const [subscriptionType, setSubscriptionType] = useState('monthly');
   const [isEnabled, setIsEnabled] = useState(true);
   const [price, setPrice] = useState<number | undefined>();
   const [perks, setPerks] = useState(['Ad-free viewing experience across all streams']);
   const [newPerk, setNewPerk] = useState('');
 
-    // Fetch streams when component mounts
-    useEffect(() => {
-      dispatch(getAllStreams());
-    }, [dispatch]);
-  
-    // Filter streams that have playbackId (similar to dashboard)
-    const filteredStreams = useMemo(() => {
-      return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
-    }, [streams, user?.wallet?.address]);
-    
+  // Fetch streams when component mounts
+  useEffect(() => {
+    dispatch(getAllStreams());
+  }, [dispatch]);
+
+  // Filter streams that have playbackId (similar to dashboard)
+  const filteredStreams = useMemo(() => {
+    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
+  }, [streams, user?.wallet?.address]);
+
   const handleAddPerk = () => {
     if (newPerk.trim()) {
       setPerks([...perks, newPerk]);
@@ -44,48 +44,42 @@ const Subscription = () => {
     <div className="flex flex-col">
       <div className="mb-4">
         <label className="block text-black text-base font-semibold mb-2">Select Channel</label>
-         <div className="flex items-center gap-4 flex-wrap">
-                <div className="flex items-center border rounded-lg overflow-hidden flex-grow max-w-md">
-                  <div className="flex items-center px-3 py-2 w-full">
-                    <div className=" bg-gray-200 rounded overflow-hidden mr-2 flex-shrink-0">
-                      <Image
-                        src={image}
-                        alt="Channel icon"
-                        width={60}
-                        height={40}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                    <select
-                      className="bg-transparent border-none focus:outline-none w-full"
-                      value={selectedStream}
-                      onChange={(e) => setSelectedStream(e.target.value)}
-                      disabled={streamsLoading}
-                    >
-                      <option value="">Select a channel</option>
-                      {filteredStreams.map((stream: any) => (
-                        <option key={stream.id} value={stream.id}>
-                          {stream.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="flex bg-gray-100 rounded-lg overflow-hidden">
-                  <button
-                    className={`px-6 py-2 transition-colors ${isEnabled ? 'bg-main-blue text-white' : 'text-gray-600'}`}
-                    onClick={isEnabled ? undefined : toggleEnabled}
-                  >
-                    Enabled
-                  </button>
-                  <button
-                    className={`px-6 py-2 transition-colors ${!isEnabled ? 'bg-main-blue text-white' : 'text-gray-600'}`}
-                    onClick={isEnabled ? toggleEnabled : undefined}
-                  >
-                    Disable
-                  </button>
-                </div>
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center border rounded-lg overflow-hidden flex-grow max-w-md">
+            <div className="flex items-center px-3 py-2 w-full">
+              <div className=" bg-gray-200 rounded overflow-hidden mr-2 flex-shrink-0">
+                <Image src={image} alt="Channel icon" width={60} height={40} className="object-cover w-full h-full" />
               </div>
+              <select
+                className="bg-transparent border-none focus:outline-none w-full"
+                value={selectedStream}
+                onChange={(e) => setSelectedStream(e.target.value)}
+                disabled={streamsLoading}
+              >
+                <option value="">Select a channel</option>
+                {filteredStreams.map((stream: any) => (
+                  <option key={stream.id} value={stream.id}>
+                    {stream.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+          <div className="flex bg-gray-100 rounded-lg overflow-hidden">
+            <button
+              className={`px-6 py-2 transition-colors ${isEnabled ? 'bg-main-blue text-white' : 'text-gray-600'}`}
+              onClick={isEnabled ? undefined : toggleEnabled}
+            >
+              Enabled
+            </button>
+            <button
+              className={`px-6 py-2 transition-colors ${!isEnabled ? 'bg-main-blue text-white' : 'text-gray-600'}`}
+              onClick={isEnabled ? toggleEnabled : undefined}
+            >
+              Disable
+            </button>
+          </div>
+        </div>
       </div>
 
       <div className=" p-4 rounded-lg shadow-lg w-full border-2  border-[#DFE0E1]">
