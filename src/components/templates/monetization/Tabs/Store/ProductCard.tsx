@@ -1,115 +1,35 @@
-// 'use client';
+"use client"
 
-// import { useState } from 'react';
-// import { MinusIcon, PlusIcon } from 'lucide-react';
-// import Image from 'next/image';
-// import image from '@/assets/image1.png';
-
-// interface Product {
-//   id: string
-//   name: string
-//   price: number
-//   imageUrl: string
-//   description?: string
-//   currency: string
-//   quantity?: number
-// }
-
-// interface ProductCardProps {
-//   product: Product;
-// }
-
-// export default function ProductCard({ product }: ProductCardProps) {
-//   const [quantity, setQuantity] = useState(product.quantity || 0);
-// console.log(quantity)
-//   const increaseQuantity = () => {
-//     setQuantity((prev) => prev + 1);
-//   };
-
-//   const decreaseQuantity = () => {
-//     setQuantity((prev) => (prev > 0 ? prev - 1 : 0));
-//   };
-
-//   return (
-//     <div className="border rounded-lg p-4">
-
-//       <div className="w-full flex justify-center flex-col">
-//       <div className="relative mb-6 justify-center flex  h-48 w-full">
-//         <Image
-//           src={product.imageUrl || image}
-//           alt={product.name}
-//           width={280}
-//           height={280}
-//           priority
-//           sizes="100%"
-//           className="object-cover transition rounded-md duration-300 hover:opacity-90"
-//         />
-//       </div>
-//         <div className="ml-4 flex justify-between items-center flex-gow">
-//         <div>
-//             <div>
-//               <h4 className="font-medium">{product.name}</h4>
-//               <p className="text-gray-500">${product.price}</p>
-//               <p>{product.quantity}</p>
-//             </div>
-//         </div>
-//         <div className="flex items-center space-x-2">
-//               <button
-//                 className="p-1 hover:bg-gray-100"
-//                 onClick={decreaseQuantity}
-//               >
-//                 <MinusIcon className="w-4 h-4" />
-//               </button>
-//               <span className="px-3 py-1 border-x">{quantity}</span>
-//               <button
-//                 className="p-1 hover:bg-gray-100"
-//                 onClick={increaseQuantity}
-//               >
-//                 <PlusIcon className="w-4 h-4" />
-//               </button>
-//             </div>
-
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-
-'use client';
-
-import { useState } from 'react';
-import Image from 'next/image';
-import { PencilIcon } from 'lucide-react';
-import image from '@/assets/image1.png';
-import { UpdateProductDialog } from './EditProduct';
-
-interface Product {
-  id: string;
-  user_id: string;
-  name: string;
-  price: number;
-  imageUrl: string;
-  description?: string;
-  currency: string;
-  quantity?: number;
-}
+import { useState } from "react"
+import Image from "next/image"
+import { PencilIcon } from "lucide-react"
+import defaultImage from "@/assets/image1.png"
+import { UpdateProductDialog } from "./EditProduct"
+import type { Product } from "@/interfaces"
 
 interface ProductCardProps {
-  product: Product;
-  onProductUpdate: () => void;
+  product: Product
+  onProductUpdate: () => void
 }
 
 export default function ProductCard({ product, onProductUpdate }: ProductCardProps) {
-  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
 
   return (
     <>
-      <div className="border rounded-lg p-4">
+      <div className="border rounded-lg p-4 relative">
+        {isLoading && (
+          <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-lg z-10">
+            <div className="animate-pulse text-main-blue">Updating...</div>
+          </div>
+        )}
+
         <div className="w-full flex justify-center flex-col">
-          <div className="relative mb-6 justify-center flex h-48 w-full">
+          <div className="relative mb-2 justify-center flex h-48 w-full">
             <Image
-              src={product.imageUrl || image}
-              alt={product.name}
+              src={product?.imageUrl || defaultImage}
+              alt={product?.name}
               width={280}
               height={280}
               priority
@@ -120,9 +40,9 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
           <div className="ml-4 flex justify-between items-center">
             <div>
               <div>
-                <h4 className="font-medium">{product.name}</h4>
-                <p className="text-gray-500">${product.price}</p>
-                <p>Quantity: {product.quantity}</p>
+                <h4 className="font-medium capitalize">{product?.name}</h4>
+                <p className="text-gray-500">${product?.price}</p>
+                <p>Quantity: {product?.quantity}</p>
               </div>
             </div>
             <button
@@ -139,9 +59,14 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
       <UpdateProductDialog
         isOpen={isUpdateDialogOpen}
         onOpenChange={setIsUpdateDialogOpen}
-        onUpdateProduct={onProductUpdate}
+        onUpdateProduct={() => {
+          setIsLoading(true)
+          onProductUpdate()
+          setTimeout(() => setIsLoading(false), 500)
+        }}
         product={product}
       />
     </>
-  );
+  )
 }
+

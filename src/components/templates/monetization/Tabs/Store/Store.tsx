@@ -1,168 +1,76 @@
-// 'use client';
-// import { useEffect, useMemo, useState, useCallback } from 'react';
-// import { useDispatch, useSelector } from 'react-redux';
-// import { usePrivy } from '@privy-io/react-auth';
-// import { getAllStreams } from '@/features/streamAPI';
-// import type { RootState, AppDispatch } from '@/store/store';
-// import Shirt from '@/assets/image1.png';
-// import { Product } from '@/interfaces';
-// import { ChannelSelector } from './ChannelSelector';
-// import { ProductsList } from './ProductList';
-// import { AddProductDialog } from './AddProductDialog';
+"use client"
 
-// const Store = () => {
-//   const { user } = usePrivy();
-//   const dispatch = useDispatch<AppDispatch>();
-//   const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
-//   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-//   const [selectedStream, setSelectedStream] = useState<string>('');
-//   const [isEnabled, setIsEnabled] = useState(true);
-//   const [products, setProducts] = useState<Product[]>([]);
-
-//   // Fetch streams when component mounts
-//   useEffect(() => {
-//     dispatch(getAllStreams());
-//   }, [dispatch]);
-
-//   // Filter streams that have playbackId (similar to dashboard)
-//   const filteredStreams = useMemo(() => {
-//     return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
-//   }, [streams, user?.wallet?.address]);
-
-//   const handleAddProduct = () => {
-//     setIsAddProductOpen(true);
-//   };
-
-//   const toggleEnabled = useCallback(() => {
-//     setIsEnabled((prev) => !prev);
-//   }, []);
-
-//   const handleAddNewProduct = (newProduct: Omit<Product, 'id'>) => {
-//     setProducts([...products, { ...newProduct, id: (products.length + 1).toString() }]);
-//   };
-
-//   return (
-//     <div>
-//       <div className="mb-4">
-//         {/* Channel Selection */}
-//         <ChannelSelector
-//           selectedStream={selectedStream}
-//           setSelectedStream={setSelectedStream}
-//           filteredStreams={filteredStreams}
-//           streamsLoading={streamsLoading}
-//           isEnabled={isEnabled}
-//           toggleEnabled={toggleEnabled}
-//         />
-
-//         {/* Products Management */}
-//         <div className="my-8">
-//           <h2 className="text-lg font-medium mb-2">Manage your merchandise and digital products</h2>
-
-//           <div className="bg-white rounded-lg border p-6 mt-4">
-//             <div className="flex justify-between items-center mb-6">
-//               <h3 className="text-xl font-medium">Active Products</h3>
-//               <button
-//                 className="bg-main-blue text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-//                 onClick={handleAddProduct}
-//               >
-//                 Add Product
-//               </button>
-//             </div>
-
-//             <ProductsList products={products} />
-//           </div>
-//         </div>
-//       </div>
-
-//       {/* Add Product Dialog */}
-//       <AddProductDialog
-//         isOpen={isAddProductOpen}
-//         onOpenChange={setIsAddProductOpen}
-//         onAddProduct={handleAddNewProduct}
-//       />
-//     </div>
-//   );
-// };
-
-// export default Store;
-'use client';
-import { useEffect, useMemo, useState, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { usePrivy } from '@privy-io/react-auth';
-import axios from 'axios';
-import { getAllStreams } from '@/features/streamAPI';
-import type { RootState, AppDispatch } from '@/store/store';
-import type { Product } from '@/interfaces';
-import { ChannelSelector } from './ChannelSelector';
-import { ProductsList } from './ProductList';
-import { AddProductDialog } from './AddProductDialog';
+import { useEffect, useMemo, useState, useCallback } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { usePrivy } from "@privy-io/react-auth"
+import axios from "axios"
+import Color, { ColorRing } from "react-loader-spinner"
+import { toast } from "sonner"
+import { getAllStreams } from "@/features/streamAPI"
+import type { RootState, AppDispatch } from "@/store/store"
+import type { Product } from "@/interfaces"
+import { ChannelSelector } from "./ChannelSelector"
+import { ProductsList } from "./ProductList"
+import { AddProductDialog } from "./AddProductDialog"
 
 const Store = () => {
-  const { user } = usePrivy();
-  const dispatch = useDispatch<AppDispatch>();
-  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
-  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
-  const [selectedStream, setSelectedStream] = useState<string>('');
-  const [isEnabled, setIsEnabled] = useState(true);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const { user } = usePrivy()
+  const dispatch = useDispatch<AppDispatch>()
+  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams)
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false)
+  const [selectedStream, setSelectedStream] = useState<string>("")
+  const [isEnabled, setIsEnabled] = useState(true)
+
+  // Product state management
+  const [products, setProducts] = useState<Product[]>([])
+  const [productsLoading, setProductsLoading] = useState(true)
+  const [productsError, setProductsError] = useState<string | null>(null)
 
   // Fetch streams when component mounts
   useEffect(() => {
-    dispatch(getAllStreams());
-  }, [dispatch]);
+    dispatch(getAllStreams())
+  }, [dispatch])
+
+  // Filter streams that have playbackId
+  const filteredStreams = useMemo(() => {
+    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address)
+  }, [streams, user?.wallet?.address])
 
   // Fetch products when wallet address is available
+  const fetchProducts = useCallback(async () => {
+    if (!user?.wallet?.address) return
+
+    setProductsLoading(true)
+    setProductsError(null)
+
+    try {
+      const response = await axios.get(`https://chaintv.onrender.com/api/${user.wallet.address}/products`)
+      setProducts(response.data.product || [])
+    } catch (err) {
+      console.error("Error fetching products:", err)
+      setProductsError("Failed to load products. Please try again.")
+      toast.error("Failed to load products. Please try again.")
+    } finally {
+      setProductsLoading(false)
+    }
+  }, [user?.wallet?.address])
+
+  // Initial product fetch
   useEffect(() => {
-    const fetchProducts = async () => {
-      if (!user?.wallet?.address) return;
-
-      setLoading(true);
-      setError(null);
-
-      try {
-        const response = await axios.get(`https://chaintv.onrender.com/api/${user.wallet.address}/products`);
-        setProducts(response.data.product);
-        console.log(response.data.product);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Failed to load products. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [user?.wallet?.address]);
-
-  // Filter streams that have playbackId (similar to dashboard)
-  const filteredStreams = useMemo(() => {
-    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
-  }, [streams, user?.wallet?.address]);
+    fetchProducts()
+  }, [fetchProducts])
 
   const handleAddProduct = () => {
-    setIsAddProductOpen(true);
-  };
+    setIsAddProductOpen(true)
+  }
 
   const toggleEnabled = useCallback(() => {
-    setIsEnabled((prev) => !prev);
-  }, []);
+    setIsEnabled((prev) => !prev)
+  }, [])
 
-  const handleAddNewProduct = () => {
-    // This will be called after a successful API call in AddProductDialog
-    // Refresh products from the server instead of manually adding
-    if (user?.wallet?.address) {
-      axios
-        .get(`https://chaintv.onrender.com/api/${user.wallet.address}/products`)
-        .then((response) => {
-          setProducts(response.data.product);
-        })
-        .catch((err) => {
-          console.error('Error refreshing products:', err);
-        });
-    }
-  };
+  const handleProductAdded = useCallback(() => {
+    fetchProducts()
+  }, [fetchProducts])
 
   return (
     <div>
@@ -192,12 +100,32 @@ const Store = () => {
               </button>
             </div>
 
-            {loading ? (
-              <div className="py-8 text-center">Loading products...</div>
-            ) : error ? (
-              <div className="py-8 text-center text-red-500">{error}</div>
+            {productsLoading ? (
+              <div className="py-16 flex justify-center items-center">
+               <ColorRing
+                 visible={true}
+                 height="100"
+                 width="50"
+                 ariaLabel="color-ring-loading"
+                 wrapperStyle={{}}
+                 wrapperClass="color-ring-wrapper"
+                 colors={['#000000', '#000000', '#000000', '#000000', '#000000']}
+                 />
+              </div>
+            ) : productsError ? (
+              <div className="py-8 text-center text-red-500">{productsError}</div>
+            ) : products.length === 0 ? (
+              <div className="py-8 text-center text-gray-500">
+                No products found. Add your first product to get started.
+              </div>
             ) : (
-              <ProductsList products={products} />
+              <ProductsList
+                products={products}
+                onProductUpdate={(productId) => {
+                  setProductsLoading(true)
+                  fetchProducts()
+                }}
+              />
             )}
           </div>
         </div>
@@ -207,10 +135,11 @@ const Store = () => {
       <AddProductDialog
         isOpen={isAddProductOpen}
         onOpenChange={setIsAddProductOpen}
-        onAddProduct={handleAddNewProduct}
+        onAddProduct={handleProductAdded}
       />
     </div>
-  );
-};
+  )
+}
 
-export default Store;
+export default Store
+
