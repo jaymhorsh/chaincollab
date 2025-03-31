@@ -1,143 +1,140 @@
-'use client';
-import axios from 'axios';
-import { useState } from 'react';
-import type React from 'react';
-import { usePrivy } from '@privy-io/react-auth';
-import Image from 'next/image';
-import * as Dialog from '@radix-ui/react-dialog';
-import { X, Upload } from 'lucide-react';
-import type { Product } from '@/interfaces/index';
-import { toast } from 'sonner';
+"use client"
+
+import axios from "axios"
+import { useState } from "react"
+import type React from "react"
+import { usePrivy } from "@privy-io/react-auth"
+import Image from "next/image"
+import * as Dialog from "@radix-ui/react-dialog"
+import { X, Upload } from "lucide-react"
+import {ColorRing} from "react-loader-spinner"
+import type { Product } from "@/interfaces"
+import { toast } from "sonner"
 
 interface AddProductDialogProps {
-  isOpen: boolean;
-  onOpenChange: (open: boolean) => void;
-  onAddProduct: (product: Omit<Product, 'id'>) => void;
+  isOpen: boolean
+  onOpenChange: (open: boolean) => void
+  onAddProduct: () => void
 }
 
 export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProductDialogProps) => {
-  const { user } = usePrivy();
-  const [productName, setProductName] = useState('');
-  const [productImage, setProductImage] = useState<File | null>(null);
-  const [productImagePreview, setProductImagePreview] = useState<string | null>(null);
-  const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('');
-  const [quantity, setQuantity] = useState('');
-  const [isDragging, setIsDragging] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { user } = usePrivy()
+  const [productName, setProductName] = useState("")
+  const [productImage, setProductImage] = useState<File | null>(null)
+  const [productImagePreview, setProductImagePreview] = useState<string | null>(null)
+  const [description, setDescription] = useState("")
+  const [price, setPrice] = useState("")
+  const [quantity, setQuantity] = useState("")
+  const [isDragging, setIsDragging] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState(0)
+  const [isUploading, setIsUploading] = useState(false)
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-      uploadImage(file);
+      const file = e.target.files[0]
+      uploadImage(file)
     }
-  };
+  }
 
   const uploadImage = (file: File) => {
-    setProductImage(file);
-    setIsUploading(true);
+    setProductImage(file)
+    setIsUploading(true)
 
     // Simulate upload progress
-    let progress = 0;
+    let progress = 0
     const interval = setInterval(() => {
-      progress += 10;
-      setUploadProgress(progress);
+      progress += 10
+      setUploadProgress(progress)
 
       if (progress >= 100) {
-        clearInterval(interval);
-        setIsUploading(false);
+        clearInterval(interval)
+        setIsUploading(false)
 
         // Create a preview URL
-        const reader = new FileReader();
+        const reader = new FileReader()
         reader.onload = () => {
-          setProductImagePreview(reader.result as string);
-          console.log('Image preview (data URL):', reader.result);
-        };
+          setProductImagePreview(reader.result as string)
+        }
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(file)
       }
-    }, 200);
-  };
+    }, 200)
+  }
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
+    e.preventDefault()
+    setIsDragging(true)
+  }
 
   const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+    setIsDragging(false)
+  }
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
+    e.preventDefault()
+    setIsDragging(false)
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
-      uploadImage(file);
+      const file = e.dataTransfer.files[0]
+      uploadImage(file)
     }
-  };
+  }
 
   const handleSubmit = async () => {
     // Validate form
     if (!productName || !price || !productImage) {
-      toast.error('Please fill in all required fields');
-      return;
+      toast.error("Please fill in all required fields")
+      return
     }
 
     // Create new product object
-    const newProduct: Omit<Product, 'id'> = {
-      user_id: user?.wallet?.address || '',
+    const newProduct: Omit<Product, "id"> = {
+      user_id: user?.wallet?.address || "",
       name: productName,
       price: Number.parseFloat(price),
       imageUrl: productImagePreview,
       description: description,
-      currency: '$',
+      currency: "$",
       quantity: Number.parseInt(quantity) || 0,
-    };
+    }
 
     if (!newProduct || !user?.wallet?.address) {
-      return;
+      return
     }
 
     try {
-      setIsSubmitting(true);
-      // Add wallet address to the request
-      const productWithWallet = {
-        ...newProduct,
-      };
+      setIsSubmitting(true)
 
-      const response = await axios.post('https://chaintv.onrender.com/api/post/products', productWithWallet);
-      console.log('Product added successfully:', response.data);
+      const response = await axios.post("https://chaintv.onrender.com/api/post/products", newProduct)
+      console.log("Product added successfully:", response.data)
 
-      toast.success(response.data.message || 'Product added successfully');
+      toast.success(response.data.message || "Product added successfully")
 
       // Call the callback to update parent component
-      onAddProduct(newProduct);
+      onAddProduct()
 
       // Reset form and close dialog
-      resetForm();
-      onOpenChange(false);
+      resetForm()
+      onOpenChange(false)
     } catch (error) {
-      console.error('Failed to add product:', error);
-      toast.error('Failed to add product. Please try again.');
+      console.error("Failed to add product:", error)
+      toast.error("Failed to add product. Please try again.")
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
 
   const resetForm = () => {
-    setProductName('');
-    setProductImage(null);
-    setProductImagePreview(null);
-    setDescription('');
-    setPrice('');
-    setQuantity('');
-    setUploadProgress(0);
-    setIsUploading(false);
-  };
+    setProductName("")
+    setProductImage(null)
+    setProductImagePreview(null)
+    setDescription("")
+    setPrice("")
+    setQuantity("")
+    setUploadProgress(0)
+    setIsUploading(false)
+  }
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -168,7 +165,7 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
             <div>
               <label className="block text-sm font-medium mb-1">Product Images</label>
               <div
-                className={`border border-dashed rounded-md p-4 text-center ${isDragging ? 'bg-main-blue border-blue-300' : ''}`}
+                className={`border border-dashed rounded-md p-4 text-center ${isDragging ? "bg-main-blue/10 border-blue-300" : ""}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -179,17 +176,14 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
                       <Upload className="h-8 w-8 text-blue-500 animate-pulse" />
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2.5 mb-2">
-                      <div
-                        className="bg-main-blue-600 h-2.5 rounded-full"
-                        style={{ width: `${uploadProgress}%` }}
-                      ></div>
+                      <div className="bg-main-blue h-2.5 rounded-full" style={{ width: `${uploadProgress}%` }}></div>
                     </div>
                     <p className="text-sm text-gray-500">Uploading... {uploadProgress}%</p>
                   </div>
                 ) : productImagePreview ? (
                   <div className="relative w-32 h-32 mx-auto">
                     <Image
-                      src={productImagePreview || '/placeholder.svg'}
+                      src={productImagePreview || "/placeholder.svg"}
                       alt="Product preview"
                       fill
                       className="object-contain"
@@ -198,8 +192,8 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
                       type="button"
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
                       onClick={() => {
-                        setProductImage(null);
-                        setProductImagePreview(null);
+                        setProductImage(null)
+                        setProductImagePreview(null)
                       }}
                     >
                       <X className="h-3 w-3" />
@@ -283,8 +277,8 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
                 type="button"
                 className="px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 transition-colors"
                 onClick={() => {
-                  resetForm();
-                  onOpenChange(false);
+                  resetForm()
+                  onOpenChange(false)
                 }}
                 disabled={isSubmitting}
               >
@@ -292,16 +286,31 @@ export const AddProductDialog = ({ isOpen, onOpenChange, onAddProduct }: AddProd
               </button>
               <button
                 type="button"
-                className="px-4 py-2 rounded-md bg-main-blue text-white hover:bg-blue-700 transition-colors"
+                className="px-4 py-2 rounded-md bg-main-blue text-white hover:bg-blue-700 transition-colors flex items-center justify-center min-w-[100px]"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Adding...' : 'Add Product'}
+                {isSubmitting ? (
+                  <>
+                    <ColorRing
+  visible={true}
+  height="100"
+  width="80"
+  ariaLabel="color-ring-loading"
+  wrapperStyle={{margin: "4px"}}
+  wrapperClass="color-ring-wrapper"
+  colors={['#000000', '#000000', '#000000', '#000000', '#000000']} />
+                    <span>Adding...</span>
+                  </>
+                ) : (
+                  "Add Product"
+                )}
               </button>
             </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
-};
+  )
+}
+
