@@ -78,7 +78,7 @@ const Monetization: React.FC = () => {
             <TabsContent value="donations" className="md:w-[55%] max-sm:w-full">
               <Donations />
             </TabsContent>
-            <TabsContent value="store" className="md:w-[55%] max-sm:w-full">
+            <TabsContent value="store" className="md:w-[65%] max-sm:w-full">
               <Store />
             </TabsContent>
             <TabsContent value="history" className="md:w-[55%] max-sm:w-full">

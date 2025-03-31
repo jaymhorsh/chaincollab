@@ -26,7 +26,7 @@ import MobileSidebar from '@/components/MobileSidebar';
 
 const Dashboard = () => {
   const { user, ready, authenticated } = usePrivy();
-  console.log(user);
+  // console.log(user);
   const navigate = useRouter();
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading: streamsLoading, error: streamsError } = useSelector((state: RootState) => state.streams);

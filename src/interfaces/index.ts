@@ -70,12 +70,12 @@ export interface Asset {
   assetId: string;
 }
 export interface Product {
-  id: string;
-  user_id?: string;
+  _id?: string;
+  user_id: string;
   name: string;
   price: number;
   imageUrl: any;
   description?: string;
   currency: string;
-  quantity?: number;
+  quantity: number;
 }
