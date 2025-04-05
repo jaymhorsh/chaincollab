@@ -116,7 +116,7 @@ const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen
           <div className="flex items-center flex-1 justify-end gap-4">
             <DropdownMenu.Root>
               <DropdownMenu.Trigger asChild>
-                <button className="flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   {ready && embeddedWallet?.address ? (
                     <Identity
                       address={embeddedWallet.address}
@@ -132,7 +132,7 @@ const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen
                   ) : (
                     <p className="text-gray-500">{ready && !embeddedWallet && 'No wallet connected'}</p>
                   )}
-                </button>
+                </div>
               </DropdownMenu.Trigger>
               <DropdownMenu.Portal>
                 <DropdownMenu.Content

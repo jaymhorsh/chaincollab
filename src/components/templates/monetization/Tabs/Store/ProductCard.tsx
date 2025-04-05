@@ -5,8 +5,8 @@ import Image from "next/image"
 import { PencilIcon, TrashIcon } from "lucide-react"
 import defaultImage from "@/assets/image1.png"
 import { UpdateProductDialog } from "./EditProduct"
-import { DeleteProductDialog } from "./DeleteProductDialog"
 import type { Product } from "@/interfaces"
+import { DeleteProductDialog } from "./DeleteProductDialog"
 
 interface ProductCardProps {
   product: Product
@@ -66,7 +66,7 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
           </div>
         </div>
       </div>
-
+{isUpdateDialogOpen &&
       <UpdateProductDialog
         isOpen={isUpdateDialogOpen}
         onOpenChange={setIsUpdateDialogOpen}
@@ -76,8 +76,8 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
           setTimeout(() => setIsLoading(false), 500)
         }}
         product={product}
-      />
-
+      />}
+{isDeleteDialogOpen &&
       <DeleteProductDialog
         isOpen={isDeleteDialogOpen}
         onOpenChange={setIsDeleteDialogOpen}
@@ -87,7 +87,7 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
           setTimeout(() => setIsLoading(false), 500)
         }}
         productId={product._id || ""}
-      />
+      />}
     </>
   )
 }

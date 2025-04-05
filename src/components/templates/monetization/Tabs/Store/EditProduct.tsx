@@ -10,6 +10,7 @@ import { X, Upload } from "lucide-react"
 import { ColorRing } from "react-loader-spinner"
 import type { Product } from "@/interfaces"
 import { toast } from "sonner"
+import api from "@/utils/api"
 
 interface UpdateProductDialogProps {
   isOpen: boolean
@@ -126,8 +127,9 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
 
     try {
       setIsSubmitting(true)
+      console.log ("Updating product to be sent:", updatedProduct)
       // Update product via API
-      const response = await axios.put(`https://chaintv.onrender.com/api/products/${user?.wallet?.address}`, updatedProduct)
+      const response = await axios.put(`https://chaintv.onrender.com/api/update/products/${user?.wallet?.address}`, updatedProduct)
       toast.success(response.data.message || "Product updated successfully")
       // Call the callback to refresh products in parent component
       onUpdateProduct()
