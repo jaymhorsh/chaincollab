@@ -121,7 +121,7 @@ const Store = () => {
             ) : (
               <ProductsList
                 products={products}
-                onProductUpdate={(productId) => {
+                onProductUpdate={() => {
                   setProductsLoading(true)
                   fetchProducts()
                 }}
