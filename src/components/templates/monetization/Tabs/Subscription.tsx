@@ -1,31 +1,14 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import stream from '../../../../assets/image1.png';
-import image from '@/assets/image1.png';
 import { getAllStreams } from '@/features/streamAPI';
-import { usePrivy } from '@privy-io/react-auth';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@/store/store';
-import Image from 'next/image';
+
 const Subscription = () => {
-  const { user } = usePrivy();
   const dispatch = useDispatch<AppDispatch>();
-  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
-  const [selectedStream, setSelectedStream] = useState<string>('');
   const [subscriptionType, setSubscriptionType] = useState('monthly');
-  const [isEnabled, setIsEnabled] = useState(true);
   const [price, setPrice] = useState<number | undefined>();
   const [perks, setPerks] = useState(['Ad-free viewing experience across all streams']);
   const [newPerk, setNewPerk] = useState('');
-
-  // Fetch streams when component mounts
-  useEffect(() => {
-    dispatch(getAllStreams());
-  }, [dispatch]);
-
-  // Filter streams that have playbackId (similar to dashboard)
-  const filteredStreams = useMemo(() => {
-    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
-  }, [streams, user?.wallet?.address]);
 
   const handleAddPerk = () => {
     if (newPerk.trim()) {
@@ -37,12 +20,10 @@ const Subscription = () => {
   const handleRemovePerk = (index: number): void => {
     setPerks(perks.filter((_, i) => i !== index));
   };
-  const toggleEnabled = () => {
-    setIsEnabled(!isEnabled);
-  };
+
   return (
     <div className="flex flex-col">
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <label className="block text-black text-base font-semibold mb-2">Select Channel</label>
         <div className="flex items-center gap-4 flex-wrap">
           <div className="flex items-center border rounded-lg overflow-hidden flex-grow max-w-md">
@@ -80,7 +61,7 @@ const Subscription = () => {
             </button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className=" p-4 rounded-lg shadow-lg w-full border-2  border-[#DFE0E1]">
         <h2 className="text-lg text-black font-semibold mb-3">Subscription</h2>

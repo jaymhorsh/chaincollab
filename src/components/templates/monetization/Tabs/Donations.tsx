@@ -17,7 +17,6 @@ const Donations = () => {
   const [values, setValues] = useState(['1', '5', '10', '20']);
   const [isEditing, setIsEditing] = useState(false);
   const [selectedStream, setSelectedStream] = useState<string>('');
-  const [isEnabled, setIsEnabled] = useState(true);
   useEffect(() => {
     dispatch(getAllStreams());
   }, [dispatch]);
@@ -29,9 +28,7 @@ const Donations = () => {
   const toggleEdit = () => {
     setIsEditing(!isEditing);
   };
-  const toggleEnabled = () => {
-    setIsEnabled(!isEnabled);
-  };
+
 
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const newValues = [...values];
@@ -68,20 +65,7 @@ const Donations = () => {
               </select>
             </div>
           </div>
-          <div className="flex bg-gray-100 rounded-lg overflow-hidden">
-            <button
-              className={`px-6 py-2 transition-colors ${isEnabled ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
-              onClick={isEnabled ? undefined : toggleEnabled}
-            >
-              Enabled
-            </button>
-            <button
-              className={`px-6 py-2 transition-colors ${!isEnabled ? 'bg-blue-600 text-white' : 'text-gray-600'}`}
-              onClick={isEnabled ? toggleEnabled : undefined}
-            >
-              Disable
-            </button>
-          </div>
+          
         </div>
       </div>
       {/* Configure Donations Section */}
