@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { PencilIcon } from "lucide-react"
+import { PencilIcon, TrashIcon } from "lucide-react"
 import defaultImage from "@/assets/image1.png"
 import { UpdateProductDialog } from "./EditProduct"
 import type { Product } from "@/interfaces"
+import { DeleteProductDialog } from "./DeleteProductDialog"
 
 interface ProductCardProps {
   product: Product
@@ -14,6 +15,7 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, onProductUpdate }: ProductCardProps) {
   const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
   return (
@@ -45,17 +47,26 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
                 <p>Quantity: {product?.quantity}</p>
               </div>
             </div>
-            <button
-              className="p-2 hover:bg-gray-100 rounded-full"
-              onClick={() => setIsUpdateDialogOpen(true)}
-              aria-label="Edit product"
-            >
-              <PencilIcon className="w-5 h-5" />
-            </button>
+            <div className="flex space-x-2">
+              <button
+                className="p-2 hover:bg-gray-100 rounded-full"
+                onClick={() => setIsUpdateDialogOpen(true)}
+                aria-label="Edit product"
+              >
+                <PencilIcon className="w-5 h-5" />
+              </button>
+              <button
+                className="p-2 hover:bg-gray-100 rounded-full"
+                onClick={() => setIsDeleteDialogOpen(true)}
+                aria-label="Delete product"
+              >
+                <TrashIcon className="w-5 h-5 text-red-600" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-
+{isUpdateDialogOpen &&
       <UpdateProductDialog
         isOpen={isUpdateDialogOpen}
         onOpenChange={setIsUpdateDialogOpen}
@@ -65,7 +76,18 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
           setTimeout(() => setIsLoading(false), 500)
         }}
         product={product}
-      />
+      />}
+{isDeleteDialogOpen &&
+      <DeleteProductDialog
+        isOpen={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+        onDeleteProduct={() => {
+          setIsLoading(true)
+          onProductUpdate()
+          setTimeout(() => setIsLoading(false), 500)
+        }}
+        productId={product._id || ""}
+      />}
     </>
   )
 }

@@ -6,7 +6,6 @@ import { AppDispatch, RootState } from '@/store/store';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'sonner';
 import { BroadcastWithControls } from './broadcast/Broadcast';
 import Cookies from 'js-cookie';
 
@@ -38,9 +37,7 @@ const StreamPage = () => {
   useEffect(() => {
     if (id) {
       dispatch(getStreamById(id));
-    } else {
-      toast.error('Stream ID is required');
-    }
+    } 
   }, [id, dispatch]);
 
   // Once the stream data is loaded, store it (or at least its ID) in cookies.
