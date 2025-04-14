@@ -85,19 +85,17 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
       const { playbackId, streamKey, name } = response.data.asset;
       console.log('response2', response.data.asset);
       // Step 2: Send the response data to another endpoint
-      // const viewMode = paymentOption; // Use paymentOption as viewMode
       const data = {
-        streamKey,
         playbackId,
-        // viewMode: paymentOption,
+        creatorId: user?.wallet?.address || '',
+        viewMode: paymentOption,
         amount,
         assetName: name,
       };
-
-      const secondResponse = await axios.post(`https://chaintv.onrender.com/api/streams/addasset`, { data });
+      const secondResponse = await axios.post(`https://chaintv.onrender.com/api/videos/addvideo`, { data });
       if (secondResponse.status === 200) {
         console.log('Data sent successfully:', secondResponse.data);
-        toast.success('livestream added');
+        // toast.success('livestream added');
       } else if (secondResponse.status !== 200) {
         console.error('Error sending data:', secondResponse.data);
       }
