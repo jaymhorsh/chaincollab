@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { BiSolidDownArrow, BiSolidUpArrow } from 'react-icons/bi';
 import { AnalyticCardProps, ChannelCardProps, VideoCardProps } from '@/interfaces';
 import { AssetPopup, Popup } from '../Popup';
@@ -10,6 +10,8 @@ import { useFetchPlaybackId, useFetchStreamPlaybackId } from '@/app/hook/usePlay
 import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
 import { Bars } from 'react-loader-spinner';
 import { useViewMetrics } from '@/app/hook/useViewerMetrics';
+import axios from 'axios';
+import { FaLock } from 'react-icons/fa6';
 
 export const AnalyticCard = ({ title, views, change, value, playtimeMins, loading }: AnalyticCardProps) => {
   return (
@@ -167,5 +169,180 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
         title={assetData.name}
       />
     </div>
+  );
+};
+
+const PaymentDialog: React.FC<{ 
+  onClose: () => void; 
+  onPaymentSuccess: () => void;
+}> = ({ onClose, onPaymentSuccess }) => {
+  const handlePayment = () => {
+    // Simulate payment processing
+    alert('Payment processing...');
+    setTimeout(() => {
+      onPaymentSuccess();
+    }, 2000);
+  };  
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded shadow-lg max-w-sm mx-auto">
+        <h2 className="text-lg font-bold mb-4">Payment Required</h2>
+        <p className="mb-4">
+          This video is gated. Please make a payment to watch this video.
+        </p>
+        <div className="flex justify-end gap-4">
+          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
+            Cancel
+          </button>
+          <button
+            onClick={handlePayment}
+            className="px-4 py-2 bg-blue-600 text-white rounded"
+          >
+            Pay Now
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const StreamVideoCard: React.FC<VideoCardProps> = ({
+  title,
+  imageUrl,
+  createdAt,
+  playbackId,
+  assetData,
+  creatorId,
+}) => {
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isGated, setIsGated] = useState(true);
+  const [isLoadingGatedStatus, setIsLoadingGatedStatus] = useState(false);
+  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
+
+  // Cache gated status to avoid redundant API calls
+  const gatedStatusCache = useRef<Record<string, boolean>>({});
+
+  const { views: videocount } = usePlaybackMetrics(playbackId || '');
+  const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
+
+  // useEffect(() => {
+  //   const checkGatedStatus = async () => {
+  //     if (!creatorId || !assetData.playbackId) return;
+
+  //     // Check if the gated status is already cached
+  //     if (gatedStatusCache.current[assetData.playbackId] !== undefined) {
+  //       // setIsGated(gatedStatusCache.current[assetData.playbackId]);
+  //       return;
+  //     }
+
+  //     setIsLoadingGatedStatus(true); // Show loading state
+  //     try {
+  //       const response = await axios.get('https://chaintv.onrender.com/api/streams/findpayinguser', {
+  //         params: { playbackId: assetData.playbackId, creatorId },
+  //       });
+
+  //       const isPaid = response.data?.isPaid ?? false;
+  //       const gated = !isPaid; // If not paid, the video is gated
+  //       gatedStatusCache.current[assetData.playbackId] = gated; // Cache the result
+  //       // setIsGated(gated);
+  //     } catch (error) {
+  //       console.error('Error checking gated status:', error);
+  //       setIsGated(false); // Default to not gated on error
+  //     } finally {
+  //       setIsLoadingGatedStatus(false); // Hide loading state
+  //     }
+  //   };
+
+  //   checkGatedStatus();
+  // }, [assetData.playbackId, creatorId]);
+
+  const handlePlayClick = () => {
+    if (isLoadingGatedStatus) return; // Prevent interaction while loading
+
+    if (isGated) {
+      setShowPaymentDialog(true); // Show payment dialog if gated
+    } else {
+      setIsDialogOpen(true); // Open playback dialog if not gated
+    }
+  };
+
+  const formattedDuration = `${Math.floor(assetData.videoSpec.duration / 3600)
+    .toString()
+    .padStart(2, '0')}:${Math.floor((assetData.videoSpec.duration % 3600) / 60)
+    .toString()
+    .padStart(2, '0')}:${Math.floor(assetData.videoSpec.duration % 60)
+    .toString()
+    .padStart(2, '0')}`;
+
+  return (
+    <>
+      <div className="flex gap-3 p-2 cursor-pointer group">
+        {/* Thumbnail Container */}
+        <div className="relative flex-shrink-0 w-40 h-24">
+          {loading || isLoadingGatedStatus ? (
+            <div className="flex items-center justify-center w-full h-full bg-gray-200">
+              <p className="text-sm">Loading...</p>
+            </div>
+          ) : (
+            <>
+              <Image
+                src={thumbnailUrl || imageUrl || '/assets/default-thumbnail.jpg'}
+                alt={title}
+                fill
+                className="rounded object-cover"
+              />
+              <span className="absolute bottom-1 right-1 bg-black text-white text-xs px-1 rounded">
+                {formattedDuration}
+              </span>
+          
+            </>
+          )}
+
+          {/* Hover overlay with play button */}
+          <div className="absolute inset-0 flex justify-center items-center bg-opacity-0 group-hover:bg-opacity-60 transition duration-300">
+          {isGated ? (
+                <div    onClick={handlePlayClick} className="text-main-blue text-4xl opacity-0 group-hover:opacity-100">
+                  <FaLock />
+                </div>
+              ):(
+            <button
+              onClick={handlePlayClick}
+              className="text-white text-4xl opacity-0 group-hover:opacity-100"
+              disabled={isLoadingGatedStatus}
+            >
+              <FaPlay />
+            </button>)}
+          </div>
+        </div>
+
+        {/* Video Details */}
+        <div className="flex flex-col flex-grow overflow-hidden">
+          <p className="text-sm font-medium line-clamp-2">{title}</p>
+          <p className="text-sm text-gray-500">
+            {createdAt ? createdAt.toDateString() : ''}
+          </p>
+          <p className="text-xs text-gray-500">{videocount?.viewCount} views</p>
+        </div>
+
+        {/* Hidden modal trigger for the DemoPlay dialog */}
+        <DemoPlay
+          open={isDialogOpen}
+          onClose={() => setIsDialogOpen(false)}
+          playbackId={assetData.playbackId}
+          title={assetData.name}
+        />
+      </div>
+
+      {/* Payment Dialog rendered conditionally */}
+      {showPaymentDialog && (
+        <PaymentDialog
+          onClose={() => setShowPaymentDialog(false)}
+          onPaymentSuccess={() => {
+            setShowPaymentDialog(false);
+            setIsDialogOpen(true); // Open playback dialog after payment
+          }}
+        />
+      )}
+    </>
   );
 };
