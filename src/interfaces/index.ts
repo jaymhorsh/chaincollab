@@ -32,7 +32,6 @@ export interface VideoCardProps {
   format?: string;
   assetId?: string;
   playbackId: string;
-  duration?: number;
   creatorId?: string;
 }
 export interface Stream {
