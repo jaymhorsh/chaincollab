@@ -29,7 +29,6 @@ const Donations = () => {
     setIsEditing(!isEditing);
   };
 
-
   const handleChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
     const newValues = [...values];
     newValues[index] = event.target.value;
@@ -65,7 +64,6 @@ const Donations = () => {
               </select>
             </div>
           </div>
-          
         </div>
       </div>
       {/* Configure Donations Section */}

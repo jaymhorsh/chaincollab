@@ -9,8 +9,8 @@ interface CreateLivestreamProps {
   record: boolean;
   creatorId: string;
   paymentOption?: 'free' | 'one-time' | 'monthly';
-  amount?: number; 
-  data?: any
+  amount?: number;
+  data?: any;
 }
 
 interface UpdateLivestreamProps {
@@ -23,10 +23,7 @@ interface UpdateLivestreamProps {
 
 export const createLivestream = createAsyncThunk(
   'streams/createLivestream',
-  async (
-    { streamName, record, creatorId, paymentOption, amount }: CreateLivestreamProps,
-    { rejectWithValue }
-  ) => {
+  async ({ streamName, record, creatorId, paymentOption, amount }: CreateLivestreamProps, { rejectWithValue }) => {
     try {
       // Step 1: Create the livestream
       const response = await api.post('/stream', {
@@ -38,28 +35,27 @@ export const createLivestream = createAsyncThunk(
         },
       });
 
-      const { playbackId,streamKey, name } = response.data;
+      const { playbackId, streamKey, name } = response.data;
 
       // Step 2: Send the response data to another endpoint
       // const viewMode = paymentOption; // Use paymentOption as viewMode
       const data = {
         streamKey,
         playbackId,
-         creatorId,
+        creatorId,
         viewMode: paymentOption,
         amount,
-        streamName:name || streamName,
+        streamName: name || streamName,
       };
 
       const secondResponse = await axios.post(`https://chaintv.onrender.com/api/streams/addstream`, { data });
-    
+
       if (secondResponse.status === 200) {
         console.log('Data sent successfully:', secondResponse.data);
         toast.success('livestream added');
-      }else if (secondResponse.status !== 200) {
+      } else if (secondResponse.status !== 200) {
         console.error('Error sending data:', secondResponse.data);
-
-      } else {  
+      } else {
         console.error('Unexpected response:', secondResponse);
       }
       return response.data;
@@ -67,7 +63,7 @@ export const createLivestream = createAsyncThunk(
       console.log('Error creating livestream:', error);
       return rejectWithValue(error.response?.data || error.message);
     }
-  }
+  },
 );
 
 export const getAllStreams = createAsyncThunk('streams/getAllStreams', async () => {

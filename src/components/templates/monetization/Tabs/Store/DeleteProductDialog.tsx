@@ -1,50 +1,43 @@
-"use client"
+'use client';
 
-import axios from "axios"
-import * as Dialog from "@radix-ui/react-dialog"
-import { X } from "lucide-react"
-import { toast } from "sonner"
-import { useState } from "react"
-import { usePrivy } from "@privy-io/react-auth"
+import axios from 'axios';
+import * as Dialog from '@radix-ui/react-dialog';
+import { X } from 'lucide-react';
+import { toast } from 'sonner';
+import { useState } from 'react';
+import { usePrivy } from '@privy-io/react-auth';
 interface DeleteProductDialogProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  onDeleteProduct: () => void
-  productId: string
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onDeleteProduct: () => void;
+  productId: string;
 }
 
-export const DeleteProductDialog = ({
-  isOpen,
-  onOpenChange,
-  onDeleteProduct,
-  productId,
-}: DeleteProductDialogProps) => {
-    const { user } = usePrivy()
-  const [isDeleting, setIsDeleting] = useState(false)
+export const DeleteProductDialog = ({ isOpen, onOpenChange, onDeleteProduct, productId }: DeleteProductDialogProps) => {
+  const { user } = usePrivy();
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const handleDelete = async () => {
     if (!user?.wallet?.address || !productId) {
-        toast.error("Invalid product or user information.")
-        return
-        }
+      toast.error('Invalid product or user information.');
+      return;
+    }
 
     try {
-      setIsDeleting(true)
+      setIsDeleting(true);
       const response = await axios.delete(
-        `https://chaintv.onrender.com/api/delete/products/${productId}/${user?.wallet?.address}`
-      )
-      toast.success(response.data.message || "Product deleted successfully")
-      onDeleteProduct()
-      onOpenChange(false)
+        `https://chaintv.onrender.com/api/delete/products/${productId}/${user?.wallet?.address}`,
+      );
+      toast.success(response.data.message || 'Product deleted successfully');
+      onDeleteProduct();
+      onOpenChange(false);
     } catch (error: any) {
-      console.error("Failed to delete product:", error)
-      toast.error(
-        error.response?.data?.message || "Failed to delete product. Please try again."
-      )
+      console.error('Failed to delete product:', error);
+      toast.error(error.response?.data?.message || 'Failed to delete product. Please try again.');
     } finally {
-      setIsDeleting(false)
+      setIsDeleting(false);
     }
-  }
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -77,11 +70,11 @@ export const DeleteProductDialog = ({
               onClick={handleDelete}
               disabled={isDeleting}
             >
-              {isDeleting ? "Deleting..." : "Delete"}
+              {isDeleting ? 'Deleting...' : 'Delete'}
             </button>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  )
-}
+  );
+};

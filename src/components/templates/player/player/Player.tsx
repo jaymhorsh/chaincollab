@@ -27,7 +27,6 @@
 // import image1  from "@/assets/image1.png"
 // import { StreamVideoCard } from '@/components/Card/Card';
 
-
 // interface CreatorVideo {
 //   id: string;
 //   title: string;
@@ -50,7 +49,7 @@
 //   }, [dispatch]);
 
 //   useEffect(() => {
-   
+
 //     if (assetsError) {
 //       toast.error('Failed to fetch assets: ' + assetsError);
 //     }
@@ -100,10 +99,10 @@
 //             <button onClick={() => setIsVerified(true)} type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
 //               Proceed to subcribe
 //             </button>
-         
+
 //         </div>
 //       </div>
-//     );  
+//     );
 //   }
 //   return (
 //     <div
@@ -118,11 +117,11 @@
 //         {/* Title */}
 //         <div className="w-full flex flex-col sm:flex-row items-center justify-between">
 //           <div className="flex-1 text-center text-xl font-semibold capitalize">{title}</div>
-          
+
 //         </div>
-      
+
 //         {/* </div> */}
-    
+
 //         {/* Main Content Area */}
 //         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 pt-1 mt-6 pb-6">
 //           {/* Left Pane: Creator Videos List */}
@@ -131,7 +130,7 @@
 //               <h3 className="font-semibold text-lg mb-4">Creator Videos</h3>
 
 //               <ul className="space-y-3 overflow-y-auto max-h-[80vh]">
-               
+
 //                 {filteredAssets.length > 0 ? (
 //                   filteredAssets.map((video) => (
 //                   <StreamVideoCard
@@ -275,7 +274,7 @@
 //             {/* Title and Viewer Count below the Player */}
 //             <div className="mt-3 flex items-center justify-between">
 //               <p className="text-2xl font-semibold text-black">{title}</p>
-              
+
 //               <div className="flex items-center gap-2 text-sm text-gray-500">
 //                 <svg
 //                   width="19"
@@ -333,7 +332,7 @@
 //             <div>
 //               kkkkkkk
 //             </div>
-            
+
 //           </div>
 
 //           {/* Chat Section */}
@@ -430,10 +429,10 @@ import { AppDispatch, RootState } from '@/store/store';
 import { getAssets } from '@/features/assetsAPI';
 import { toast } from 'sonner';
 import { Asset } from '@/interfaces';
-import image1 from "@/assets/image1.png";
+import image1 from '@/assets/image1.png';
 import { StreamVideoCard } from '@/components/Card/Card';
 import axios from 'axios';
-import { ColorRing} from 'react-loader-spinner';
+import { ColorRing } from 'react-loader-spinner';
 
 // Assuming your product objects have { id, name, image, price }
 interface Product {
@@ -443,8 +442,17 @@ interface Product {
   price: number;
 }
 
-
-export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[]; title: string; playbackId: string; id: string }) {
+export function PlayerWithControls({
+  src,
+  id,
+  title,
+  playbackId,
+}: {
+  src: Src[];
+  title: string;
+  playbackId: string;
+  id: string;
+}) {
   const dispatch = useDispatch<AppDispatch>();
   const [customization, setCustomization] = useState({
     bgColor: '#ffffff',
@@ -468,7 +476,7 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
     }
   }, [assetsError]);
   // Memoize the fetchProducts function
-  
+
   const fetchProducts = useCallback(async () => {
     if (!id) return;
 
@@ -478,11 +486,11 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
     try {
       const response = await axios.get(`https://chaintv.onrender.com/api/${id}/products`);
       setProducts(response.data.product || []);
-      console.log("Products fetched successfully:", response.data.product);
+      console.log('Products fetched successfully:', response.data.product);
     } catch (err) {
-      console.error("Error fetching products:", err);
-      setProductsError("Failed to load products. Please try again.");
-      toast.error("Failed to load products. Please try again.");
+      console.error('Error fetching products:', err);
+      setProductsError('Failed to load products. Please try again.');
+      toast.error('Failed to load products. Please try again.');
     } finally {
       setProductsLoading(false);
     }
@@ -512,11 +520,6 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
     }
   }, []);
 
-
-
-
-
-
   // --- Playback URL ---
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
@@ -525,18 +528,18 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
           title,
         )}`
       : null;
-      const handleCopyLink = async () => {
-        try {
-          if (playbackUrl && id) {
-            await navigator.clipboard.writeText(playbackUrl);
-            toast.success('Stream link successfully copied!');
-          } else {
-            toast.error('No playback URL available to copy.');
-          }
-        } catch (err) {
-          toast.error('Failed to copy the stream link.');
-        }
-      };
+  const handleCopyLink = async () => {
+    try {
+      if (playbackUrl && id) {
+        await navigator.clipboard.writeText(playbackUrl);
+        toast.success('Stream link successfully copied!');
+      } else {
+        toast.error('No playback URL available to copy.');
+      }
+    } catch (err) {
+      toast.error('Failed to copy the stream link.');
+    }
+  };
   // If not verified, show viewer verification UI (unchanged)
   if (!isVerified) {
     return (
@@ -551,13 +554,17 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
         <div className="p-8 border rounded shadow-md bg-white">
           <h2 className="text-xl font-bold mb-4">Viewer Verification</h2>
           <p className="mb-4">This stream is gated and subscription is required </p>
-          <button onClick={() => setIsVerified(true)} type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
+          <button
+            onClick={() => setIsVerified(true)}
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded"
+          >
             Proceed to subscribe
           </button>
         </div>
       </div>
     );
-  } 
+  }
 
   // --- Render UI ---
   return (
@@ -732,19 +739,48 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
                 </span>
               </div>
             </div>
+         
 
             {/* Stream Description */}
-            <div className="mt-3 space-y-3">
-             
+            <div className="mt-3 flex items-center justify-between">
+            <div className="flex  sm:flex-row items-center justify-center sm:items-start sm:space-x-4 mt-4 sm:mt-0">
+           
+              <h1 className="  mb-2 sm:mb-0">Donate</h1>{' '}
+              <div className="flex space-x-4">
+                <button
+                  className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-transform transform hover:scale-110 animate-bounce"
+                  style={{ animationDelay: '0s' }}
+                  onClick={() => alert('You donated $5!')}
+                >
+                  $5
+                </button>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-transform transform hover:scale-110 animate-bounce"
+                  style={{ animationDelay: '0.2s' }}
+                  onClick={() => alert('You donated $10!')}
+                >
+                  $10
+                </button>
+                <button
+                  className="bg-purple-500 text-white px-4 py-2 rounded-md hover:bg-purple-600 transition-transform transform hover:scale-110 animate-bounce"
+                  style={{ animationDelay: '0.4s' }}
+                  onClick={() => alert('You donated $20!')}
+                >
+                  $20
+                </button>
+              </div>
+            </div>
+                <div>
                 <p className="text-sm text-[#53525F] capitalize">
                 {`Join ${title}  `}
-                <span
-                  onClick={handleCopyLink}
-                  className="cursor-pointer text-main-blue hover:text-blue-800 underline"
-                >
-                Link
+                <span onClick={handleCopyLink} className="cursor-pointer text-main-blue hover:text-blue-800 underline">
+                  Link
                 </span>
-                </p>
+              </p>
+                </div>
+            </div>
+            <div className="mt-3">
+       
 
               <p className="text-sm text-[#53525F]">
                 {title} is a thriving web3 community at the intersection of decentralization and innovation. We believe
@@ -758,30 +794,37 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
             <div className="mt-6">
               <h3 className="text-lg font-semibold mb-4">Products</h3>
               {productsLoading ? (
-                <div className="text-center">  <ColorRing
-                                  visible={true}
-                                  height="100"
-                                  width="50"
-                                  ariaLabel="color-ring-loading"
-                                  wrapperStyle={{}}
-                                  wrapperClass="color-ring-wrapper"
-                                  colors={["#000000", "#000000", "#000000", "#000000", "#000000"]}
-                                /></div>
+                <div className="text-center">
+                  {' '}
+                  <ColorRing
+                    visible={true}
+                    height="100"
+                    width="50"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{}}
+                    wrapperClass="color-ring-wrapper"
+                    colors={['#000000', '#000000', '#000000', '#000000', '#000000']}
+                  />
+                </div>
               ) : productsError ? (
                 <div className="text-center text-red-500">{productsError}</div>
               ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 overflow-auto">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 overflow-x-scroll">
                   {products.map((product: Product) => (
-                    <div key={product.id} className="border rounded-lg p-4 flex flex-col items-center">
-                      <img
-                        src={typeof product.imageUrl === 'string' ? product.imageUrl : product.imageUrl?.src || image1.src}
+                    <div key={product.id} className="border rounded-lg p-4 flex flex-col ites-center">
+                      <Image
+                        width={200}
+                        height={200}
+                        src={
+                          typeof product.imageUrl === 'string' ? product.imageUrl : product.imageUrl?.src || image1.src
+                        }
                         alt={product.name}
                         className="w-full h-32 object-cover rounded"
                       />
-                      <h4 className="mt-2 text-sm font-bold">{product.name}</h4>
+                      <h4 className="mt-2 text-sm capitalize font-medium">{product.name}</h4>
                       <p className="text-sm text-gray-600">${product.price}</p>
                       <button
-                        className="mt-2 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-transform transform hover:scale-110"
+                        className="mt-2 text-sm bg-main-blue text-white capitalize px-4 py-1 rounded-md hover:bg-blue-800 transition-transform transform hover:scale-110"
                         onClick={() => alert(`You clicked on ${product.name}`)}
                       >
                         Buy Now
@@ -791,12 +834,11 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
                 </div>
               )}
             </div>
-
           </div>
 
           {/* Chat Section */}
           <div className="col-span-12 lg:col-span-3">
-            <div className="border rounded-lg h-full flex flex-col">
+            <div className="border rounded-lg h-ull flex flex-col">
               <div className="p-4 border-b">
                 <h3 className="font-semibold text-lg">Chat</h3>
               </div>
@@ -818,7 +860,11 @@ export function PlayerWithControls({ src, id, title, playbackId }: { src: Src[];
                     </button>
                   </div>
                   <div className="flex items-center justify-between">
-                    <button onClick={() => {}} type="button" className="flex items-center gap-1 text-gray-500 hover:text-gray-700">
+                    <button
+                      onClick={() => {}}
+                      type="button"
+                      className="flex items-center gap-1 text-gray-500 hover:text-gray-700"
+                    >
                       <Gift size={18} />
                       <span>Gift</span>
                     </button>

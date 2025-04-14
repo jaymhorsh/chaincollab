@@ -1,45 +1,45 @@
-"use client"
+'use client';
 
-import Image from "next/image"
-import { useState } from "react"
-import image from "@/assets/image1.png"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Switch } from "@/components/ui/switch"
-import { Label } from "@/components/ui/label"
+import Image from 'next/image';
+import { useState } from 'react';
+import image from '@/assets/image1.png';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
 
 interface Channel {
-  id: string
-  name: string
-  playbackId?: string
+  id: string;
+  name: string;
+  playbackId?: string;
   creatorId?: {
-    value: string
-  }
+    value: string;
+  };
   // Add any other channel properties here
 }
 
 interface ChannelSelectorProps {
-  filteredStreams: Channel[]
-  streamsLoading: boolean
+  filteredStreams: Channel[];
+  streamsLoading: boolean;
 }
 
 export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSelectorProps) => {
   // Track enabled state for each channel by ID
   const [enabledChannels, setEnabledChannels] = useState<Record<string, boolean>>(() => {
     // Initialize all channels as disabled by default
-    const initialState: Record<string, boolean> = {}
+    const initialState: Record<string, boolean> = {};
     filteredStreams.forEach((stream) => {
-      initialState[stream.id] = false
-    })
-    return initialState
-  })
+      initialState[stream.id] = false;
+    });
+    return initialState;
+  });
 
   // Toggle a specific channel's enabled state
   const toggleChannel = (channelId: string) => {
     setEnabledChannels((prev) => ({
       ...prev,
       [channelId]: !prev[channelId],
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="mb-8">
@@ -57,7 +57,7 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
                 <div className="flex items-center w-full">
                   <div className="bg-gray-200 rounded overflow-hidden mr-3 flex-shrink-0">
                     <Image
-                      src={image || "/placeholder.svg"}
+                      src={image || '/placeholder.svg'}
                       alt={`${stream.name} icon`}
                       width={60}
                       height={40}
@@ -76,7 +76,7 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
                       onClick={(e) => e.stopPropagation()}
                       aria-label={`Toggle ${stream.name}`}
                     />
-                    <span className="text-sm font-medium">{enabledChannels[stream.id] ? "Enabled" : "Disabled"}</span>
+                    <span className="text-sm font-medium">{enabledChannels[stream.id] ? 'Enabled' : 'Disabled'}</span>
                   </div>
                 </div>
               </AccordionTrigger>
@@ -87,9 +87,9 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
                   <div className="flex items-center justify-between pt-2">
                     <span className="text-sm font-medium">Status:</span>
                     <span
-                      className={`text-sm font-medium ${enabledChannels[stream.id] ? "text-green-600" : "text-red-600"}`}
+                      className={`text-sm font-medium ${enabledChannels[stream.id] ? 'text-green-600' : 'text-red-600'}`}
                     >
-                      {enabledChannels[stream.id] ? "Active" : "Inactive"}
+                      {enabledChannels[stream.id] ? 'Active' : 'Inactive'}
                     </span>
                   </div>
                 </div>
@@ -99,6 +99,5 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
         </Accordion>
       )}
     </div>
-  )
-}
-
+  );
+};

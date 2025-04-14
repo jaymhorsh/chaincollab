@@ -37,7 +37,7 @@ const StreamPage = () => {
   useEffect(() => {
     if (id) {
       dispatch(getStreamById(id));
-    } 
+    }
   }, [id, dispatch]);
 
   // Once the stream data is loaded, store it (or at least its ID) in cookies.

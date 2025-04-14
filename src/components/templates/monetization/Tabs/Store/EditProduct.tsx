@@ -1,100 +1,100 @@
-"use client"
+'use client';
 
-import axios from "axios"
-import { useState, useEffect } from "react"
-import type React from "react"
-import { usePrivy } from "@privy-io/react-auth"
-import Image from "next/image"
-import * as Dialog from "@radix-ui/react-dialog"
-import { X, Upload } from "lucide-react"
-import { ColorRing } from "react-loader-spinner"
-import type { Product } from "@/interfaces"
-import { toast } from "sonner"
-import api from "@/utils/api"
+import axios from 'axios';
+import { useState, useEffect } from 'react';
+import type React from 'react';
+import { usePrivy } from '@privy-io/react-auth';
+import Image from 'next/image';
+import * as Dialog from '@radix-ui/react-dialog';
+import { X, Upload } from 'lucide-react';
+import { ColorRing } from 'react-loader-spinner';
+import type { Product } from '@/interfaces';
+import { toast } from 'sonner';
+import api from '@/utils/api';
 
 interface UpdateProductDialogProps {
-  isOpen: boolean
-  onOpenChange: (open: boolean) => void
-  onUpdateProduct: () => void
-  product: Product
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+  onUpdateProduct: () => void;
+  product: Product;
 }
 
 export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, product }: UpdateProductDialogProps) => {
-  const {user} = usePrivy()
-  const [productName, setProductName] = useState("")
-  const [productImage, setProductImage] = useState<File | null>(null)
-  const [productImagePreview, setProductImagePreview] = useState<string | null>(null)
-  const [description, setDescription] = useState("")
-  const [price, setPrice] = useState("")
-  const [quantity, setQuantity] = useState("")
-  const [isDragging, setIsDragging] = useState(false)
-  const [uploadProgress, setUploadProgress] = useState(0)
-  const [isUploading, setIsUploading] = useState(false)
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({})
+  const { user } = usePrivy();
+  const [productName, setProductName] = useState('');
+  const [productImage, setProductImage] = useState<File | null>(null);
+  const [productImagePreview, setProductImagePreview] = useState<string | null>(null);
+  const [description, setDescription] = useState('');
+  const [price, setPrice] = useState('');
+  const [quantity, setQuantity] = useState('');
+  const [isDragging, setIsDragging] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: string }>({});
 
   // Populate form with product data when product changes or dialog opens
   useEffect(() => {
     if (product && isOpen) {
-      setProductName(product.name || "")
-      setProductImagePreview(product.imageUrl || null)
-      setDescription(product.description || "")
-      setPrice(product.price?.toString() || "")
-      setQuantity(product.quantity?.toString() || "")
-      setValidationErrors({})
+      setProductName(product.name || '');
+      setProductImagePreview(product.imageUrl || null);
+      setDescription(product.description || '');
+      setPrice(product.price?.toString() || '');
+      setQuantity(product.quantity?.toString() || '');
+      setValidationErrors({});
     }
-  }, [product, isOpen])
+  }, [product, isOpen]);
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0]
-      uploadImage(file)
+      const file = e.target.files[0];
+      uploadImage(file);
     }
-  }
+  };
 
   const uploadImage = (file: File) => {
-    setProductImage(file)
-    setIsUploading(true)
+    setProductImage(file);
+    setIsUploading(true);
 
     // Simulate upload progress
-    let progress = 0
+    let progress = 0;
     const interval = setInterval(() => {
-      progress += 10
-      setUploadProgress(progress)
+      progress += 10;
+      setUploadProgress(progress);
 
       if (progress >= 100) {
-        clearInterval(interval)
-        setIsUploading(false)
+        clearInterval(interval);
+        setIsUploading(false);
 
         // Create a preview URL
-        const reader = new FileReader()
+        const reader = new FileReader();
         reader.onload = () => {
-          setProductImagePreview(reader.result as string)
-        }
+          setProductImagePreview(reader.result as string);
+        };
 
-        reader.readAsDataURL(file)
+        reader.readAsDataURL(file);
       }
-    }, 200)
-  }
+    }, 200);
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(true)
-  }
+    e.preventDefault();
+    setIsDragging(true);
+  };
 
   const handleDragLeave = () => {
-    setIsDragging(false)
-  }
+    setIsDragging(false);
+  };
 
   const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsDragging(false)
+    e.preventDefault();
+    setIsDragging(false);
 
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0]
-      uploadImage(file)
+      const file = e.dataTransfer.files[0];
+      uploadImage(file);
     }
-  }
+  };
 
   const hasChanges = () => {
     return (
@@ -107,14 +107,14 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
   };
 
   const handleSubmit = async () => {
-      // Check if any changes were made
+    // Check if any changes were made
     if (!hasChanges()) {
-        toast.error("No changes detected. Please update at least one field.");
-        return;
-      }
+      toast.error('No changes detected. Please update at least one field.');
+      return;
+    }
     if (!product?._id) {
-        return
-      }
+      return;
+    }
     // Create updated product object
     const updatedProduct = {
       id: product._id,
@@ -123,39 +123,42 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
       imageUrl: productImagePreview,
       description: description.trim(),
       quantity: Number(quantity) || 0,
-    }
+    };
 
     try {
-      setIsSubmitting(true)
-      console.log ("Updating product to be sent:", updatedProduct)
+      setIsSubmitting(true);
+      console.log('Updating product to be sent:', updatedProduct);
       // Update product via API
-      const response = await axios.put(`https://chaintv.onrender.com/api/update/products/${user?.wallet?.address}`, updatedProduct)
-      toast.success(response.data.message || "Product updated successfully")
+      const response = await axios.put(
+        `https://chaintv.onrender.com/api/update/products/${user?.wallet?.address}`,
+        updatedProduct,
+      );
+      toast.success(response.data.message || 'Product updated successfully');
       // Call the callback to refresh products in parent component
-      onUpdateProduct()
+      onUpdateProduct();
       // Close dialog
-      onOpenChange(false)
+      onOpenChange(false);
     } catch (error: any) {
-      console.error("Failed to update product:", error)
+      console.error('Failed to update product:', error);
 
       // More detailed error logging
       if (error.response) {
-        console.error("Error response:", {
+        console.error('Error response:', {
           status: error.response.status,
           data: error.response.data,
-        })
-        toast.error(`Update failed: ${error.response.data?.message || error.response.statusText || "Server error"}`)
+        });
+        toast.error(`Update failed: ${error.response.data?.message || error.response.statusText || 'Server error'}`);
       } else if (error.request) {
-        console.error("No response received:", error.request)
-        toast.error("No response from server. Please check your connection.")
+        console.error('No response received:', error.request);
+        toast.error('No response from server. Please check your connection.');
       } else {
-        console.error("Error message:", error.message)
-        toast.error(`Error: ${error.message}`)
+        console.error('Error message:', error.message);
+        toast.error(`Error: ${error.message}`);
       }
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
@@ -176,12 +179,12 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
               <label className="block text-sm font-medium mb-1">Product Name</label>
               <input
                 type="text"
-                className={`w-full border rounded-md p-2 ${validationErrors.name ? "border-red-500" : ""}`}
+                className={`w-full border rounded-md p-2 ${validationErrors.name ? 'border-red-500' : ''}`}
                 value={productName}
                 onChange={(e) => {
-                  setProductName(e.target.value)
+                  setProductName(e.target.value);
                   if (validationErrors.name) {
-                    setValidationErrors({ ...validationErrors, name: "" })
+                    setValidationErrors({ ...validationErrors, name: '' });
                   }
                 }}
                 placeholder="Enter product name"
@@ -192,7 +195,7 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
             <div>
               <label className="block text-sm font-medium mb-1">Product Images</label>
               <div
-                className={`border border-dashed rounded-md p-4 text-center ${isDragging ? "bg-main-blue/10 border-blue-300" : ""}`}
+                className={`border border-dashed rounded-md p-4 text-center ${isDragging ? 'bg-main-blue/10 border-blue-300' : ''}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
@@ -210,7 +213,7 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
                 ) : productImagePreview ? (
                   <div className="relative w-32 h-32 mx-auto">
                     <Image
-                      src={productImagePreview || "/placeholder.svg"}
+                      src={productImagePreview || '/placeholder.svg'}
                       alt="Product preview"
                       fill
                       className="object-contain"
@@ -219,8 +222,8 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
                       type="button"
                       className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1"
                       onClick={() => {
-                        setProductImage(null)
-                        setProductImagePreview(null)
+                        setProductImage(null);
+                        setProductImagePreview(null);
                       }}
                     >
                       <X className="h-3 w-3" />
@@ -273,12 +276,12 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
                   <label className="block text-sm mb-1">Price (USD)</label>
                   <input
                     type="number"
-                    className={`w-full border capitalize rounded-md p-2 ${validationErrors.price ? "border-red-500" : ""}`}
+                    className={`w-full border capitalize rounded-md p-2 ${validationErrors.price ? 'border-red-500' : ''}`}
                     value={price}
                     onChange={(e) => {
-                      setPrice(e.target.value)
+                      setPrice(e.target.value);
                       if (validationErrors.price) {
-                        setValidationErrors({ ...validationErrors, price: "" })
+                        setValidationErrors({ ...validationErrors, price: '' });
                       }
                     }}
                     min="0.01"
@@ -295,12 +298,12 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
                   <label className="block text-sm mb-1">Quantity</label>
                   <input
                     type="number"
-                    className={`w-full border capitalize rounded-md p-2 ${validationErrors.quantity ? "border-red-500" : ""}`}
+                    className={`w-full border capitalize rounded-md p-2 ${validationErrors.quantity ? 'border-red-500' : ''}`}
                     value={quantity}
                     onChange={(e) => {
-                      setQuantity(e.target.value)
+                      setQuantity(e.target.value);
                       if (validationErrors.quantity) {
-                        setValidationErrors({ ...validationErrors, quantity: "" })
+                        setValidationErrors({ ...validationErrors, quantity: '' });
                       }
                     }}
                     min="0"
@@ -329,25 +332,23 @@ export const UpdateProductDialog = ({ isOpen, onOpenChange, onUpdateProduct, pro
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
-                
-                    <ColorRing  visible={true}
-  height="20"
-  width="26"
-  ariaLabel="color-ring-loading"
-  wrapperStyle={{margin: "4px"}}
-  wrapperClass="color-ring-wrapper"
-  colors={['#fffff', '#ffffff','#ffffff','#ffffff','#ffffff']} />
- 
+                  <ColorRing
+                    visible={true}
+                    height="20"
+                    width="26"
+                    ariaLabel="color-ring-loading"
+                    wrapperStyle={{ margin: '4px' }}
+                    wrapperClass="color-ring-wrapper"
+                    colors={['#fffff', '#ffffff', '#ffffff', '#ffffff', '#ffffff']}
+                  />
                 ) : (
-                  "Update Product"
-                )
-                }
+                  'Update Product'
+                )}
               </button>
             </div>
           </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  )
-}
-
+  );
+};
