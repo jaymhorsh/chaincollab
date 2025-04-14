@@ -172,8 +172,8 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
   );
 };
 
-const PaymentDialog: React.FC<{ 
-  onClose: () => void; 
+const PaymentDialog: React.FC<{
+  onClose: () => void;
   onPaymentSuccess: () => void;
 }> = ({ onClose, onPaymentSuccess }) => {
   const handlePayment = () => {
@@ -182,22 +182,17 @@ const PaymentDialog: React.FC<{
     setTimeout(() => {
       onPaymentSuccess();
     }, 2000);
-  };  
+  };
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded shadow-lg max-w-sm mx-auto">
         <h2 className="text-lg font-bold mb-4">Payment Required</h2>
-        <p className="mb-4">
-          This video is gated. Please make a payment to watch this video.
-        </p>
+        <p className="mb-4">This video is gated. Please make a payment to watch this video.</p>
         <div className="flex justify-end gap-4">
           <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
             Cancel
           </button>
-          <button
-            onClick={handlePayment}
-            className="px-4 py-2 bg-blue-600 text-white rounded"
-          >
+          <button onClick={handlePayment} className="px-4 py-2 bg-blue-600 text-white rounded">
             Pay Now
           </button>
         </div>
@@ -294,33 +289,31 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
               <span className="absolute bottom-1 right-1 bg-black text-white text-xs px-1 rounded">
                 {formattedDuration}
               </span>
-          
             </>
           )}
 
           {/* Hover overlay with play button */}
           <div className="absolute inset-0 flex justify-center items-center bg-opacity-0 group-hover:bg-opacity-60 transition duration-300">
-          {isGated ? (
-                <div    onClick={handlePlayClick} className="text-main-blue text-4xl opacity-0 group-hover:opacity-100">
-                  <FaLock />
-                </div>
-              ):(
-            <button
-              onClick={handlePlayClick}
-              className="text-white text-4xl opacity-0 group-hover:opacity-100"
-              disabled={isLoadingGatedStatus}
-            >
-              <FaPlay />
-            </button>)}
+            {isGated ? (
+              <div onClick={handlePlayClick} className="text-main-blue text-4xl opacity-0 group-hover:opacity-100">
+                <FaLock />
+              </div>
+            ) : (
+              <button
+                onClick={handlePlayClick}
+                className="text-white text-4xl opacity-0 group-hover:opacity-100"
+                disabled={isLoadingGatedStatus}
+              >
+                <FaPlay />
+              </button>
+            )}
           </div>
         </div>
 
         {/* Video Details */}
         <div className="flex flex-col flex-grow overflow-hidden">
           <p className="text-sm font-medium line-clamp-2">{title}</p>
-          <p className="text-sm text-gray-500">
-            {createdAt ? createdAt.toDateString() : ''}
-          </p>
+          <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
           <p className="text-xs text-gray-500">{videocount?.viewCount} views</p>
         </div>
 

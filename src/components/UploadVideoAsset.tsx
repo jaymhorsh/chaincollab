@@ -12,8 +12,7 @@ import { AppDispatch } from '@/store/store';
 import axios from 'axios';
 import InputField from './ui/InputField';
 
-
-type PaymentOption = "free" | "one-time" | "monthly"
+type PaymentOption = 'free' | 'one-time' | 'monthly';
 export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
   const { user } = usePrivy();
   const [file, setFile] = useState<File | null>(null);
@@ -83,8 +82,8 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
         },
       });
 
-      const { playbackId,streamKey, name } = response.data.asset;
-      console.log('response2', response.data.asset); 
+      const { playbackId, streamKey, name } = response.data.asset;
+      console.log('response2', response.data.asset);
       // Step 2: Send the response data to another endpoint
       // const viewMode = paymentOption; // Use paymentOption as viewMode
       const data = {
@@ -92,7 +91,7 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
         playbackId,
         // viewMode: paymentOption,
         amount,
-        assetName: name
+        assetName: name,
       };
 
       const secondResponse = await axios.post(`https://chaintv.onrender.com/api/streams/addasset`, { data });
@@ -100,16 +99,16 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
         console.log('Data sent successfully:', secondResponse.data);
         toast.success('livestream added');
       } else if (secondResponse.status !== 200) {
-        console.error('Error sending data:', secondResponse.data);     
-       }
-     
+        console.error('Error sending data:', secondResponse.data);
+      }
+
       if (response.status !== 200) {
         throw new Error('Failed to request upload URL');
       }
-      console.log('response2', response.data); 
+      console.log('response2', response.data);
 
       const { tusEndpoint } = response.data;
-      
+
       if (!tusEndpoint) {
         throw new Error('tusEndpoint not provided');
       }
@@ -132,7 +131,7 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
         },
         onSuccess: () => {
           setUploading(false);
-          
+
           toast.success('Video uploaded successfully!');
           onClose();
           dispatch(getAssets());
@@ -154,8 +153,6 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
       setError('Upload failed: ' + err.toString());
       setUploading(false);
     }
-
-    
   };
 
   return (
@@ -206,71 +203,64 @@ export default function UploadVideoAsset({ onClose }: { onClose: () => void }) {
             className="border rounded p-2 focus:outline-none focus:ring-1 focus:ring-main-blue transition duration-200"
           />
         </div>
-           <div className="flex flex-col">
-                  <label className="block text-sm font-medium pb-2 text-gray-900">View Mode</label>
-                  <div className="flex gap-2 mb-2">
-                    <button
-                      type="button"
-                      onClick={() => handlePaymentOptionChange("free")}
-                      className={clsx(
-                        "px-4 py-2 border rounded-md transition duration-200",
-                        paymentOption === "free"
-                          ? "bg-main-blue text-white"
-                          : "bg-white text-gray-700 hover:bg-gray-100",
-                      )}
-                    >
- 
-                      Free
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handlePaymentOptionChange("one-time")}
-                      className={clsx(
-                        "px-4 py-2 border rounded-md transition duration-200",
-                        paymentOption === "one-time"
-                          ? "bg-main-blue text-white"
-                          : "bg-white text-gray-700 hover:bg-gray-100",
-                      )}
-                    >
-                      One-time
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handlePaymentOptionChange("monthly")}
-                      className={clsx(
-                        "px-4 py-2 border rounded-md transition duration-200",
-                        paymentOption === "monthly"
-                          ? "bg-main-blue text-white"
-                          : "bg-white text-gray-700 hover:bg-gray-100",
-                      )}
-                    >
-                      Monthly
-                    </button>
-                  </div>
-                </div>
-        
-                {paymentOption !== "free" && (
-                  <div className="flex flex-col">
-                    <label htmlFor="amount" className="block text-sm font-medium pb-2 text-gray-900">
-                      Amount
-                    </label>
-                    <InputField
-                      type="number"
-                      label="Amount"
-                      name="amount"
-                      value={amount?.toString() || ''}
-                      onChange={handleAmountChange}
-                      placeholder="Enter amount"
-                      min="0.01"
-                      step="0.01"
-                      className={clsx(
-                        "border w-full focus:outline-none placeholder:text-black-tertiary-text focus:ring-1 focus:ring-main-blue transition duration-200",
-                        { "border-red-500": errors.amount },
-                      )}
-                    />
-                    {errors.amount && <p className="text-red-500 text-sm pb-1">{errors.amount}</p>}
-                  </div>
-                )}
+        <div className="flex flex-col">
+          <label className="block text-sm font-medium pb-2 text-gray-900">View Mode</label>
+          <div className="flex gap-2 mb-2">
+            <button
+              type="button"
+              onClick={() => handlePaymentOptionChange('free')}
+              className={clsx(
+                'px-4 py-2 border rounded-md transition duration-200',
+                paymentOption === 'free' ? 'bg-main-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-100',
+              )}
+            >
+              Free
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePaymentOptionChange('one-time')}
+              className={clsx(
+                'px-4 py-2 border rounded-md transition duration-200',
+                paymentOption === 'one-time' ? 'bg-main-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-100',
+              )}
+            >
+              One-time
+            </button>
+            <button
+              type="button"
+              onClick={() => handlePaymentOptionChange('monthly')}
+              className={clsx(
+                'px-4 py-2 border rounded-md transition duration-200',
+                paymentOption === 'monthly' ? 'bg-main-blue text-white' : 'bg-white text-gray-700 hover:bg-gray-100',
+              )}
+            >
+              Monthly
+            </button>
+          </div>
+        </div>
+
+        {paymentOption !== 'free' && (
+          <div className="flex flex-col">
+            <label htmlFor="amount" className="block text-sm font-medium pb-2 text-gray-900">
+              Amount
+            </label>
+            <InputField
+              type="number"
+              label="Amount"
+              name="amount"
+              value={amount?.toString() || ''}
+              onChange={handleAmountChange}
+              placeholder="Enter amount"
+              min="0.01"
+              step="0.01"
+              className={clsx(
+                'border w-full focus:outline-none placeholder:text-black-tertiary-text focus:ring-1 focus:ring-main-blue transition duration-200',
+                { 'border-red-500': errors.amount },
+              )}
+            />
+            {errors.amount && <p className="text-red-500 text-sm pb-1">{errors.amount}</p>}
+          </div>
+        )}
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
@@ -414,7 +404,7 @@ export function UploadAdsAsset({ onClose }: { onClose: () => void }) {
           const percentage = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
           setProgress(parseFloat(percentage));
         },
-        
+
         onSuccess: () => {
           setUploading(false);
           toast.success('Ad video uploaded successfully!');

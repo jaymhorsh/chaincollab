@@ -41,13 +41,13 @@ interface Streams {
 }
 
 export function BroadcastWithControls({ streamName, streamKey, playbackId }: Streams) {
-  const { user } = usePrivy();  
+  const { user } = usePrivy();
   const creatorId = user?.wallet?.address || '';
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
-  host && playbackId
-    ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}?streamName=${encodeURIComponent(streamName)}&id=${encodeURIComponent(creatorId)}`
-    : null;
+    host && playbackId
+      ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}?streamName=${encodeURIComponent(streamName)}&id=${encodeURIComponent(creatorId)}`
+      : null;
   const router = useRouter();
 
   // Load customization settings from localStorage or use defaults
@@ -268,7 +268,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                       >
                         <span className="text-black-secondary-text font-medium select-none">Copy Link</span>
                       </button>
-                      {playbackUrl && creatorId &&  (
+                      {playbackUrl && creatorId && (
                         <Link href={playbackUrl} target="_blank" rel="noopener noreferrer">
                           <button className="flex rounded-md bg-background-gray md:h-[33px] items-center px-3">
                             <span className="text-black-secondary-text font-medium select-none">Visit Link</span>

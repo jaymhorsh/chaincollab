@@ -1,69 +1,69 @@
-"use client"
-import { useEffect, useMemo, useState, useCallback } from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { usePrivy } from "@privy-io/react-auth"
-import axios from "axios"
-import { ColorRing } from "react-loader-spinner"
-import { toast } from "sonner"
-import { getAllStreams } from "@/features/streamAPI"
-import type { RootState, AppDispatch } from "@/store/store"
-import type { Product } from "@/interfaces"
-import { ChannelSelector } from "./ChannelSelector"
-import { ProductsList } from "./ProductList"
-import { AddProductDialog } from "./AddProductDialog"
+'use client';
+import { useEffect, useMemo, useState, useCallback } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { usePrivy } from '@privy-io/react-auth';
+import axios from 'axios';
+import { ColorRing } from 'react-loader-spinner';
+import { toast } from 'sonner';
+import { getAllStreams } from '@/features/streamAPI';
+import type { RootState, AppDispatch } from '@/store/store';
+import type { Product } from '@/interfaces';
+import { ChannelSelector } from './ChannelSelector';
+import { ProductsList } from './ProductList';
+import { AddProductDialog } from './AddProductDialog';
 
 const Store = () => {
-  const { user } = usePrivy()
-  const dispatch = useDispatch<AppDispatch>()
-  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams)
-  const [isAddProductOpen, setIsAddProductOpen] = useState(false)
+  const { user } = usePrivy();
+  const dispatch = useDispatch<AppDispatch>();
+  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
+  const [isAddProductOpen, setIsAddProductOpen] = useState(false);
 
   // Product state management
-  const [products, setProducts] = useState<Product[]>([])
-  const [productsLoading, setProductsLoading] = useState(true)
-  const [productsError, setProductsError] = useState<string | null>(null)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(true);
+  const [productsError, setProductsError] = useState<string | null>(null);
 
   // Fetch streams when component mounts
   useEffect(() => {
-    dispatch(getAllStreams())
-  }, [dispatch])
+    dispatch(getAllStreams());
+  }, [dispatch]);
 
   // Filter streams that have playbackId
   const filteredStreams = useMemo(() => {
-    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address)
-  }, [streams, user?.wallet?.address])
+    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
+  }, [streams, user?.wallet?.address]);
 
   // Fetch products when wallet address is available
   const fetchProducts = useCallback(async () => {
-    if (!user?.wallet?.address) return
+    if (!user?.wallet?.address) return;
 
-    setProductsLoading(true)
-    setProductsError(null)
+    setProductsLoading(true);
+    setProductsError(null);
 
     try {
-      const response = await axios.get(`https://chaintv.onrender.com/api/${user.wallet.address}/products`)
-      setProducts(response.data.product || [])
+      const response = await axios.get(`https://chaintv.onrender.com/api/${user.wallet.address}/products`);
+      setProducts(response.data.product || []);
     } catch (err) {
-      console.error("Error fetching products:", err)
-      setProductsError("Failed to load products. Please try again.")
-      toast.error("Failed to load products. Please try again.")
+      console.error('Error fetching products:', err);
+      setProductsError('Failed to load products. Please try again.');
+      toast.error('Failed to load products. Please try again.');
     } finally {
-      setProductsLoading(false)
+      setProductsLoading(false);
     }
-  }, [user?.wallet?.address])
+  }, [user?.wallet?.address]);
 
   // Initial product fetch
   useEffect(() => {
-    fetchProducts()
-  }, [fetchProducts])
+    fetchProducts();
+  }, [fetchProducts]);
 
   const handleAddProduct = () => {
-    setIsAddProductOpen(true)
-  }
+    setIsAddProductOpen(true);
+  };
 
   const handleProductAdded = useCallback(() => {
-    fetchProducts()
-  }, [fetchProducts])
+    fetchProducts();
+  }, [fetchProducts]);
 
   return (
     <div>
@@ -95,7 +95,7 @@ const Store = () => {
                   ariaLabel="color-ring-loading"
                   wrapperStyle={{}}
                   wrapperClass="color-ring-wrapper"
-                  colors={["#000000", "#000000", "#000000", "#000000", "#000000"]}
+                  colors={['#000000', '#000000', '#000000', '#000000', '#000000']}
                 />
               </div>
             ) : productsError ? (
@@ -108,8 +108,8 @@ const Store = () => {
               <ProductsList
                 products={products}
                 onProductUpdate={() => {
-                  setProductsLoading(true)
-                  fetchProducts()
+                  setProductsLoading(true);
+                  fetchProducts();
                 }}
               />
             )}
@@ -124,8 +124,7 @@ const Store = () => {
         onAddProduct={handleProductAdded}
       />
     </div>
-  )
-}
+  );
+};
 
-export default Store
-
+export default Store;

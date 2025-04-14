@@ -1,11 +1,11 @@
-"use client"
+'use client';
 
-import ProductCard from "./ProductCard"
-import type { Product } from "@/interfaces"
+import ProductCard from './ProductCard';
+import type { Product } from '@/interfaces';
 
 interface ProductsListProps {
-  products: Product[]
-  onProductUpdate: (productId: string) => void
+  products: Product[];
+  onProductUpdate: (productId: string) => void;
 }
 
 export const ProductsList = ({ products, onProductUpdate }: ProductsListProps) => {
@@ -15,6 +15,5 @@ export const ProductsList = ({ products, onProductUpdate }: ProductsListProps) =
         <ProductCard key={product._id} product={product} onProductUpdate={() => onProductUpdate(product?._id || '')} />
       ))}
     </div>
-  )
-}
-
+  );
+};

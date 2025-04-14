@@ -1,22 +1,22 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Image from "next/image"
-import { PencilIcon, TrashIcon } from "lucide-react"
-import defaultImage from "@/assets/image1.png"
-import { UpdateProductDialog } from "./EditProduct"
-import type { Product } from "@/interfaces"
-import { DeleteProductDialog } from "./DeleteProductDialog"
+import { useState } from 'react';
+import Image from 'next/image';
+import { PencilIcon, TrashIcon } from 'lucide-react';
+import defaultImage from '@/assets/image1.png';
+import { UpdateProductDialog } from './EditProduct';
+import type { Product } from '@/interfaces';
+import { DeleteProductDialog } from './DeleteProductDialog';
 
 interface ProductCardProps {
-  product: Product
-  onProductUpdate: () => void
+  product: Product;
+  onProductUpdate: () => void;
 }
 
 export default function ProductCard({ product, onProductUpdate }: ProductCardProps) {
-  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false)
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isUpdateDialogOpen, setIsUpdateDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>
@@ -66,29 +66,30 @@ export default function ProductCard({ product, onProductUpdate }: ProductCardPro
           </div>
         </div>
       </div>
-{isUpdateDialogOpen &&
-      <UpdateProductDialog
-        isOpen={isUpdateDialogOpen}
-        onOpenChange={setIsUpdateDialogOpen}
-        onUpdateProduct={() => {
-          setIsLoading(true)
-          onProductUpdate()
-          setTimeout(() => setIsLoading(false), 500)
-        }}
-        product={product}
-      />}
-{isDeleteDialogOpen &&
-      <DeleteProductDialog
-        isOpen={isDeleteDialogOpen}
-        onOpenChange={setIsDeleteDialogOpen}
-        onDeleteProduct={() => {
-          setIsLoading(true)
-          onProductUpdate()
-          setTimeout(() => setIsLoading(false), 500)
-        }}
-        productId={product._id || ""}
-      />}
+      {isUpdateDialogOpen && (
+        <UpdateProductDialog
+          isOpen={isUpdateDialogOpen}
+          onOpenChange={setIsUpdateDialogOpen}
+          onUpdateProduct={() => {
+            setIsLoading(true);
+            onProductUpdate();
+            setTimeout(() => setIsLoading(false), 500);
+          }}
+          product={product}
+        />
+      )}
+      {isDeleteDialogOpen && (
+        <DeleteProductDialog
+          isOpen={isDeleteDialogOpen}
+          onOpenChange={setIsDeleteDialogOpen}
+          onDeleteProduct={() => {
+            setIsLoading(true);
+            onProductUpdate();
+            setTimeout(() => setIsLoading(false), 500);
+          }}
+          productId={product._id || ''}
+        />
+      )}
     </>
-  )
+  );
 }
-
