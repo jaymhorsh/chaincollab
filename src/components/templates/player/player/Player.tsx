@@ -810,7 +810,7 @@ export function PlayerWithControls({
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 overflow-x-scroll">
                   {products.map((product: Product) => (
-                    <div key={product.id} className="border rounded-lg p-4 flex flex-col ites-center">
+                    <div key={product.name} className="border rounded-lg p-4 flex flex-col ites-center">
                       <Image
                         width={200}
                         height={200}

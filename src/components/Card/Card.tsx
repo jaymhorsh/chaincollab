@@ -10,7 +10,6 @@ import { useFetchPlaybackId, useFetchStreamPlaybackId } from '@/app/hook/usePlay
 import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
 import { Bars } from 'react-loader-spinner';
 import { useViewMetrics } from '@/app/hook/useViewerMetrics';
-import axios from 'axios';
 import { FaLock } from 'react-icons/fa6';
 
 export const AnalyticCard = ({ title, views, change, value, playtimeMins, loading }: AnalyticCardProps) => {
@@ -260,14 +259,14 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
       setIsDialogOpen(true); // Open playback dialog if not gated
     }
   };
-
-  const formattedDuration = `${Math.floor(assetData.videoSpec.duration / 3600)
-    .toString()
-    .padStart(2, '0')}:${Math.floor((assetData.videoSpec.duration % 3600) / 60)
-    .toString()
-    .padStart(2, '0')}:${Math.floor(assetData.videoSpec.duration % 60)
-    .toString()
-    .padStart(2, '0')}`;
+// console.log('assetData', assetData.videoSpec.duration);
+  // const formattedDuration = `${Math.floor(assetData.videoSpec.duration / 3600)
+  //   .toString()
+  //   .padStart(2, '0')}:${Math.floor((assetData.videoSpec.duration % 3600) / 60)
+  //   .toString()
+  //   .padStart(2, '0')}:${Math.floor(assetData.videoSpec.duration % 60)
+  //   .toString()
+  //   .padStart(2, '0')}`;
 
   return (
     <>
@@ -286,9 +285,17 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
                 fill
                 className="rounded object-cover"
               />
-              <span className="absolute bottom-1 right-1 bg-black text-white text-xs px-1 rounded">
-                {formattedDuration}
-              </span>
+<span className="absolute bottom-1 right-1 bg-black text-white text-xs px-1 rounded">
+  {assetData.videoSpec && assetData.videoSpec.duration
+    ? `${Math.floor(assetData.videoSpec.duration / 3600)
+        .toString()
+        .padStart(2, '0')}:${Math.floor((assetData.videoSpec.duration % 3600) / 60)
+        .toString()
+        .padStart(2, '0')}:${Math.floor(assetData.videoSpec.duration % 60)
+        .toString()
+        .padStart(2, '0')}`
+    : '00:00:00'}
+</span>
             </>
           )}
 
@@ -311,7 +318,7 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
         </div>
 
         {/* Video Details */}
-        <div className="flex flex-col flex-grow overflow-hidden">
+        <div className="flex flex-col flex-grow overflow-hiden">
           <p className="text-sm font-medium line-clamp-2">{title}</p>
           <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
           <p className="text-xs text-gray-500">{videocount?.viewCount} views</p>
