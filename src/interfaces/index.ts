@@ -31,7 +31,9 @@ export interface VideoCardProps {
   createdAt?: Date;
   format?: string;
   assetId?: string;
-  playbackId?: string;
+  playbackId: string;
+  duration?: number;
+  creatorId?: string; 
 }
 export interface Stream {
   id: string;
@@ -68,6 +70,7 @@ export interface Asset {
   downloadUrl: string;
   playbackUrl: string;
   assetId: string;
+  duration: number; 
 }
 export interface Product {
   _id?: string;
