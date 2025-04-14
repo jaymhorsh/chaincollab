@@ -593,7 +593,6 @@ export function PlayerWithControls({
                   <StreamVideoCard
                     key={video.id}
                     title={video.name}
-                    duration={video.duration}
                     playbackId={playbackId}
                     assetData={video}
                     imageUrl={image1}
