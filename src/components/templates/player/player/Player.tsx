@@ -595,6 +595,7 @@ export function PlayerWithControls({
                     title={video.name}
                     playbackId={playbackId}
                     assetData={video}
+                    createdAt={new Date(video.createdAt)}
                     imageUrl={image1}
                     creatorId={id}
                   />
@@ -602,7 +603,6 @@ export function PlayerWithControls({
               </ul>
             </div>
           </div>
-
           {/* Player Section */}
           <div className="col-span-12 lg:col-span-6 flex flex-col">
             <Player.Root autoPlay clipLength={30} src={src}>

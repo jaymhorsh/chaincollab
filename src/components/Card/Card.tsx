@@ -259,14 +259,7 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
       setIsDialogOpen(true); // Open playback dialog if not gated
     }
   };
-// console.log('assetData', assetData.videoSpec.duration);
-  // const formattedDuration = `${Math.floor(assetData.videoSpec.duration / 3600)
-  //   .toString()
-  //   .padStart(2, '0')}:${Math.floor((assetData.videoSpec.duration % 3600) / 60)
-  //   .toString()
-  //   .padStart(2, '0')}:${Math.floor(assetData.videoSpec.duration % 60)
-  //   .toString()
-  //   .padStart(2, '0')}`;
+
 
   return (
     <>
@@ -316,21 +309,23 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
             )}
           </div>
         </div>
-
         {/* Video Details */}
-        <div className="flex flex-col flex-grow overflow-hiden">
-          <p className="text-sm font-medium line-clamp-2">{title}</p>
-          <p className="text-sm text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
-          <p className="text-xs text-gray-500">{videocount?.viewCount} views</p>
+        <div className="flex flex-col justify-between flex-grow overflow-hiden">
+          <p className="text-sm text-black capitalize line-clamp-2">{title}</p>
+          <div className=''>
+            <p className="text-sm text-gray-500">{videocount?.viewCount} views</p>
+          <p className="text-xs text-gray-500">{createdAt ? createdAt.toDateString() : ''}</p>
+          </div> 
         </div>
 
         {/* Hidden modal trigger for the DemoPlay dialog */}
+        {isDialogOpen && (
         <DemoPlay
           open={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
           playbackId={assetData.playbackId}
           title={assetData.name}
-        />
+        />)}
       </div>
 
       {/* Payment Dialog rendered conditionally */}
