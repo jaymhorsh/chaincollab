@@ -30,12 +30,10 @@ const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { streams, loading: streamsLoading, error: streamsError } = useSelector((state: RootState) => state.streams);
   const { assets, loading: assetsLoading, error: assetsError } = useSelector((state: RootState) => state.assets);
-  // const [currentPage, setCurrentPage] = useState(1);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isDialogOpen2, setIsDialogOpen2] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  // const itemsPerPage = 5;
 
   useEffect(() => {
     if (ready && authenticated) {
@@ -67,20 +65,12 @@ const Dashboard = () => {
   const filteredAssets = useMemo(() => {
     return assets.filter((asset: Asset) => !!asset.playbackId && asset.creatorId?.value === user?.wallet?.address);
   }, [assets, user?.wallet?.address]);
-  
-  // const totalPages = Math.ceil(filteredStreams.length / itemsPerPage);
-  // const paginatedStreams = filteredStreams.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const initiateLiveVideo = (id: string) => {
     if (id) {
       navigate.push(`/dashboard/stream?id=${id}`);
     }
   };
-
-  // const handlePageChange = (pageNumber: number) => {
-  //   setCurrentPage(pageNumber);
-  // };
-
   const toggleSidebar = () => {
     setSidebarCollapsed(!sidebarCollapsed);
   };
@@ -245,30 +235,8 @@ const Dashboard = () => {
 
 export default Dashboard;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-{/* <SectionCard title="Your Channels">
+{
+  /* <SectionCard title="Your Channels">
 <Dialog.Root open={isDialogOpen} onOpenChange={setIsDialogOpen}>
   <Dialog.Trigger asChild>
     <div className="flex w-full flex-col" onClick={() => setIsDialogOpen(true)}>
@@ -331,7 +299,8 @@ export default Dashboard;
     )}
   </>
 )}
-{/* Pagination */}
+{/* Pagination */
+}
 // {totalPages > 1 && (
 //   <div className="flex justify-end items-end col-span-1 lg:col-span-3 mt-6 space-x-4">
 //     {/* Previous Button */}

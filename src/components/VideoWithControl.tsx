@@ -12,10 +12,9 @@ import {
 } from '@livepeer/react/assets';
 import type { Src } from '@livepeer/react';
 
-const DemoClient = ({ src }: { src: Src[] }) => {
+const VideoWithControl = ({ src }: { src: Src[] }) => {
   return (
     <div>
-      {' '}
       <Player.Root autoPlay src={src}>
         <Player.Container className="relative h-full w-full overflow-hidden rounded-md bg-gray-950 outline outline-1 outline-white/50 data-[playing=true]:outline-white/80 data-[playing=true]:outline-2 data-[fullscreen=true]:outline-none data-[fullscreen=true]:rounded-none transition-all">
           <Player.Video title="ads" className="h-full w-full object-fit capitalize" />
@@ -96,8 +95,13 @@ const DemoClient = ({ src }: { src: Src[] }) => {
           </Player.Controls>
         </Player.Container>
       </Player.Root>
+      <div className="flex flex-col mt-4">
+        <p className="text-sm ">Title</p>
+        <p className="text-sm ">Description</p>
+        <p className="text-sm ">Creator</p>
+      </div>
     </div>
   );
 };
 
-export default DemoClient;
+export default VideoWithControl;
