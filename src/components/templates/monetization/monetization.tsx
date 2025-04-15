@@ -1,7 +1,7 @@
 'use client';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/Tabs';
 import Money from './Tabs/Monetize';
-import Subscription from './Tabs/Subscription';
+// import Subscription from './Tabs/Subscription';
 import Donations from './Tabs/Donations';
 import Store from './Tabs/Store/Store';
 import Header from '@/components/Header';
@@ -43,12 +43,12 @@ const Monetization: React.FC = () => {
               >
                 Overview
               </TabsTrigger>
-              <TabsTrigger
+              {/* <TabsTrigger
                 value="subcription"
                 className=" text-black font-semibold md:text-lg   data-[state=active]:border-b-[3px]  data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue "
               >
                 Subcriptions
-              </TabsTrigger>
+              </TabsTrigger> */}
               <TabsTrigger
                 value="donations"
                 className=" text-black font-semibold md:text-lg data-[state=active]:border-b-[3px]  data-[state=active]:bg-transparent data-[state=active]:shadow-none data-[state=active]:border-b-main-blue data-[state=active]:text-main-blue"
@@ -72,9 +72,9 @@ const Monetization: React.FC = () => {
             <TabsContent value="overview" className="md:w-[90%] max-sm:w-full">
               <Money />
             </TabsContent>
-            <TabsContent value="subcription" className="md:w-[55%] max-sm:w-full">
+            {/* <TabsContent value="subcription" className="md:w-[55%] max-sm:w-full">
               <Subscription />
-            </TabsContent>
+            </TabsContent> */}
             <TabsContent value="donations" className="md:w-[55%] max-sm:w-full">
               <Donations />
             </TabsContent>
