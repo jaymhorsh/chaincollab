@@ -5,17 +5,17 @@ import { usePrivy } from '@privy-io/react-auth';
 import axios from 'axios';
 import { ColorRing } from 'react-loader-spinner';
 import { toast } from 'sonner';
-import { getAllStreams } from '@/features/streamAPI';
 import type { RootState, AppDispatch } from '@/store/store';
-import type { Product } from '@/interfaces';
+import type { Asset, Product } from '@/interfaces';
 import { ChannelSelector } from './ChannelSelector';
 import { ProductsList } from './ProductList';
 import { AddProductDialog } from './AddProductDialog';
+import { getAssets } from '@/features/assetsAPI';
 
 const Store = () => {
   const { user } = usePrivy();
   const dispatch = useDispatch<AppDispatch>();
-  const { streams, loading: streamsLoading } = useSelector((state: RootState) => state.streams);
+  const { assets, loading: assetsLoading, error: assetsError } = useSelector((state: RootState) => state.assets);
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
 
   // Product state management
@@ -25,13 +25,13 @@ const Store = () => {
 
   // Fetch streams when component mounts
   useEffect(() => {
-    dispatch(getAllStreams());
+    dispatch(getAssets());
   }, [dispatch]);
 
   // Filter streams that have playbackId
   const filteredStreams = useMemo(() => {
-    return streams.filter((stream: any) => !!stream.playbackId && stream.creatorId?.value === user?.wallet?.address);
-  }, [streams, user?.wallet?.address]);
+    return assets.filter((asset: Asset) => !!asset.playbackId && asset.creatorId?.value === user?.wallet?.address);
+  }, [assets, user?.wallet?.address]);
 
   // Fetch products when wallet address is available
   const fetchProducts = useCallback(async () => {
@@ -69,7 +69,7 @@ const Store = () => {
     <div>
       <div className="mb-4">
         {/* Channel Selection */}
-        <ChannelSelector filteredStreams={filteredStreams} streamsLoading={streamsLoading} />
+        <ChannelSelector filteredStreams={filteredStreams} streamsLoading={assetsLoading} />
 
         {/* Products Management */}
         <div className="my-8">
