@@ -6,7 +6,7 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
 import image from '@/assets/image1.png';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { Accordion, AccordionItem } from '@/components/ui/accordion';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -26,25 +26,19 @@ interface ChannelSelectorProps {
 }
 
 export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSelectorProps) => {
-  // Global switch state: true means channels are enabled (active), false means disabled (idle)
   const [globalEnabled, setGlobalEnabled] = useState<boolean>(true);
   const [isToggling, setIsToggling] = useState<boolean>(false);
-
-  // When the global switch is toggled, send a request to update all streams.
   const handleGlobalToggle = async () => {
-    // Calculate the new global state
     const newState = !globalEnabled;
     setIsToggling(true);
     try {
-      // In this example, if newState === true we want streams enabled,
-      // so we pass disable: false; if newState === false we pass disable: true.
       await axios.post('https://chaintv.onrender.com/api/vidoes/disable', {
         disable: !newState,
       });
       setGlobalEnabled(newState);
       toast.success(newState ? 'Enabled all streams' : 'Disabled all streams');
     } catch (error) {
-      toast.error('Failed to update stream status');
+      toast.error('Failed to update store status');
     } finally {
       setIsToggling(false);
     }
@@ -52,13 +46,8 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
 
   return (
     <div className="mb-8">
-      <h2 className="text-lg font-medium mb-4">Enable and Disable store</h2>
-
-      {/* Global toggle switch for all channels */}
-      <div className="flex items-center mb-4">
-        <Label htmlFor="global-channel-toggle" className="mr-2">
-          {globalEnabled ? 'Streams Enabled' : 'Streams Disabled'}
-        </Label>
+      <div className="flex items-center justify-between mb-4">
+        <Label htmlFor="global-asset-toggle" className="text-lg font-medium mb-4">Enable and Disable store</Label>
         <Switch
           id="global-channel-toggle"
           checked={globalEnabled}
