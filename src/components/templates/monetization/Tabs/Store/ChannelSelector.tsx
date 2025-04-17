@@ -1,4 +1,3 @@
-
 'use client';
 
 import Image from 'next/image';
@@ -47,7 +46,9 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
   return (
     <div className="mb-8">
       <div className="flex items-center justify-between mb-4">
-        <Label htmlFor="global-asset-toggle" className="text-lg font-medium mb-4">Enable and Disable store</Label>
+        <Label htmlFor="global-asset-toggle" className="text-lg font-medium mb-4">
+          Enable and Disable store
+        </Label>
         <Switch
           id="global-channel-toggle"
           checked={globalEnabled}
@@ -61,7 +62,7 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
       ) : filteredStreams.length === 0 ? (
         <div className="p-4 text-center text-gray-500">No available asset</div>
       ) : (
-        <Accordion type="single"  className="w-full border rounded-lg">
+        <Accordion type="single" className="w-full border rounded-lg">
           {filteredStreams.map((stream) => (
             <AccordionItem key={stream.id} value={stream.id}>
               <div className="px-4 py-2 hover:no-underline">
@@ -79,16 +80,13 @@ export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSele
                   {/* Global status indicator overlaid on the right side */}
                   <div className="ml-auto">
                     <div className="absolute top-2 right-2 px-2 py-1 rounded flex items-center gap-1">
-                    <span
-                      className={`text-sm font-medium ${globalEnabled ? 'text-green-600' : 'text-red-600'}`}
-                    >
-                      {globalEnabled ? 'Active' : 'Inactive'}
-                    </span>
+                      <span className={`text-sm font-medium ${globalEnabled ? 'text-green-600' : 'text-red-600'}`}>
+                        {globalEnabled ? 'Active' : 'Inactive'}
+                      </span>
                     </div>
                   </div>
                 </div>
               </div>
-            
             </AccordionItem>
           ))}
         </Accordion>

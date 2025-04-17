@@ -30,15 +30,15 @@ export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId }) =>
         <div className="absolute flex flex-col bg-black-secondary-text inset-0 justify-center items-center">
           <span className="text-sm text-white">{error || 'Video is not available.'}</span>
           <span className="text-sm text-white">
-           <ColorRing
-                              visible={true}
-                              height="100"
-                              width="50"
-                              ariaLabel="color-ring-loading"
-                              wrapperStyle={{}}
-                              wrapperClass="color-ring-wrapper"
-                              colors={['#3351FF', '#3351FF', '#3351FF', '#3351FF', '#3351FF']}
-                            />
+            <ColorRing
+              visible={true}
+              height="100"
+              width="50"
+              ariaLabel="color-ring-loading"
+              wrapperStyle={{}}
+              wrapperClass="color-ring-wrapper"
+              colors={['#3351FF', '#3351FF', '#3351FF', '#3351FF', '#3351FF']}
+            />
           </span>
         </div>
       </PlayerLoading>
