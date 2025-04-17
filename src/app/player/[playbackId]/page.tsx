@@ -130,7 +130,7 @@ import { ColorRing } from 'react-loader-spinner';
 import { getAllStreams } from '@/features/streamAPI';
 
 const PlayerPage = () => {
-    const { user } = usePrivy();
+  const { user } = usePrivy();
   const params = useParams();
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
@@ -139,7 +139,6 @@ const PlayerPage = () => {
 
   const { assets, loading, error } = useSelector((state: RootState) => state.assets);
   const { streams, error: streamError } = useSelector((state: RootState) => state.streams);
-  
 
   // State for products
   const [products, setProducts] = useState<any[]>([]);
@@ -157,18 +156,17 @@ const PlayerPage = () => {
       toast.error('Failed to fetch assets: ' + error);
     }
   }, [error]);
-const creatorId = user?.wallet?.address;
+  const creatorId = user?.wallet?.address;
   // Find the main asset (video) that matches the playbackId from the URL
   const mainAsset = useMemo(() => assets.find((asset) => asset.playbackId === playbackId), [assets, playbackId]);
-    // Find the main stream (if any) that matches the playbackId from the URL
-    // const mainStream = useMemo(() => streams.find((stream) => stream.playbackId === playbackId), [streams, playbackId]);
+  // Find the main stream (if any) that matches the playbackId from the URL
+  // const mainStream = useMemo(() => streams.find((stream) => stream.playbackId === playbackId), [streams, playbackId]);
 
   // Filter the rest of the creator’s videos for the left list
   const filteredAssets = useMemo(() => {
     if (!mainAsset) return [];
     return assets.filter((asset: Asset) => !!asset.playbackId && asset.creatorId?.value === mainAsset.creatorId?.value);
   }, [assets, mainAsset]);
-
 
   const filteredStreams = useMemo(() => {
     return streams.filter((stream: Stream) => !!stream.playbackId && stream.creatorId?.value === creatorId);
@@ -198,20 +196,21 @@ const creatorId = user?.wallet?.address;
     }
   }, [mainAsset]);
 
-
-
-//    ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}?streamName=${encodeURIComponent(streamName)}&id=${encodeURIComponent(creatorId)}`
+  //    ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}?streamName=${encodeURIComponent(streamName)}&id=${encodeURIComponent(creatorId)}`
   if (!mainAsset) {
     return (
       <div className="flex items-center justify-center h-screen">
         <p className="text-lg font-semibold">
-            <ColorRing    visible={true}
-                              height="100"
-                              width="50"
-                              ariaLabel="color-ring-loading"
-                              wrapperStyle={{}}
-                              wrapperClass="color-ring-wrapper"
-                              colors={['#3351FF', '#3351FF', '#3351FF', '#3351FF', '#3351FF']}/></p>
+          <ColorRing
+            visible={true}
+            height="100"
+            width="50"
+            ariaLabel="color-ring-loading"
+            wrapperStyle={{}}
+            wrapperClass="color-ring-wrapper"
+            colors={['#3351FF', '#3351FF', '#3351FF', '#3351FF', '#3351FF']}
+          />
+        </p>
       </div>
     );
   }
@@ -223,22 +222,23 @@ const creatorId = user?.wallet?.address;
           {/* Left Pane: Video List */}
           <aside className="lg:col-span-3">
             <div className="border rounded-lg p-4">
-              <h3 className="text-lg font-semibold mb-4">Creator Videos</h3>
               <ul className="space-y-3 max-h-[80vh] overflow-y-auto">
+              <h3 className="text-lg font-semibold mb-4">Available Stream</h3>
                 {filteredStreams.map((stream) => (
-                    <li key={stream.id}>
-                        <button onClick={() => handleSelectVideo(stream.playbackId!)} className="w-full text-left">
-                     <VideoStreamCard
+                  <li key={stream.id}>
+                    <button onClick={() => handleSelectVideo(stream.playbackId!)} className="w-full text-left">
+                      <VideoStreamCard
                         streamName={stream.name}
                         playbackId={stream.playbackId!}
                         status={stream.isActive}
                         creatorId={stream.creatorId?.value || ''}
                         lastSeen={new Date(stream.lastSeen)}
                         imageUrl={image1}
-                        />
-                        </button>
-                    </li>
-                    ))}
+                      />
+                    </button>
+                  </li>
+                ))}
+                <h3 className="text-lg font-semibold mb-4">Creator Videos</h3>
                 {filteredAssets.map((video) => (
                   <li key={video.id}>
                     <button onClick={() => handleSelectVideo(video.playbackId!)} className="w-full text-left">
@@ -260,7 +260,7 @@ const creatorId = user?.wallet?.address;
           {/* Main Player Area */}
           <main className="col-span-12 lg:col-span-6 flex flex-col space-y-4">
             {/* Video Player Component */}
-            <VideoPlayer playbackId={playbackId}  />
+            <VideoPlayer playbackId={playbackId} />
 
             {/* Donation Section */}
             <div className="p-4 border rounded-md">
