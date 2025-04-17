@@ -11,7 +11,6 @@ import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
 import { Bars } from 'react-loader-spinner';
 import { useViewMetrics } from '@/app/hook/useViewerMetrics';
 import { FaLock } from 'react-icons/fa6';
-import Link from 'next/link';
 interface VideoStreamCardProps {
   playbackId: string;
   streamName: string;
@@ -354,11 +353,11 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
       setShowPaymentDialog(true); // Show payment dialog if gated
     } else {
       if (assetData.playbackId) {
-        window.open(`/player/${assetData.playbackId}`, '_blank');
+        window.open(`/player/${assetData.playbackId}?id=${encodeURIComponent(assetData.id)}`, '_blank');
       }
     }
   };
-
+  console.log(assetData.id)
   return (
     <>
       <div className="flex gap-3 p-2 cursor-pointer group">
@@ -423,7 +422,8 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
           onClose={() => setShowPaymentDialog(false)}
           onPaymentSuccess={() => {
             setShowPaymentDialog(false);
-            window.open(`/player/${assetData.playbackId}`, '_blank');
+            // window.open(`/player/${assetData.playbackId}`, '_blank');
+            window.open(`/player/${assetData.playbackId}?id=${encodeURIComponent(assetData.id)}`, '_blank');
           }}
         />
       )}

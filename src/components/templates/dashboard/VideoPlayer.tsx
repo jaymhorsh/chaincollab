@@ -9,9 +9,11 @@ import { ColorRing } from 'react-loader-spinner';
 
 interface VideoPlayerDialogProps {
   playbackId: string;
+  data: any;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId }) => {
+export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId, data }) => {
+  console.log('pybackId', data);
   const { src, loading, error } = usePlaybackInfo(playbackId);
   // console.log(src, loading, error);
   if (loading) {
