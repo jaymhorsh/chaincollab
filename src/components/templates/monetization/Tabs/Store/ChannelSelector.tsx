@@ -1,11 +1,7 @@
 'use client';
-
-import Image from 'next/image';
 import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'sonner';
-import image from '@/assets/image1.png';
-import { Accordion, AccordionItem } from '@/components/ui/accordion';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
 
@@ -13,10 +9,7 @@ interface Channel {
   id: string;
   name: string;
   playbackId?: string;
-  creatorId?: {
-    value: string;
-  };
-  // Other channel properties if needed
+  creatorId?: { value: string };
 }
 
 interface ChannelSelectorProps {
@@ -24,73 +17,82 @@ interface ChannelSelectorProps {
   streamsLoading: boolean;
 }
 
-export const ChannelSelector = ({ filteredStreams, streamsLoading }: ChannelSelectorProps) => {
-  const [globalEnabled, setGlobalEnabled] = useState<boolean>(true);
-  const [isToggling, setIsToggling] = useState<boolean>(false);
-  const handleGlobalToggle = async () => {
-    const newState = !globalEnabled;
-    setIsToggling(true);
+export const ChannelSelector = ({}: ChannelSelectorProps) => {
+  const [streamEnabled, setStreamEnabled] = useState<boolean>(true);
+  const [videoEnabled, setVideoEnabled] = useState<boolean>(true);
+  const [togglingStream, setTogglingStream] = useState<boolean>(false);
+  const [togglingVideo, setTogglingVideo] = useState<boolean>(false);
+
+  const handleStreamToggle = async () => {
+    const newState = !streamEnabled;
+    setTogglingStream(true);
     try {
-      await axios.post('https://chaintv.onrender.com/api/vidoes/disable', {
+      await axios.post('https://chaintv.onrender.com/api/streams/disable', {
         disable: !newState,
       });
-      setGlobalEnabled(newState);
-      toast.success(newState ? 'Enabled all streams' : 'Disabled all streams');
-    } catch (error) {
-      toast.error('Failed to update store status');
+      setStreamEnabled(newState);
+      toast.success(
+        newState ? 'Live streams enabled' : 'Live streams disabled'
+      );
+    } catch (err) {
+      toast.error('Failed to update live stream status');
     } finally {
-      setIsToggling(false);
+      setTogglingStream(false);
+    }
+  };
+
+  const handleVideoToggle = async () => {
+    const newState = !videoEnabled;
+    setTogglingVideo(true);
+    try {
+      await axios.post('https://chaintv.onrender.com/api/videos/disable', {
+        disable: !newState,
+      });
+      setVideoEnabled(newState);
+      toast.success(
+        newState ? 'Video assets enabled' : 'Video assets disabled'
+      );
+    } catch (err) {
+      toast.error('Failed to update video asset status');
+    } finally {
+      setTogglingVideo(false);
     }
   };
 
   return (
-    <div className="mb-8">
-      <div className="flex items-center justify-between mb-4">
-        <Label htmlFor="global-asset-toggle" className="text-lg font-medium mb-4">
-          Enable and Disable store
+    <div className="mb-8 space-y-6">
+      {/* Live Stream Toggle */}
+      <div className="flex items-center justify-between">
+        <Label
+          htmlFor="stream-toggle"
+          className="text-lg font-medium"
+        >
+          Stream Switch
         </Label>
         <Switch
-          id="global-channel-toggle"
-          checked={globalEnabled}
-          onCheckedChange={handleGlobalToggle}
-          disabled={isToggling}
+          id="stream-toggle"
+          checked={streamEnabled}
+          onCheckedChange={handleStreamToggle}
+          disabled={togglingStream}
         />
       </div>
 
-      {streamsLoading ? (
-        <div className="p-4 text-center">Loading Assets...</div>
-      ) : filteredStreams.length === 0 ? (
-        <div className="p-4 text-center text-gray-500">No available asset</div>
-      ) : (
-        <Accordion type="single" className="w-full border rounded-lg">
-          {filteredStreams.map((stream) => (
-            <AccordionItem key={stream.id} value={stream.id}>
-              <div className="px-4 py-2 hover:no-underline">
-                <div className="flex items-center w-full relative">
-                  <div className="bg-gray-200 rounded overflow-hidden mr-3 flex-shrink-0">
-                    <Image
-                      src={image || '/placeholder.svg'}
-                      alt={`${stream.name} icon`}
-                      width={60}
-                      height={40}
-                      className="object-cover w-full h-full"
-                    />
-                  </div>
-                  <span className="flex-grow text-left">{stream.name}</span>
-                  {/* Global status indicator overlaid on the right side */}
-                  <div className="ml-auto">
-                    <div className="absolute top-2 right-2 px-2 py-1 rounded flex items-center gap-1">
-                      <span className={`text-sm font-medium ${globalEnabled ? 'text-green-600' : 'text-red-600'}`}>
-                        {globalEnabled ? 'Active' : 'Inactive'}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      )}
+      {/* Video Asset Toggle */}
+      <div className="flex items-center justify-between">
+        <Label
+          htmlFor="video-toggle"
+          className="text-lg font-medium"
+        >
+          Video Switch
+        </Label>
+        <Switch
+          id="video-toggle"
+          checked={videoEnabled}
+          onCheckedChange={handleVideoToggle}
+          disabled={togglingVideo}
+        />
+      </div>
+
     </div>
   );
 };
