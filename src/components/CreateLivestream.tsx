@@ -32,7 +32,7 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
     viewMode: 'free' as viewMode,
     amount: 0,
     channelDescription: '',
-    bgColor: '#ffffff',
+    bgcolor: '#ffffff',
     color: '#000000',
     fontSize: '16',
     logo: '' as string,
@@ -98,8 +98,18 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
     if (formData.viewMode !== 'free' && (!formData.amount || formData.amount <= 0)) {
       newErrors.amount = 'Invalid amount';
     }
-    // if (!formData.channelTitle) newErrors.channelTitle = 'Required';
-    if (!formData.channelDescription) newErrors.channelDescription = 'Required';
+    if (!formData.channelDescription) {
+      newErrors.channelDescription = 'Required';
+    } else {
+      // Enforce max 50 words
+      const words = formData.channelDescription
+        .trim()
+        .split(/\s+/)
+        .filter(Boolean);
+      if (words.length < 50) {
+        newErrors.channelDescription = 'Description must be 50 words or above';
+      }
+    }
 
     if (Object.keys(newErrors).length) {
       setErrors(newErrors);
@@ -114,7 +124,7 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
         viewMode: formData.viewMode,
         amount: formData.amount,
         description: formData.channelDescription,
-        bgColor: formData.bgColor,
+        bgcolor: formData.bgcolor,
         color: formData.color,
         fontSize: formData.fontSize,
         logo: formData.logo,
@@ -243,32 +253,31 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
           />
         </div>
 
-        {/* Channel Title */}
-        {/* <div className="flex flex-col">
-          <label className="text-sm pb-2 font-medium">Channel Title</label>
-          <InputField
-          label='Channel Title'
-          type='text'
-            name="channelTitle"
-            value={formData.channelTitle}
-            onChange={handleChange}
-            placeholder="Your channel title"
-            className={clsx('border p-2 rounded', { 'border-red-500': errors.channelTitle })}
-          />
-          {errors.channelTitle && <p className="text-red-500 text-xs">{errors.channelTitle}</p>}
-        </div> */}
-
         {/* Channel Description (textarea) */}
         <div className="flex flex-col">
-          <label className="text-sm pb-1 font-medium">Channel Description</label>
+          <label className="text-sm pb-1 font-medium">
+            Channel Description <span className="text-xs text-gray-500">(max 50 words)</span>
+          </label>
           <textarea
             name="channelDescription"
             value={formData.channelDescription}
             onChange={handleChange}
             placeholder="Short description"
-            className={clsx('border p-2 text-sm rounded w-full h-24', { 'border-red-500': errors.channelDescription })}
+            className={clsx('border p-2 text-sm rounded w-full h-24', {
+              'border-red-500': errors.channelDescription,
+            })}
           />
-          {errors.channelDescription && <p className="text-red-500 text-xs">{errors.channelDescription}</p>}
+          {/* live word count */}
+          <p className="text-xs text-gray-500 mt-1">
+            {formData.channelDescription
+              .trim()
+              .split(/\s+/)
+              .filter(Boolean).length}{' '}
+            / 50 words
+          </p>
+          {errors.channelDescription && (
+            <p className="text-red-500 text-xs">{errors.channelDescription}</p>
+          )}
         </div>
         <div className="flex flex-col">
           <label className="text-sm pb-1 font-medium text-black">Donation Presets</label>
@@ -297,21 +306,21 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
                 <button
                   key={color}
                   type="button"
-                  onClick={() => setFormData((prev) => ({ ...prev, bgColor: color }))}
+                  onClick={() => setFormData((prev) => ({ ...prev, bgcolor: color }))}
                   className={clsx(
                     'w-6 h-6 rounded-full border',
-                    formData.bgColor === color ? 'ring-2 ring-main-blue' : '',
+                    formData.bgcolor === color ? 'ring-2 ring-main-blue' : '',
                   )}
                   style={{ backgroundColor: color }}
                 />
               ))}
-              <input
+              {/* <input
                 type="color"
-                name="bgColor"
-                value={formData.bgColor}
+                name="bgcolor"
+                value={formData.bgcolor}
                 onChange={handleChange}
                 className="w-6 h-6 p-0 border-0"
-              />
+              /> */}
             </div>
           </div>
           {/* Text Color */}
@@ -330,13 +339,13 @@ export function CreateLivestream({ close }: CreateLivestreamProps) {
                   style={{ backgroundColor: color }}
                 />
               ))}
-              <input
+              {/* <input
                 type="color"
                 name="color"
                 value={formData.color}
                 onChange={handleChange}
                 className="w-6 h-6 p-0 border-0"
-              />
+              /> */}
             </div>
           </div>
         </div>

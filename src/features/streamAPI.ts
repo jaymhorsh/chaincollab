@@ -10,7 +10,7 @@ interface CreateLivestreamProps {
   viewMode?: 'free' | 'one-time' | 'monthly';
   amount?: number;
   description: string;
-  bgColor: string;
+  bgcolor: string;
   color: string;
   fontSize: string;
   logo: string;
@@ -35,7 +35,7 @@ export const createLivestream = createAsyncThunk(
       viewMode,
       amount,
       description,
-      bgColor,
+      bgcolor,
       color,
       fontSize,
       logo,
@@ -57,23 +57,36 @@ export const createLivestream = createAsyncThunk(
       const { playbackId, name } = response.data;
 
       // Step 2: Send the response data to another endpoint
-      const data = {
+      // const data = {
+      //   playbackId,
+      //   viewMode,
+      //   description,
+      //   amount,
+      //   streamName: name || streamName,
+      //   creatorId,
+      //   logo,
+      //   bgColor,
+      //   color,
+      //   fontSize,
+      //   donation,
+      // };
+      // console.log('Data to be sent:', data);
+      const secondResponse = await axios.post(`https://chaintv.onrender.com/api/streams/addstream`, {
         playbackId,
         viewMode,
         description,
         amount,
         streamName: name || streamName,
+        title: name || streamName,
         creatorId,
         logo,
-        bgColor,
+        bgcolor,
         color,
         fontSize,
         donation,
-      };
-      console.log('Data to be sent:', data);
-      const secondResponse = await axios.post(`https://chaintv.onrender.com/api/streams/addstream`, { data });
+      });
       if (secondResponse.status === 200) {
-        console.log('Data sent successfully:', data);
+        // console.log('Data sent successfully:', data);
       } else if (secondResponse.status !== 200) {
         console.error('Error sending data:', secondResponse.data);
       } else {
