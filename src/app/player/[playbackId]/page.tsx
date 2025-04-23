@@ -103,12 +103,12 @@ const PlayerPage = () => {
         <Bars width={40} height={40} color="#3351FF" />
         <p>Loading Video…</p>
       </div>
-    )
+    );
   }
 
   // 2. If there was an error fetching details
   if (detailsError) {
-    return <div className="text-center text-red-500 mt-10">{detailsError}</div>
+    return <div className="text-center text-red-500 mt-10">{detailsError}</div>;
   }
 
   // 3. If stream is gated, show gate modal (only after load complete)
@@ -123,12 +123,12 @@ const PlayerPage = () => {
         <StreamPayment
           stream={details as any}
           onPaid={(addr) => {
-            setHasAccess(true)
-            markPaid(addr)
+            setHasAccess(true);
+            markPaid(addr);
           }}
         />
       </StreamGateModal>
-    )
+    );
   }
 
   // 4. Otherwise render the full player page
