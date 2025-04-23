@@ -26,8 +26,15 @@ const PlayerPage = () => {
   const playbackId = params?.playbackId as string;
   const { assets, error } = useSelector((state: RootState) => state.assets);
   const { streams } = useSelector((state: RootState) => state.streams);
-  const { video: details, loading: detailsLoading, error: detailsError, hasAccess, setHasAccess, markPaid } = useGetAssetGate(playbackId);
-console.log(details,detailsLoading,detailsError,hasAccess,setHasAccess,markPaid);
+  const {
+    video: details,
+    loading: detailsLoading,
+    error: detailsError,
+    hasAccess,
+    setHasAccess,
+    markPaid,
+  } = useGetAssetGate(playbackId);
+  console.log(details, detailsLoading, detailsError, hasAccess, setHasAccess, markPaid);
   // State for products
   const [products, setProducts] = useState<any[]>([]);
   const [productsLoading, setProductsLoading] = useState<boolean>(false);
@@ -88,54 +95,43 @@ console.log(details,detailsLoading,detailsError,hasAccess,setHasAccess,markPaid)
         });
     }
   }, [mainAsset]);
-  if (!mainAsset ) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-lg font-semibold">
-          <ColorRing
-            visible={true}
-            height="100"
-            width="50"
-            ariaLabel="color-ring-loading"
-            wrapperStyle={{}}
-            wrapperClass="color-ring-wrapper"
-            colors={['#3351FF', '#3351FF', '#3351FF', '#3351FF', '#3351FF']}
-          />
-        </p>
-      </div>
-    );
-  }
-  if (!hasAccess && details?.viewMode !== 'free') {
-      return (
-        <>
-          <StreamGateModal
-            open={!hasAccess}
-            onClose={() => {
-              router.back();
-            }}
-            title="Locked Video"
-            description={`A one-time fee of $${details?.amount.toFixed(2)} unlocks access.`}
-          >
-            <div></div>
-            <StreamPayment
-              stream={details as any}
-              onPaid={(addr) => {
-                setHasAccess(true);
-                markPaid(addr);
-              }}
-            />
-          </StreamGateModal>
-        </>
-      );
-    }
-  if (detailsLoading)
+
+  // 1. While fetching video details, show loader
+  if (detailsLoading) {
     return (
       <div className="flex items-center justify-center flex-col h-screen">
         <Bars width={40} height={40} color="#3351FF" />
-        <p>Loading Video</p>
+        <p>Loading Video…</p>
       </div>
-    );
-  if (detailsError) return <div className="text-center text-red-500 mt-10">{detailsError}</div>;
+    )
+  }
+
+  // 2. If there was an error fetching details
+  if (detailsError) {
+    return <div className="text-center text-red-500 mt-10">{detailsError}</div>
+  }
+
+  // 3. If stream is gated, show gate modal (only after load complete)
+  if (!hasAccess && details?.viewMode !== 'free') {
+    return (
+      <StreamGateModal
+        open={true}
+        onClose={() => router.back()}
+        title="Locked Video"
+        description={`This video requires payment to view.`}
+      >
+        <StreamPayment
+          stream={details as any}
+          onPaid={(addr) => {
+            setHasAccess(true)
+            markPaid(addr)
+          }}
+        />
+      </StreamGateModal>
+    )
+  }
+
+  // 4. Otherwise render the full player page
   return (
     <div className="min-h-screen w-full bg-white">
       <div className="container mx-auto px-4 py-6">

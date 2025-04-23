@@ -256,35 +256,23 @@ export const VideoStreamCard: React.FC<VideoStreamCardProps> = ({
   );
 };
 
-
 // vidooooooooooooooooo
-export const StreamVideoCard: React.FC<VideoCardProps> = ({
-  title,
-  imageUrl,
-  createdAt,
-  playbackId,
-  assetData,
-}) => {
-  const {video, loading:gateLoading, hasAccess}= useGetAssetGate(assetData.playbackId);
-  const [isGated, setIsGated] = useState(true);
+export const StreamVideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt, playbackId, assetData }) => {
+  const { video, loading: gateLoading, hasAccess } = useGetAssetGate(assetData.playbackId);
   const { views: videocount } = usePlaybackMetrics(playbackId || '');
   const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
-  if (!hasAccess && video?.viewMode !== 'free') {
-    setIsGated(true);
-  } 
-
+  const isGated = !hasAccess && video?.viewMode !== 'free';
   const handlePlayClick = () => {
-      if (assetData.playbackId) {
-        window.open(`/player/${assetData.playbackId}?id=${encodeURIComponent(assetData.id)}`, '_blank');
-      }
-  
+    if (assetData.playbackId) {
+      window.open(`/player/${assetData.playbackId}?id=${encodeURIComponent(assetData.id)}`, '_blank');
+    }
   };
   return (
     <>
       <div className="flex gap-3 p-2 cursor-pointer group">
         {/* Thumbnail Container */}
         <div className="relative flex-shrink-0 w-40 h-24">
-            {loading || gateLoading ? (
+          {loading || gateLoading ? (
             <div className="flex items-center justify-center w-full h-full bg-gray-200">
               <p className="text-sm">Loading...</p>
             </div>
@@ -316,11 +304,7 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
                 <FaLock />
               </div>
             ) : (
-              <button
-                onClick={handlePlayClick}
-                className="text-white text-4xl opacity-0 group-hover:opacity-100"
-               
-              >
+              <button onClick={handlePlayClick} className="text-white text-4xl opacity-0 group-hover:opacity-100">
                 <FaPlay />
               </button>
             )}
@@ -335,8 +319,6 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
           </div>
         </div>
       </div>
-
-     
     </>
   );
 };

@@ -68,7 +68,7 @@ export function StreamPayment({ stream, onPaid }: { stream: any; onPaid: (addr: 
   if (!address) {
     return (
       <div className=" flex items-center justify-center h-full space-y-3 flex-col ">
-        <h2 className='text-xl'>🔒</h2>
+        <h2 className="text-xl">🔒</h2>
         <p className="text-base text-center font-medium">{`A one-time fee of $${stream?.amount.toFixed(2) || '$$'} unlocks access to ${stream?.assetName || stream?.title || ''}.`}</p>
 
         {/* <Wallet>
