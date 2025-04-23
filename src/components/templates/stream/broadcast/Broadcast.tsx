@@ -165,7 +165,12 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
   };
 
   if (detailsLoading) {
-    return <div className="flex items-center justify-center flex-col h-full"><Bars width={25} height={25} color="#3351FF" /><p className='pt-3'>Loading settings…</p></div>;
+    return (
+      <div className="flex items-center justify-center flex-col h-full">
+        <Bars width={25} height={25} color="#3351FF" />
+        <p className="pt-3">Loading settings…</p>
+      </div>
+    );
   }
   if (detailsError) {
     return <div className="flex items-center justify-center h-screen text-red-500">Error: {detailsError}</div>;
@@ -499,7 +504,7 @@ export function BroadcastWithControls({ streamName, streamKey, playbackId }: Str
                             <div className="border rounded-md p-2">
                               <div className="bg-gray-200 h-24 rounded-md flex items-center justify-center text-blue-500 text-2xl">
                                 +
-                               </div>
+                              </div>
                             </div>
                           </Dialog.Trigger>
                           <Dialog.Portal>

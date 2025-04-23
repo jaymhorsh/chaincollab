@@ -17,6 +17,7 @@ export interface Stream {
   fontFamily: string;
   donation: Array<number>;
 }
+
 export function useStreamGate(playbackId: string) {
   const [stream, setStream] = useState<Stream | null>(null);
   const [loading, setLoading] = useState(true);

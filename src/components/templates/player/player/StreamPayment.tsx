@@ -26,14 +26,14 @@ const clickContractAbi = [
 
 // Assuming `stream.playbackId` is your contract address:
 
-export function StreamPayment({ stream, onPaid }: { stream: Stream; onPaid: (addr: string) => void }) {
+export function StreamPayment({ stream, onPaid }: { stream: any; onPaid: (addr: string) => void }) {
   const { login, authenticated, ready } = usePrivy();
   const { address } = useAccount();
 
   const calls = [
     {
       //   address: stream.creatorId as `0x${string}`, // contract address
-      to: stream.creatorId as `0x${string}`, // contract address
+      to: stream?.creatorId as `0x${string}`, // contract address
       abi: clickContractAbi,
       functionName: 'click',
       args: [],
@@ -45,21 +45,21 @@ export function StreamPayment({ stream, onPaid }: { stream: Stream; onPaid: (add
       if (status.statusName === 'success' && address) {
         // 1) register on your backend
         await axios.post('/addpayinguser', {
-          playbackId: stream.playbackId,
+          playbackId: stream?.playbackId,
           userId: address,
         });
         // 2) let the parent know we’ve paid
         onPaid(address);
       }
     },
-    [address, stream.playbackId, onPaid],
+    [address, stream?.playbackId, onPaid],
   );
 
   // If they’re not logged into Privy yet, prompt them first.
   if (ready && !authenticated) {
     return (
       <button onClick={() => login()} className="w-full py-3 rounded bg-main-blue text-white">
-        Login to Subscribe (${stream.amount.toFixed(2)})
+        Login to Subscribe (${stream?.amount.toFixed(2)})
       </button>
     );
   }
@@ -68,8 +68,8 @@ export function StreamPayment({ stream, onPaid }: { stream: Stream; onPaid: (add
   if (!address) {
     return (
       <div className=" flex items-center justify-center h-full space-y-3 flex-col ">
-        <h2>🔒 Locked Stream</h2>
-        <p className="text-base font-medium">A one-time fee of ${stream?.amount.toFixed(2)} unlocks access.</p>
+        <h2 className='text-xl'>🔒</h2>
+        <p className="text-base text-center font-medium">{`A one-time fee of $${stream?.amount.toFixed(2) || '$$'} unlocks access to ${stream?.assetName || stream?.title || ''}.`}</p>
 
         {/* <Wallet>
         <ConnectWallet>
@@ -81,7 +81,7 @@ export function StreamPayment({ stream, onPaid }: { stream: Stream; onPaid: (add
   }
 
   return (
-    <div>pay</div>
+    <div></div>
     // <Transaction
     //   chainId={1} // Ethereum Mainnet
     //   calls={calls}

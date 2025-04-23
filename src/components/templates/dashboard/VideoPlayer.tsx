@@ -10,20 +10,10 @@ import { getStreamById } from '@/features/streamAPI';
 
 interface VideoPlayerDialogProps {
   playbackId: string;
-  data: any;
 }
 
-export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId, data }) => {
-  const dispatch = useDispatch<AppDispatch>();
-  const { stream } = useSelector((state: RootState) => state.streams);
+export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId }) => {
   const { src, loading, error } = usePlaybackInfo(playbackId);
-  useEffect(() => {
-    if (data) {
-      dispatch(getStreamById(data));
-    }
-  }, [dispatch, data]);
-
-  console.log(stream);
   if (loading) {
     return (
       <PlayerLoading>
@@ -57,7 +47,7 @@ export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId, data
 
   return (
     <div>
-      <VideoWithControl src={src} data={data} />
+      <VideoWithControl src={src} />
     </div>
   );
 };

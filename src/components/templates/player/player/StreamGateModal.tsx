@@ -9,13 +9,7 @@ interface StreamGateModalProps {
   children: React.ReactNode;
 }
 
-export function StreamGateModal({
-  open,
-  onClose,
-  title = 'This is a gated stream',
-  description,
-  children,
-}: StreamGateModalProps) {
+export function StreamGateModal({ open, onClose, title = 'This is a gated stream', children }: StreamGateModalProps) {
   return (
     <Dialog.Root open={open} onOpenChange={(o) => !o && onClose()}>
       <Dialog.Portal>

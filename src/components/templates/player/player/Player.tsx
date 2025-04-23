@@ -125,11 +125,9 @@ export function PlayerWithControls({
           title="Locked Stream"
           description={`A one-time fee of $${stream?.amount.toFixed(2)} unlocks access.`}
         >
-
           <StreamPayment
             stream={stream as any}
             onPaid={(addr) => {
-            
               setHasAccess(true);
               markPaid(addr);
             }}
@@ -142,13 +140,11 @@ export function PlayerWithControls({
   return (
     <div
       className="min-h-screen w-full"
-      style={
-        {
-          // backgroundColor: customization.bgColor,
-          // color: customization.textColor,
-          // fontSize: `${customization.fontSize}px`,
-        }
-      }
+      style={{
+        backgroundColor: stream?.bgcolor,
+        color: stream?.color,
+        fontSize: `${stream?.fontSize}px`,
+      }}
     >
       <div className="container mx-auto px-4 py-6">
         {/* Title Header */}
@@ -319,7 +315,7 @@ export function PlayerWithControls({
                 <h1 className="  mb-2 sm:mb-0">Donate</h1>{' '}
                 <div className="flex space-x-4">
                   {stream?.donation?.map((amt, i) => {
-                    const colors = ['bg-green-500', 'bg-blue-500', 'bg-purple-500'];
+                    const colors = ['bg-green-500', 'bg-blue-500', 'bg-purple-500', 'bg-yellow-500'];
                     return (
                       <button
                         key={i}

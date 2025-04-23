@@ -11,6 +11,7 @@ import { usePlaybackMetrics } from '@/app/hook/usePlaybackView';
 import { Bars } from 'react-loader-spinner';
 import { useViewMetrics } from '@/app/hook/useViewerMetrics';
 import { FaLock } from 'react-icons/fa6';
+import { useGetAssetGate } from '@/app/hook/useAssetGate';
 // import Link from 'next/link';
 // import { useLivepeerAnalytics } from '@/app/hook/useLivepeerAnalytics';
 
@@ -177,7 +178,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ title, imageUrl, createdAt
     </div>
   );
 };
-// Stream    
+// Stream
 export const VideoStreamCard: React.FC<VideoStreamCardProps> = ({
   playbackId,
   streamName,
@@ -256,37 +257,6 @@ export const VideoStreamCard: React.FC<VideoStreamCardProps> = ({
 };
 
 
-// Payment Dialog
-const PaymentDialog: React.FC<{
-  onClose: () => void;
-  onPaymentSuccess: () => void;
-}> = ({ onClose, onPaymentSuccess }) => {
-  const handlePayment = () => {
-    // Simulate payment processing
-    alert('Payment processing...');
-    setTimeout(() => {
-      onPaymentSuccess();
-    }, 2000);
-  };
-  return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded shadow-lg max-w-sm mx-auto">
-        <h2 className="text-lg font-bold mb-4">Payment Required</h2>
-        <p className="mb-4">This video is gated. Please make a payment to watch this video.</p>
-        <div className="flex justify-end gap-4">
-          <button onClick={onClose} className="px-4 py-2 bg-gray-300 rounded">
-            Cancel
-          </button>
-          <button onClick={handlePayment} className="px-4 py-2 bg-blue-600 text-white rounded">
-            Pay Now
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-
 // vidooooooooooooooooo
 export const StreamVideoCard: React.FC<VideoCardProps> = ({
   title,
@@ -294,31 +264,27 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
   createdAt,
   playbackId,
   assetData,
-  creatorId,
 }) => {
+  const {video, loading:gateLoading, hasAccess}= useGetAssetGate(assetData.playbackId);
   const [isGated, setIsGated] = useState(true);
-  const [isLoadingGatedStatus, setIsLoadingGatedStatus] = useState(false);
-  const [showPaymentDialog, setShowPaymentDialog] = useState(false);
   const { views: videocount } = usePlaybackMetrics(playbackId || '');
   const { thumbnailUrl, loading } = useFetchPlaybackId(assetData.playbackId);
-
+  if (!hasAccess && video?.viewMode !== 'free') {
+    setIsGated(true);
+  } 
 
   const handlePlayClick = () => {
-    if (isLoadingGatedStatus) return;
-    if (isGated) {
-      setShowPaymentDialog(true); // Show payment dialog if gated
-    } else {
       if (assetData.playbackId) {
         window.open(`/player/${assetData.playbackId}?id=${encodeURIComponent(assetData.id)}`, '_blank');
       }
-    }
+  
   };
   return (
     <>
       <div className="flex gap-3 p-2 cursor-pointer group">
         {/* Thumbnail Container */}
         <div className="relative flex-shrink-0 w-40 h-24">
-          {loading || isLoadingGatedStatus ? (
+            {loading || gateLoading ? (
             <div className="flex items-center justify-center w-full h-full bg-gray-200">
               <p className="text-sm">Loading...</p>
             </div>
@@ -343,7 +309,6 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
               </span>
             </>
           )}
-
           {/* Hover overlay with play button */}
           <div className="absolute inset-0 flex justify-center items-center bg-opacity-0 group-hover:bg-opacity-60 transition duration-300">
             {isGated ? (
@@ -354,7 +319,7 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
               <button
                 onClick={handlePlayClick}
                 className="text-white text-4xl opacity-0 group-hover:opacity-100"
-                disabled={isLoadingGatedStatus}
+               
               >
                 <FaPlay />
               </button>
@@ -371,16 +336,7 @@ export const StreamVideoCard: React.FC<VideoCardProps> = ({
         </div>
       </div>
 
-      {/* Payment Dialog rendered conditionally */}
-      {showPaymentDialog && (
-        <PaymentDialog
-          onClose={() => setShowPaymentDialog(false)}
-          onPaymentSuccess={() => {
-            setShowPaymentDialog(false);
-            window.open(`/player/${assetData.playbackId}?id=${encodeURIComponent(assetData.id)}`, '_blank');
-          }}
-        />
-      )}
+     
     </>
   );
 };
