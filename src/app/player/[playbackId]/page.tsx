@@ -19,29 +19,17 @@ const PlayerPage = () => {
   const params = useParams();
   const router = useRouter();
   const searchParams = useSearchParams();
-  const streamId = searchParams.get('id')
-  const dispatch = useDispatch<AppDispatch>();
+  const streamId = searchParams.get('id');
+
   const playbackId = params?.playbackId as string;
   const { assets, loading, error } = useSelector((state: RootState) => state.assets);
   const { streams, error: streamError } = useSelector((state: RootState) => state.streams);
-  const {stream} = useSelector((state: RootState) => state.streams);
   // State for products
   const [products, setProducts] = useState<any[]>([]);
   const [productsLoading, setProductsLoading] = useState<boolean>(false);
   const [productsError, setProductsError] = useState<string | null>(null);
 
   // Fetch assets for video details
-  useEffect(() => {
-    dispatch(getAssets());
-    dispatch(getAllStreams());
-  }, [dispatch]);
-  useEffect(() => {
-    if (streamId) {
-      console.log('streamjjjjjjjjjjjjjId', streamId)
-      dispatch(getStreamById(streamId));
-    }
-  }, [id, dispatch]);
-  console.log('streamj', stream);
 
   useEffect(() => {
     if (error) {
@@ -84,8 +72,6 @@ const PlayerPage = () => {
         });
     }
   }, [mainAsset]);
-
-  //    ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}?streamName=${encodeURIComponent(streamName)}&id=${encodeURIComponent(creatorId)}`
   if (!mainAsset) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -112,10 +98,10 @@ const PlayerPage = () => {
           <aside className="lg:col-span-3">
             <div className="border rounded-lg p-4">
               <ul className="space-y-3 max-h-[80vh] overflow-y-auto">
-              <h3 className="text-lg font-semibold mb-4">Available Stream</h3>
+                <h3 className="text-lg font-semibold mb-4">Available Stream</h3>
                 {filteredStreams.map((stream) => (
                   <li key={stream.id}>
-                    <button onClick={() => handleSelectVideo(stream.playbackId!)} className="w-full text-left">
+                    {/* <button onClick={() => handleSelectVideo(stream.playbackId!)} className="w-full text-left"> */}
                       <VideoStreamCard
                         streamName={stream.name}
                         playbackId={stream.playbackId!}
@@ -124,7 +110,7 @@ const PlayerPage = () => {
                         lastSeen={new Date(stream.lastSeen)}
                         imageUrl={image1}
                       />
-                    </button>
+                    {/* </button> */}
                   </li>
                 ))}
                 <h3 className="text-lg font-semibold mb-4">Creator Videos</h3>
@@ -149,7 +135,7 @@ const PlayerPage = () => {
           {/* Main Player Area */}
           <main className="col-span-12 lg:col-span-6 flex flex-col space-y-4">
             {/* Video Player Component */}
-            <VideoPlayer playbackId={playbackId} data={stream} />
+            <VideoPlayer playbackId={playbackId} data={streamId} />
 
             {/* Donation Section */}
             <div className="p-4 border rounded-md">

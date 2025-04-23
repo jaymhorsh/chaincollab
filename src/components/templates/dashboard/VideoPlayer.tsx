@@ -1,11 +1,12 @@
 'use client';
-import * as Dialog from '@radix-ui/react-dialog';
-import { cn } from '@/lib/utils';
-import { IoMdClose } from 'react-icons/io';
 import VideoWithControl from '@/components/VideoWithControl';
 import { PlayerLoading } from '../player/player/Player';
 import { usePlaybackInfo } from '@/app/hook/usePlaybckInfo';
 import { ColorRing } from 'react-loader-spinner';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@/store/store';
+import { useEffect } from 'react';
+import { getStreamById } from '@/features/streamAPI';
 
 interface VideoPlayerDialogProps {
   playbackId: string;
@@ -13,9 +14,16 @@ interface VideoPlayerDialogProps {
 }
 
 export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId, data }) => {
-  console.log('pybackId', data);
+  const dispatch = useDispatch<AppDispatch>();
+  const { stream } = useSelector((state: RootState) => state.streams);
   const { src, loading, error } = usePlaybackInfo(playbackId);
-  // console.log(src, loading, error);
+  useEffect(() => {
+    if (data) {
+      dispatch(getStreamById(data));
+    }
+  }, [dispatch, data]);
+
+  console.log(stream);
   if (loading) {
     return (
       <PlayerLoading>
@@ -49,7 +57,7 @@ export const VideoPlayer: React.FC<VideoPlayerDialogProps> = ({ playbackId, data
 
   return (
     <div>
-      <VideoWithControl src={src} />
+      <VideoWithControl src={src} data={data} />
     </div>
   );
 };
