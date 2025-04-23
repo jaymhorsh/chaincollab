@@ -180,7 +180,7 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
     setIsLoading(true);
     try {
             // First, make a request to the `/deletestream` endpoint with the playbackId
-            const response = await axios.delete(`https://chaintv.onrender.com/api/videos/deletevideo?${asset.playbackId}`);
+            const response = await axios.delete(`https://chaintv.onrender.com/api/videos/deletevideo?playbackId=${asset.playbackId}`);
             if (response.status !== 200) {
               throw new Error(response.data.error || 'Failed to delete stream from external system');
             }
