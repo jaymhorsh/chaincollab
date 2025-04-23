@@ -83,9 +83,7 @@ export function PlayerWithControls({
   }, [dispatch]);
 
   useEffect(() => {
-    if (assetsError) {
-      toast.error(`Failed to fetch assets: ${assetsError}`)
-    }
+    if (assetsError) {toast.error('Failed to fetch assets: ' + assetsError);}
   }, [assetsError]);
 
   const fetchProducts = useCallback(async () => {
@@ -242,7 +240,8 @@ export function PlayerWithControls({
                         </Player.PlayingIndicator>
                         <Player.PlayingIndicator asChild>
                           <PauseIcon className="w-full h-full text-white" />
-                        </Player.PlayPauseTrigger>
+                        </Player.PlayingIndicator>
+                      </Player.PlayPauseTrigger>
                       <Player.LiveIndicator className="gap-2 flex items-center">
                         <div className="bg-red-600 h-1.5 w-1.5 rounded-full" />
                         <span className="text-sm text-white select-none">LIVE</span>
