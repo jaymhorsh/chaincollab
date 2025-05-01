@@ -12,14 +12,8 @@ import { resetStreamStatus } from '@/features/streamSlice';
 import Image from 'next/image';
 import { AppDispatch, RootState } from '@/store/store';
 
-/**
- * Extend formData with customization fields
- */
 type viewMode = 'free' | 'one-time' | 'monthly';
 
-// interface CreateLivestreamProps {
-//   close: () => void;
-// }
 
 export function CreateLivestream({ close }: { close: () => void }) {
   const { user } = usePrivy();
@@ -303,13 +297,7 @@ export function CreateLivestream({ close }: { close: () => void }) {
                   style={{ backgroundColor: color }}
                 />
               ))}
-              {/* <input
-                type="color"
-                name="bgcolor"
-                value={formData.bgcolor}
-                onChange={handleChange}
-                className="w-6 h-6 p-0 border-0"
-              /> */}
+            
             </div>
           </div>
           {/* Text Color */}

@@ -148,19 +148,6 @@ export function UpdateLivestream({
                 <option value="yes">Record</option>
               </select>
             </div>
-            {/* <div className="flex items-center">
-              <label htmlFor="suspended" className="mr-2 text-sm font-medium text-gray-900">
-                Suspended:
-              </label>
-              <input
-                type="checkbox"
-                name="suspended"
-                id="suspended"
-                // checked={formData.suspended}
-                onChange={handleChange}
-                className="toggle-checkbox"
-              />
-            </div> */}
             {errors.form && <p className="text-red-500 text-sm">{errors.form}</p>}
             <div className="flex justify-end">
               <button
