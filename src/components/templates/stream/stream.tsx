@@ -6,28 +6,37 @@ import { AppDispatch, RootState } from '@/store/store';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { toast } from 'sonner';
 import { BroadcastWithControls } from './broadcast/Broadcast';
 import Cookies from 'js-cookie';
 
 const StreamPage = () => {
   const searchParams = useSearchParams();
   let id = searchParams ? searchParams.get('id') : '';
-
-  // If no query param is present, fall back to the cookie.
   if (!id) {
     id = Cookies.get('activeStreamId') || '';
   }
 
   const dispatch = useDispatch<AppDispatch>();
-  const { stream, loading, error } = useSelector((state: RootState) => state.streams);
+  const { stream, loading, error } = useSelector(
+    (state: RootState) =>
+      state.streams as {
+        stream: {
+          id: string;
+          streamKey: string;
+          playbackId: string;
+          name: string;
+          isActive: boolean;
+          createdAt: string;
+        };
+        loading: boolean;
+        error: string | null;
+      },
+  );
   const navigate = useRouter();
 
   useEffect(() => {
     if (id) {
       dispatch(getStreamById(id));
-    } else {
-      toast.error('Stream ID is required');
     }
   }, [id, dispatch]);
 

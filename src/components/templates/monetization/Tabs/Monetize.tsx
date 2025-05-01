@@ -10,7 +10,7 @@ import SendTransaction from '@/components/SendTransaction';
 import { usePrivy } from '@privy-io/react-auth';
 const Monetize = () => {
   const { sendTransaction: send } = usePrivy();
-  const { ethBalance, chainName } = useEthBalance();
+  const { ethBalance } = useEthBalance();
   const [showPayment, setShowPayment] = useState(false);
   const [withdrawalAmount, setWithdrawalAmount] = useState('');
   const [withdrawalAddress, setWithdrawalAddress] = useState('');
@@ -27,9 +27,9 @@ const Monetize = () => {
 
   return (
     <div>
-      <div className="md:w-[85%] w-full mx-auo flex flex-col md:grid md:grid-cols-7  md:gap-x-5">
-        <div className="bg-white shadow-lg p-6 rounded-lg border border-[#DFE0E1] md:col-span-3 w-full">
-          <div className="bg-black flex flex-col text-white h-[160px] justify-around p-4 rounded-lg">
+      <div className=" max-sm:flex flex-col md:grid md:grid-cols-8   md:gap-x-5">
+        <div className="bg-white shadow-lg md:p-6 p-4 rounded-lg border border-[#DFE0E1] md:col-span-3 w-full">
+          <div className="bg-black flex flex-col text-white h-[170px] justify-around p-4 rounded-lg">
             <div className="flex justify-between items-center pb-4 pt-2 px-3">
               <p className="text-xl font-normal">Wallet Balance</p>
               <button className="text-gray-400 text-sm">History</button>
@@ -96,7 +96,7 @@ const Monetize = () => {
             </div>
           )}
         </div>
-        <div className="w-full mt-4 md:mt-0 md:col-span-4">
+        <div className="w-full mt-4 md:mt-0 md:col-span-5">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {dummyData.map(({ id, name, balance }) => (
               <div key={id} className="border border-[#DFE0E1] rounded-lg p-4">

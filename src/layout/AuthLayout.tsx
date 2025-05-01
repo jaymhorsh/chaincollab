@@ -17,17 +17,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
           zIndex: -1,
         }}
       />
-      <main className="flex flex-col items-center justify-center drop-shadow-lg rounded-xl py-10">
-        {/* <Image
-          className="dark:invert"
-          src={logo}
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        /> */}
-        {children}
-      </main>
+      <main className="flex flex-col items-center justify-center drop-shadow-lg rounded-xl py-10">{children}</main>
     </div>
   );
 };

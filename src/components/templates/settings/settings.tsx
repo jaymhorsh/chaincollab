@@ -286,6 +286,7 @@ import { useLinkAccount, usePrivy } from '@privy-io/react-auth';
 import Header from '@/components/Header';
 import { toast } from 'sonner';
 import { FaSpinner } from 'react-icons/fa6';
+import MobileSidebar from '@/components/MobileSidebar';
 
 interface AccountItem {
   name: string;
@@ -296,6 +297,8 @@ interface AccountItem {
 }
 
 const Settings: React.FC = () => {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const {
     user,
     authenticated,
@@ -384,83 +387,101 @@ const Settings: React.FC = () => {
       toast.error(error.toUpperCase());
     },
   });
+  const toggleSidebar = () => {
+    setSidebarCollapsed(!sidebarCollapsed);
+  };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
   return (
-    <>
-      <Header />
-      <div className="m-4 p-6">
-        <div className="bg-[#DFE0E166] p-3">
-          <h1 className="block text-black font-bold mb-1">Email</h1>
-        </div>
-        <div className="flex w-full flex-col items-center justify-cente gap-x-8  py-6">
-          <div className="flex flex-col w-full flex-1">
-            <label className="text-gray-700">Email</label>
-            <input
-              type="text"
-              name="email"
-              value={user?.email?.address}
-              // onChange={}
-              className={`border px-4 py-2 w-full md:w-1/2 outline-none border-[#DFE0E1] rounded-md bg-gray-100 pointer-events-none`}
-              readOnly
-            />
-          </div>
+    <div className="flex h-screen overflow-hidden">
+      {/* Mobile Sidebar */}
+      {mobileMenuOpen && (
+        <MobileSidebar
+          sidebarCollapsed={sidebarCollapsed}
+          toggleSidebar={toggleSidebar}
+          mobileMenuOpen={mobileMenuOpen}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
+      )}
 
-          <div className="mt-4 py-6 w-full flex-1">
-            <h3 className="text-lg font-medium mb-4">Link New Account</h3>
-            <div className="flex gap-4 flex-wrap">
-              <select
-                value={selectedLink}
-                onChange={(e) => setSelectedLink(e.target.value)}
-                className="border rounded-lg px-4 py-2 focus:outline-none "
-              >
-                <option>Select an account to link</option>
-                {linkOptions.map((option, index) => (
-                  <option key={index} value={option.label}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              <button
-                onClick={handleLinkClick}
-                className="px-6 py-2 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
-              >
-                {isLoading ? <FaSpinner className="text-white text-2xl" /> : 'Link Account'}
-              </button>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col h-screen overflow-auto">
+        <Header toggleMenu={toggleMobileMenu} mobileOpen={mobileMenuOpen} />
+        <div className="m-4 p-6">
+          <div className="bg-[#DFE0E166] p-3">
+            <h1 className="block text-black font-bold mb-1">Email</h1>
+          </div>
+          <div className="flex w-full flex-col items-center justify-cente gap-x-8  py-6">
+            <div className="flex flex-col w-full flex-1">
+              <label className="text-gray-700">Email</label>
+              <input
+                type="text"
+                name="email"
+                value={user?.email?.address}
+                // onChange={}
+                className={`border px-4 py-2 w-full md:w-1/2 outline-none border-[#DFE0E1] rounded-md bg-gray-100 pointer-events-none`}
+                readOnly
+              />
+            </div>
+
+            <div className="mt-4 py-6 w-full flex-1">
+              <h3 className="text-lg font-medium mb-4">Link New Account</h3>
+              <div className="flex gap-4 flex-wrap">
+                <select
+                  value={selectedLink}
+                  onChange={(e) => setSelectedLink(e.target.value)}
+                  className="border rounded-lg px-4 py-2 focus:outline-none "
+                >
+                  <option>Select an account to link</option>
+                  {linkOptions.map((option, index) => (
+                    <option key={index} value={option.label}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={handleLinkClick}
+                  className="px-6 py-2 bg-main-blue text-white rounded-lg hover:bg-blue-600 transition-colors"
+                >
+                  {isLoading ? <FaSpinner className="text-white text-2xl" /> : 'Link Account'}
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-        <h2 className="text-lg font-bold mb-4">Linked Accounts</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {accounts.map((account, idx) => (
-            <div key={idx} className="flex flex-col min-h-30 justify-between border p-4 rounded-lg shadow-sm">
-              <p className="font-medium">{account.name}</p>
-              <p className="text-sm text-gray-600 whitespace-normal break-words">
-                {account.value ? account.value : 'Not linked'}
-              </p>
-              <button
-                disabled={!ready || !authenticated || !account.value}
-                onClick={() => {
-                  if (account.value) {
-                    if (account.type === 'number') {
-                      handleUnlink(account.unlink as (account: number) => Promise<any>, account.value as number);
-                    } else {
-                      handleUnlink(account.unlink as (account: string) => Promise<any>, account.value as string);
+          <h2 className="text-lg font-bold mb-4">Linked Accounts</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {accounts.map((account, idx) => (
+              <div key={idx} className="flex flex-col min-h-30 justify-between border p-4 rounded-lg shadow-sm">
+                <p className="font-medium">{account.name}</p>
+                <p className="text-sm text-gray-600 whitespace-normal break-words">
+                  {account.value ? account.value : 'Not linked'}
+                </p>
+                <button
+                  disabled={!ready || !authenticated || !account.value}
+                  onClick={() => {
+                    if (account.value) {
+                      if (account.type === 'number') {
+                        handleUnlink(account.unlink as (account: number) => Promise<any>, account.value as number);
+                      } else {
+                        handleUnlink(account.unlink as (account: string) => Promise<any>, account.value as string);
+                      }
                     }
-                  }
-                }}
-                className="bg-red-500 text-white px-4 py-2 mt-2 rounded-md disabled:opacity-50"
-              >
-                Unlink
-              </button>
-            </div>
-          ))}
-          <button onClick={updateEmail} disabled={!ready || !authenticated || !user?.email}>
-            Update your email
-          </button>
+                  }}
+                  className="bg-red-500 text-white px-4 py-2 mt-2 rounded-md disabled:opacity-50"
+                >
+                  Unlink
+                </button>
+              </div>
+            ))}
+            <button onClick={updateEmail} disabled={!ready || !authenticated || !user?.email}>
+              Update your email
+            </button>
+          </div>
         </div>
       </div>
-      {/* </div> */}
-    </>
+    </div>
   );
 };
 
