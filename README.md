@@ -32,13 +32,6 @@ Chainfren is developing **TiVi**, a next-generation **Web3 streaming and monetiz
 ### Backend  
 - Node.js, Express – API-driven backend framework for efficient data processing.  
 
-### Blockchain & Smart Contracts  
-- Ethereum, Solidity – Smart contracts for revenue distribution and transparent transactions.  
-- Web3.js / ethers.js – Libraries for blockchain interaction.  
-
-### Payments & Monetization  
-- Stablecoin Integration (USDC, USDT) – Secure transactions without intermediaries.  
-- Custom Payment Contracts – Creator-defined pricing (**N1, N2, N5 per view**).  
 
 ### Streaming Infrastructure  
 - WebRTC – Real-time livestreaming capabilities.  
