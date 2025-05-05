@@ -31,8 +31,8 @@ Ensure you have the following installed:
 
 #### Clone Repository  
 ```bash
-git clone https://github.com/Chainfren/TiVi.git
-cd TiVi
+git clone https://github.com/jaymhorsh/chaincollab.git
+cd Chainfren
 ```
 
 #### Install Dependencies  
