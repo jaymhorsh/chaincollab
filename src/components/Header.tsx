@@ -14,15 +14,10 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
-<<<<<<< HEAD
-import Link from 'next/link';
-import { useEthBalance } from '@/app/providers';
-import Spinner from './Spinner';
-=======
 import { Avatar as Avater, Identity, Name, Badge, Address } from '@coinbase/onchainkit/identity';
 import { Menu, X } from 'lucide-react';
 import clsx from 'clsx';
->>>>>>> 2460baa6809b31895a187d583e8ad8defdb2d747
+import Link from 'next/link';
 
 const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen: boolean }) => {
   const navigate = useRouter();
@@ -104,48 +99,6 @@ const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen
   //       // alert('clicked')
   // }
   return (
-<<<<<<< HEAD
-    <header className="shadow-sm">
-      <div className="max-w-7xl mx-auto py-4 border border-[#DFE0E1] bg-white px-4 sm:px-6 lg:px-10 flex justify-between items-center">
-        <div className="text-lg font-black cursor-pointer text-black-primary-text">
-          <Link href="/" className="flex items-center gap-2">
-          <Image src={Chainfren_Logo} alt={'header_Logo'} />
-          </Link>
-        </div>
-        {/* Avatar */}
-        <div className=" flex items-center gap-2">
-          <div className="flex items-center gap-4">
-            <Dialog.Root>
-              <Dialog.Trigger asChild>
-                <button className="flex items-center gap-2">
-                  <DropdownMenu.Root>
-                    <DropdownMenu.Trigger asChild>
-                      <Avatar.Root className="inline-flex cursor-pointer size-[45px] select-none items-center justify-center overflow-hidden rounded-full bg-blackA1 align-middle">
-                        <Avatar.Image
-                          className="size-full rounded-[inherit] object-cover"
-                          src="https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&w=128&h=128&dpr=2&q=80"
-                          alt="Moshood"
-                        />
-                        <Avatar.Fallback
-                          className="leading-1 flex size-full rounded-full items-center justify-center bg-white text-[15px] font-medium text-violet11"
-                          delayMs={600}
-                        >
-                          <svg
-                            width="40"
-                            height="40"
-                            viewBox="0 0 35 35"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <g clipPath="url(#clip0_85_301)">
-                              <circle cx="17.5" cy="17.5" r="15.5" fill="#3351FF" />
-                              <path
-                                fillRule="evenodd"
-                                clipRule="evenodd"
-                                d="M31 33.4445C31 26.817 25.6274 21.4445 19 21.4445C12.3726 21.4445 7 26.817 7 33.4445H31Z"
-                                fill="white"
-                              />
-=======
     <>
       <header
         className={clsx('flex-1   w-full z-10 top-0 right-0 transition-all shadow-md duration-300 ease-in-out', {})}
@@ -155,12 +108,14 @@ const Header = ({ toggleMenu, mobileOpen }: { toggleMenu: () => void; mobileOpen
             <button onClick={toggleMenu} className="md:hidden">
               {mobileOpen ? <X className="h-7 w-7 text-[#000]" /> : <Menu className="h-7 w-7 text-[#000]" />}
             </button>
-            <div className="  px-3 py-1.5 rounded-md ">
-              <Image src={Chainfren_Logo} alt={'header_Logo'} />
+            <div className="  px-3 py-1.5 cursor-pointer rounded-md ">
+              <Link href="/" className="flex items-center gap-2">
+               <Image src={Chainfren_Logo} alt={'header_Logo'} />
+              </Link>
+             
             </div>
           </div>
           {/* Avatar */}
->>>>>>> 2460baa6809b31895a187d583e8ad8defdb2d747
 
           <div className="flex items-center flex-1 justify-end gap-4">
             <DropdownMenu.Root>
