@@ -11,8 +11,7 @@ Chainfren is developing **TiVi**, a next-generation **Web3 streaming and monetiz
 - TypeScript, React, Next.js – Scalable, component-based UI development.  
 
 ### Backend  
-- Node.js, Express – API-driven backend framework for efficient data processing.  
-
+- Node.js, Express – API-driven backend framework for efficient data processing.
 
 ### Streaming Infrastructure  
 - WebRTC – Real-time livestreaming capabilities.  
