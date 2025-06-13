@@ -14,6 +14,7 @@ import { MdEmail } from 'react-icons/md';
 import { IoClose } from 'react-icons/io5';
 import { toast } from 'sonner';
 import { ethers } from 'ethers';
+import Link from 'next/link';
 import { useEthBalance } from '@/app/providers';
 import Spinner from './Spinner';
 
@@ -96,8 +97,10 @@ const Header = () => {
   return (
     <header className="shadow-sm">
       <div className="max-w-7xl mx-auto py-4 border border-[#DFE0E1] bg-white px-4 sm:px-6 lg:px-10 flex justify-between items-center">
-        <div className="text-lg font-black text-black-primary-text">
+        <div className="text-lg font-black cursor-pointer text-black-primary-text">
+          <Link href="/" className="flex items-center gap-2">
           <Image src={Chainfren_Logo} alt={'header_Logo'} />
+          </Link>
         </div>
         {/* Avatar */}
         <div className=" flex items-center gap-2">
