@@ -32,10 +32,9 @@ PopoverContent.displayName = PopoverPrimitive.Content.displayName;
 
 export { Popover, PopoverTrigger, PopoverContent, PopoverAnchor };
 
-//
+//Usage
 import { useState } from 'react';
 import { AiOutlineCloudDownload, AiOutlineEdit } from 'react-icons/ai';
-import { BiNotepad } from 'react-icons/bi';
 import { BsThreeDotsVertical } from 'react-icons/bs';
 import { HiLink } from 'react-icons/hi';
 import { PiCalendarCheckBold } from 'react-icons/pi';
@@ -50,6 +49,9 @@ import { RotatingLines } from 'react-loader-spinner';
 import { resetStreamStatus } from '@/features/streamSlice';
 import { deleteAsset, getAssets } from '@/features/assetsAPI';
 import { resetAssetStatus } from '@/features/assetsSlice';
+import { UpdateLivestream } from './UpdateLivestream';
+import { CustomizeChannelDialog } from './Dialog';
+import axios from 'axios';
 
 const listItemClassNames = {
   option: 'flex items-center text-lg px-5 py-2 hover:bg-gray-100 cursor-pointer',
@@ -61,14 +63,14 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const { error } = useSelector((state: RootState) => state.streams);
   const [alertOpen, setAlertOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  // const [isCustomizeOpen, setIsCustomizeOpen] = useState(false);
   const host = process.env.NEXT_PUBLIC_BASE_URL;
   const playbackUrl =
     host && playbackId ? `${host.includes('localhost') ? 'http' : 'https'}://${host}/view/${playbackId}` : null;
 
   const handleEditDetails = () => {
-    toast('Edit details clicked');
-    // TODO: Open edit modal or navigate to edit page.
+    setIsDialogOpen(true);
   };
 
   const handleCopyStreamLink = () => {
@@ -91,10 +93,10 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
     // TODO: Open schedule modal or navigate accordingly.
   };
 
-  const handleCustomizeChannel = () => {
-    toast('Customize channel clicked');
-    // TODO: Open customization modal or navigate accordingly.
-  };
+  // const handleCustomizeChannel = () => {
+  //   toast('Customize channel clicked');
+  //   // TODO: Open customization modal or navigate accordingly.
+  // };
 
   const handleDeleteChannel = () => {
     // Simply open the alert dialog.
@@ -103,14 +105,19 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
   const confirmDelete = async () => {
     setIsLoading(true);
     try {
+      // First, make a request to the `/deletestream` endpoint with the playbackId
+      const response = await axios.delete(`https://chaintv.onrender.com/api/streams/deletestream?${playbackId}`);
+      if (response.status !== 200) {
+        throw new Error(response.data.error || 'Failed to delete stream from external system');
+      }
+      // If the above request is successful, proceed to delete the stream from the Redux store
       await dispatch(deleteStream(streamId)).unwrap();
-
       toast.success('Channel deleted successfully');
       dispatch(resetStreamStatus());
       dispatch(getAllStreams());
       setAlertOpen(false);
     } catch (err: any) {
-      toast.error(error || 'Failed to delete channel');
+      toast.error(err.message || error || 'Failed to delete channel');
     }
     setIsLoading(false);
   };
@@ -126,7 +133,7 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         <DropdownMenu.Content className="min-w-[200px] min-h-[200px] z-50 bg-white rounded shadow-md p-2">
           <DropdownMenu.Item onSelect={handleEditDetails} className={listItemClassNames.option}>
             <HiLink className={listItemClassNames.icon} />
-            <p className="ml-2 text-sm text-black-primary-text font-medium">Edit details</p>
+            <p className="ml-2 text-sm text-black-primary-text font-medium">Edit Livestream/Channel</p>
           </DropdownMenu.Item>
           <DropdownMenu.Item onSelect={handleCopyStreamLink} className={listItemClassNames.option}>
             <AiOutlineEdit className={listItemClassNames.icon} />
@@ -135,10 +142,6 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
           <DropdownMenu.Item onSelect={handleScheduleStream} className={listItemClassNames.option}>
             <PiCalendarCheckBold className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Schedule stream</p>
-          </DropdownMenu.Item>
-          <DropdownMenu.Item onSelect={handleCustomizeChannel} className={listItemClassNames.option}>
-            <BiNotepad className={listItemClassNames.icon} />
-            <p className="ml-2 text-sm font-medium text-black-primary-text">Customize channel</p>
           </DropdownMenu.Item>
           <DropdownMenu.Item onSelect={handleDeleteChannel} className={listItemClassNames.option}>
             <RiDeleteBin6Line className={`${listItemClassNames.icon} text-red-700`} />
@@ -156,10 +159,12 @@ export const Popup = ({ playbackId, streamId }: PopupProps) => {
         onConfirm={confirmDelete}
         loading={isLoading}
       />
+      {isDialogOpen && <UpdateLivestream open={isDialogOpen} onClose={() => setIsDialogOpen(false)} id={streamId} />}
     </>
   );
 };
 
+// deletevideo
 export const AssetPopup = ({ asset }: AssetPopProps) => {
   const dispatch = useDispatch<AppDispatch>();
   const { error } = useSelector((state: RootState) => state.assets);
@@ -174,6 +179,13 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
   const confirmDelete = async () => {
     setIsLoading(true);
     try {
+      // First, make a request to the `/deletestream` endpoint with the playbackId
+      const response = await axios.delete(
+        `https://chaintv.onrender.com/api/videos/deletevideo?playbackId=${asset.playbackId}`,
+      );
+      if (response.status !== 200) {
+        throw new Error(response.data.error || 'Failed to delete stream from external system');
+      }
       await dispatch(deleteAsset(asset.id)).unwrap();
       toast.success('Asset deleted successfully');
       dispatch(resetAssetStatus());
@@ -205,6 +217,19 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
       toast.error('Download URL not available.');
     }
   };
+  const handlePlaybackId = () => {
+    // Copy the stream link to the clipboard.
+    if (asset.playbackId) {
+      navigator.clipboard
+        .writeText(asset.playbackId)
+        .then(() => {
+          toast.success('Playback ID copied!');
+        })
+        .catch(() => {
+          toast.error("Playback ID isn't available.");
+        });
+    }
+  };
   return (
     <>
       <DropdownMenu.Root>
@@ -222,6 +247,10 @@ export const AssetPopup = ({ asset }: AssetPopProps) => {
           <DropdownMenu.Item onSelect={handleDownloadAds} className={listItemClassNames.option}>
             <AiOutlineCloudDownload className={listItemClassNames.icon} />
             <p className="ml-2 text-sm font-medium text-black-primary-text">Download video</p>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item onSelect={handlePlaybackId} className={listItemClassNames.option}>
+            <HiLink className={listItemClassNames.icon} />
+            <p className="ml-2 text-sm text-black-primary-text font-medium">Copy PlaybackId</p>
           </DropdownMenu.Item>
 
           <DropdownMenu.Item onSelect={handleDeleteAsset} className={listItemClassNames.option}>

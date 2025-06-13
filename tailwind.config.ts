@@ -6,11 +6,6 @@ const config: Config = {
     extend: {
       colors: {
         'main-blue': '#3351FF',
-        // black: {
-        //   'primary-text': '#0E0E0F',
-        //   'secondary-text': '#53525F',
-        //   'tertiary-text': '#838294',
-        // },
         'orange-drop': '#FE5C2B',
         'green-drop': '#00E36E',
         'background-gray': '#EEEFF1',
@@ -22,7 +17,6 @@ const config: Config = {
         'pubnub-light-grey': '#94A3B7',
         'pubnub-yellow': '#FBBF24',
         'pubnub-white': '#F8FAFC',
-
         background: '#000000',
         foreground: 'hsl(var(--foreground))',
         card: {
@@ -83,12 +77,32 @@ const config: Config = {
             transform: 'translate(-50%, -50%) scale(1)',
           },
         },
+        'accordion-down': {
+          from: {
+            height: '0',
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)',
+          },
+          to: {
+            height: '0',
+          },
+        },
       },
       animation: {
         overlayShow: 'overlayShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
         contentShow: 'contentShow 150ms cubic-bezier(0.16, 1, 0.3, 1)',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out',
       },
-      fontFamily: { inter: ['Inter', 'sans-serif'] },
+      fontFamily: {
+        inter: ['Inter', 'sans-serif'],
+      },
     },
   },
 };

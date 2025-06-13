@@ -5,6 +5,10 @@ import React from 'react';
 const inter = Inter({ subsets: ['latin'] });
 import './globals.css';
 import Providers from './providers';
+import { headers } from 'next/headers';
+import '@coinbase/onchainkit/styles.css';
+import { cookieToInitialState } from 'wagmi';
+import getConfig from 'next/config';
 
 export const metadata: Metadata = {
   title: 'Chainfren TV',

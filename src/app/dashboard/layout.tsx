@@ -1,69 +1,100 @@
 'use client';
 import Sidebar from '@/components/Sidebar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import { Inter } from 'next/font/google';
-import { LuArrowLeftFromLine } from 'react-icons/lu';
+import { LuArrowLeftFromLine, LuArrowRightFromLine } from 'react-icons/lu';
 import clsx from 'clsx';
+import { X } from 'lucide-react';
 
 const inter = Inter({ subsets: ['latin'] });
-// Rename the component to follow React naming conventions
+
 const DashboardLayout = ({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) => {
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  // Check if we're on mobile screen
+  useEffect(() => {
+    const checkIfMobile = () => {
+      const isMobileView = window.innerWidth < 768;
+      setIsMobile(isMobileView);
+
+      // Automatically collapse the sidebar on mobile
+      if (isMobileView) {
+        setSidebarCollapsed(true);
+      }
+    };
+
+    // Initial check
+    checkIfMobile();
+
+    // Add event listener
+    window.addEventListener('resize', checkIfMobile);
+
+    // Cleanup
+    return () => window.removeEventListener('resize', checkIfMobile);
+  }, []);
+
+  const toggleSidebar = () => {
+    // Only toggle the sidebar if not in mobile view
+    if (!isMobile) {
+      setSidebarCollapsed((prev) => !prev);
+    }
+  };
+
+  const toggleMobileMenu = () => {
+    // Toggle the mobile menu
+    setMobileMenuOpen((prev) => !prev);
+  };
 
   return (
-    <div className={`${inter.className} text-black-primary-text flex h-screen `}>
+    <div className={`${inter.className} text-black-primary-text flex h-screen`}>
       {/* Sidebar for desktop */}
-      <aside className="hidden md:block w-72 px-4 bg-white shadow-md">
-        <div className="pl-4 flex justify-between items-center">
-          <div className=" py-6 font-bold uppercase text-black-primary-text">
-            <h1> Creator Dashboard</h1>
-          </div>
-          <button onClick={toggleDrawer} className="md:hdden">
-            <LuArrowLeftFromLine className="text-xl font-bold" />
-          </button>
-        </div>
-        <Sidebar />
-      </aside>
 
-      {/* Drawer for mobile */}
-      <div
-        className={`fixed inset-0 z-20 transition-opacity bg-black bg-opacity-50 ${
-          isDrawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={toggleDrawer}
-      />
       <aside
         className={clsx(
-          'fixed px-4 inset-y-0 left-0 z-30 w-72 bg-white shadow-md transform transition-transform duration-500 ease-in-out',
-          isDrawerOpen ? 'translate-x-0' : '-translate-x-full',
-          'md:hidden',
+          ' md:relative z-20 h-full md:block px-4 gap-y-4 transition-all duration-300 ease-in-out bg-white border-r border-[#dfe0e1] flex flex-col',
+          {
+            'w-[100px]': sidebarCollapsed && !isMobile, // Collapsed sidebar for desktop
+            'w-72 p-4': !sidebarCollapsed && !isMobile, // Expanded sidebar for desktop
+            hidden: isMobile && !mobileMenuOpen,
+            block: isMobile && mobileMenuOpen,
+          },
         )}
+        // className={`${mobileMenuOpen ? "block" : "hidden"} md:block fixed md:relative z-20 h-full transition-all duration-300 ease-in-out ${sidebarCollapsed ? "w-[70px]" : "w-[200px]"} bg-white border-r border-[#dfe0e1] flex flex-col`}
       >
-        <div className="pl-4 flex justify-between items-center">
-          <div className=" py-6 font-bold uppercase text-black-primary-text">
-            <h1> Creator Dashboard</h1>
-          </div>
-          <button onClick={toggleDrawer} className="md:hidden">
-            <FaTimes className="h-6 w-6" />
+        <div className="flex items-center justify-between py-4 border-b border-[#dfe0e1]">
+          {!sidebarCollapsed && (
+            <div className=" transition-all ease-in-out duration-500 font-bold flex justify-center items-center uppercase text-black-primary-text">
+              <h1>Creator Dashboard</h1>
+            </div>
+          )}
+          <button onClick={toggleSidebar} className="ml-auto">
+            {sidebarCollapsed ? (
+              <LuArrowRightFromLine className="h-5 w-5 text-[#53525f]" />
+            ) : (
+              <LuArrowLeftFromLine className="h-5 w-5 text-[#53525f]" />
+            )}
           </button>
         </div>
-        <Sidebar />
+        <Sidebar sidebarCollapsed={sidebarCollapsed} />
       </aside>
+      {/* Mobile menu overlay */}
 
       {/* Main content area */}
-      <div className="flex-1 flex flex-col overflw-hidden">
-        {/* Page content */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Pass state values as props to children */}
         <main className="flex-1 text-orange overflow-x-hidden overflow-y-auto bg-gray-50">
-          <div className="container mx-auto px-1">{children}</div>
+          <div className="container mx-auto px-1 ">{children}</div>
         </main>
       </div>
     </div>
   );
 };
+
 export default DashboardLayout;

@@ -1,5 +1,4 @@
-import Dashboard from '@/components/templates/dashboard/dashboard';
-import React from 'react';
+import Dashboard from '@/components/templates/dashboard/Dashboard';
 
 const Page = () => {
   return <Dashboard />;
